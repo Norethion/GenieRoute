@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd backend && npx eslint src/ --quiet 2>/dev/null; cd ../frontend && npx eslint src/ --quiet 2>/dev/null; true"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd backend && npm run lint 2>&1; cd ../frontend && npm run lint 2>&1"
+          }
+        ]
+      }
+    ]
+  }
+}

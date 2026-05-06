@@ -1,0 +1,110 @@
+[
+  {
+    "slug": "istanbul-historic",
+    "city": "İstanbul",
+    "days": 3,
+    "budget": "medium",
+    "interests": ["history", "ottoman", "cuisine", "bazaar"],
+    "image": "/images/routes/istanbul.jpg",
+    "tr": {
+      "title": "İstanbul Tarihi Yarımada",
+      "desc": "Ayasofya, Topkapı Sarayı, Kapalıçarşı ve Sultanahmet'i keşfedin.",
+      "cities": "İstanbul"
+    },
+    "en": {
+      "title": "Istanbul Historic Peninsula",
+      "desc": "Explore Hagia Sophia, Topkapi Palace, Grand Bazaar and Sultanahmet.",
+      "cities": "Istanbul"
+    }
+  },
+  {
+    "slug": "cappadocia-wonder",
+    "city": "Kapadokya (Nevşehir)",
+    "days": 3,
+    "budget": "medium",
+    "interests": ["nature", "history", "culture", "hiking"],
+    "image": "/images/routes/cappadocia.jpg",
+    "tr": {
+      "title": "Kapadokya Keşfi",
+      "desc": "Göreme, Derinkuyu Yeraltı Şehri, Uçhisar Kalesi ve balon turu.",
+      "cities": "Nevşehir / Kapadokya"
+    },
+    "en": {
+      "title": "Cappadocia Discovery",
+      "desc": "Goreme, Derinkuyu Underground City, Uchisar Castle and balloon ride.",
+      "cities": "Nevsehir / Cappadocia"
+    }
+  },
+  {
+    "slug": "aegean-ancient",
+    "city": "İzmir",
+    "days": 4,
+    "budget": "medium",
+    "interests": ["history", "culture", "beach", "cuisine"],
+    "image": "/images/routes/aegean.jpg",
+    "tr": {
+      "title": "Ege Antik Kentleri",
+      "desc": "Efes Antik Kenti, Pamukkale travertenleri ve Ege sahilleri.",
+      "cities": "İzmir / Denizli"
+    },
+    "en": {
+      "title": "Aegean Ancient Cities",
+      "desc": "Ephesus Ancient City, Pamukkale travertines and Aegean coastline.",
+      "cities": "Izmir / Denizli"
+    }
+  },
+  {
+    "slug": "blacksea-highlands",
+    "city": "Trabzon",
+    "days": 4,
+    "budget": "low",
+    "interests": ["nature", "hiking", "culture", "cuisine"],
+    "image": "/images/routes/blacksea.jpg",
+    "tr": {
+      "title": "Karadeniz Yaylaları",
+      "desc": "Uzungöl, Ayder Yaylası, Sümela Manastırı ve yerel lezzetler.",
+      "cities": "Trabzon / Rize"
+    },
+    "en": {
+      "title": "Black Sea Highlands",
+      "desc": "Uzungol, Ayder Plateau, Sumela Monastery and local delicacies.",
+      "cities": "Trabzon / Rize"
+    }
+  },
+  {
+    "slug": "antalya-riviera",
+    "city": "Antalya",
+    "days": 3,
+    "budget": "medium",
+    "interests": ["beach", "history", "nature", "food"],
+    "image": "/images/routes/antalya.jpg",
+    "tr": {
+      "title": "Antalya Rivierası",
+      "desc": "Kaleiçi, Düden Şelalesi, antik kentler ve turkuaz sahiller.",
+      "cities": "Antalya"
+    },
+    "en": {
+      "title": "Antalya Riviera",
+      "desc": "Kaleici Old Town, Duden Waterfalls, ancient ruins and turquoise beaches.",
+      "cities": "Antalya"
+    }
+  },
+  {
+    "slug": "southeast-gastro",
+    "city": "Gaziantep",
+    "days": 3,
+    "budget": "low",
+    "interests": ["cuisine", "culture", "bazaar", "history"],
+    "image": "/images/routes/southeast.jpg",
+    "tr": {
+      "title": "Güneydoğu Gastronomi Rotası",
+      "desc": "Gaziantep mutfağı, baklavacılar, bakırcılar çarşısı ve Zeugma Müzesi.",
+      "cities": "Gaziantep / Şanlıurfa"
+    },
+    "en": {
+      "title": "Southeast Gastronomy Route",
+      "desc": "Gaziantep cuisine, baklava masters, coppersmith bazaar and Zeugma Museum.",
+      "cities": "Gaziantep / Sanliurfa"
+    }
+  }
+]

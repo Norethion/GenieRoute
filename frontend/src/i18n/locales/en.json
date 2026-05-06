@@ -1,0 +1,114 @@
+{
+  "nav": {
+    "explore": "Explore",
+    "saved": "Saved"
+  },
+  "hero": {
+    "badge": "AI Powered",
+    "title1": "Discover",
+    "title2": "Turkey",
+    "subtitle": "Pick a city, set your preferences — let AI create a personalized daily itinerary for you."
+  },
+  "wizard": {
+    "steps": {
+      "city": "City",
+      "duration": "Duration",
+      "budget": "Budget",
+      "interests": "Interests"
+    },
+    "city": {
+      "title": "Where do you want to explore?",
+      "desc": "Type your dream destination, we'll handle the rest.",
+      "placeholder": "Istanbul, Antalya, Cappadocia..."
+    },
+    "days": {
+      "title": "When are you going?",
+      "desc": "Select your travel dates. (max 14 days)",
+      "unit": "days",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "duration": "{{count}} days"
+    },
+    "budget": {
+      "title": "What's your budget?",
+      "desc": "We'll tailor recommendations for you.",
+      "low": "Budget",
+      "lowDesc": "Affordable options",
+      "medium": "Mid-range",
+      "mediumDesc": "Quality-price balance",
+      "high": "Premium",
+      "highDesc": "Best experiences"
+    },
+    "interests": {
+      "title": "What do you enjoy?",
+      "desc": "Select at least one interest. We'll build your route around it.",
+      "history": "History",
+      "food": "Food",
+      "nature": "Nature",
+      "museum": "Museums",
+      "shopping": "Shopping",
+      "nightlife": "Nightlife",
+      "art": "Art",
+      "culture": "Culture",
+      "ottoman": "Ottoman Heritage",
+      "beach": "Beach & Sea",
+      "thermal": "Thermal & Spa",
+      "cuisine": "Turkish Cuisine",
+      "bazaar": "Bazaar & Markets",
+      "hiking": "Hiking & Trekking"
+    },
+    "back": "Back",
+    "next": "Continue",
+    "generate": "Create Plan",
+    "generating": "Creating..."
+  },
+  "loading": {
+    "message": "Preparing your travel plan...",
+    "step1": "Searching for places...",
+    "step2": "Filtering results...",
+    "step3": "AI is creating your route..."
+  },
+  "result": {
+    "newPlan": "New Plan",
+    "save": "Save",
+    "saving": "Saving...",
+    "saved": "Saved",
+    "saveSuccess": "Plan saved successfully!",
+    "saveError": "Failed to save plan.",
+    "day": "Day",
+    "places": "Places",
+    "restaurants": "Restaurants",
+    "tips": "Tips",
+    "noResult": "No plan created yet",
+    "noResultDesc": "Fill in the form to create a travel plan.",
+    "createPlan": "Create Plan"
+  },
+  "savedTrips": {
+    "title": "Saved Plans",
+    "empty": "No saved plans yet",
+    "emptyDesc": "Save your generated plans and view them here.",
+    "loadError": "Failed to load plans. Check database connection.",
+    "detailError": "Failed to load plan details."
+  },
+  "time": {
+    "morning": "Morning",
+    "lunch": "Lunch",
+    "afternoon": "Afternoon",
+    "dinner": "Dinner",
+    "evening": "Evening"
+  },
+  "map": {
+    "loading": "Loading map...",
+    "restaurant": "Restaurant",
+    "attraction": "Attraction",
+    "openInGoogleMaps": "Open in Google Maps"
+  },
+  "budget": {
+    "low": "Budget",
+    "medium": "Mid-range",
+    "high": "Premium"
+  },
+  "error": {
+    "generic": "Something went wrong while creating the plan. Please try again."
+  }
+}

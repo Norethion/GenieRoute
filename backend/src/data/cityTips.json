@@ -1,0 +1,1362 @@
+{
+  "default": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi ulaşımda İstanbulkart benzeri kartlar kullanılır. Taksi için uygulamalardan (BiTaksi) çağırın.",
+      "culture": "Cami ziyaretlerinde ayakkabılarınızı çıkarın, kadınlar baş örtüsü kullanmalıdır. Giriş ücretsizdir.",
+      "food": "Türk kahvaltısı mutlaka deneyin. Çay her yerde ikram edilir, reddetmek ayıp sayılabilir."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Cities use rechargeable transit cards (like Istanbulkart). Use apps (BiTaksi) for taxis.",
+      "culture": "Remove shoes at mosques. Women should cover their heads. Entry is free.",
+      "food": "Try a full Turkish breakfast. Tea is offered everywhere — refusing may be considered rude."
+    }
+  },
+  "istanbul": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Turist Polis: 0212 527 4503",
+      "currency": "ATM'ler her yerde. Kapalıçarşı ve Mısır Çarşısı'nda pazarlık yapın, mağazalarda sabit fiyat.",
+      "transport": "İstanbulkart alın (kart ücreti ₺70, dolum yaparak kullanılır). Metro, tramvay, vapur, otobüs, Marmaray ve metrobüste geçerli. Tek biniş yaklaşık ₺15-20. Marmaray ile Avrupa-Asya geçişi 10 dakika. Kabataş-Kadıköy vapuru manzaralıdır. Taksiye BiTaksi uygulamasıyla binin, taksimetre açtırın.",
+      "culture": "Ayasofya (UNESCO) ve Sultanahmet Camii'nde baş örtüsü zorunlu (girişte ücretsiz verilir). Cuma namazı saatlerinde camilere ziyaret kapalıdır. Topkapı Sarayı Salı kapalı, Ayasofya Pazartesi açık. Yerebatan Sarnıcı (Bazilika Sarnıcı) Bizans döneminden kalma yeraltı su deposudur. Galata Kulesi'nden 360° İstanbul manzarası görülür. İstiklal Caddesi ve Balat sokakları yürüyerek keşfedilmeli.",
+      "food": "Balık ekmek Eminönü veya Karaköy'de, simit her köşe başında. İskender kebap, kuru fasulye-pilav, kokoreç, ıslak hamburger (Taksim), lahmacun ve künefe deneyin. Beyoğlu ve Karaköy bölgelerinde modern kafeler ve restoranlar yoğundur. Çiya Sofrası (Kadıköy) Anadolu mutfağı için meşhurdur."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Tourist Police: 0212 527 4503",
+      "currency": "ATMs everywhere. Bargain at Grand Bazaar and Spice Bazaar; shops have fixed prices.",
+      "transport": "Get an Istanbulkart (card costs ~₺70, load credit to use). Valid on metro, tram, ferry, bus, Marmaray, and metrobus. Single ride ~₺15-20. Marmaray crosses Europe-Asia in 10 minutes. The Kabatas-Kadikoy ferry has scenic views. Use the BiTaksi app for taxis and make sure the meter is running.",
+      "culture": "Headscarves required at Hagia Sophia (UNESCO) and Blue Mosque (provided free at entrance). Mosques close to visitors during Friday prayer. Topkapi Palace closed Tuesdays, Hagia Sophia open Mondays. Basilica Cistern is an underground Byzantine water reservoir. Galata Tower offers 360° views of Istanbul. Walk Istiklal Avenue and the streets of Balat for local color.",
+      "food": "Try fish sandwich at Eminonu or Karakoy, simit (sesame bread ring) everywhere. Must-try dishes: Iskender kebab, kuru fasulye-pilav (beans and rice), kokorec (grilled offal wrap), islak hamburger (Taksim's steamed burger), lahmacun, and kunefe. Beyoglu and Karakoy have modern cafes and restaurants. Ciya Sofrasi (Kadikoy) is famous for Anatolian cuisine."
+    }
+  },
+  "antalya": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155",
+      "currency": "Turistik bölgelerde Euro ve Dolar kabul edilir ama TL ile ödeme daha avantajlıdır.",
+      "transport": "Antalyakart ile tramvay (Antray) ve otobüs kullanın (~₺15 biniş). Nostalji tramvay Kaleiçi-Müze arası çalışır. Kaleiçi'ni yürüyerek keşfedin. Kemer, Side, Alanya gibi çevre tatil beldelerine otobüsler sık kalkar. Antik kentlere (Perge, Aspendos, Termessos) araç kiralayın veya günübirlik tur alın.",
+      "culture": "Kaleiçi tarihi bölgesi Osmanlı ve Roma dönemi eserleriyle dolu, dar sokaklarda yürüyüş yapın. Antalya Müzesi Türkiye'nin en zengin arkeoloji müzelerinden. Aspendos antik tiyatrosu hâlâ kullanılan dünyanın en iyi korunmuş Roma tiyatrosudur. Düden ve Kurşunlu Şelaleleri şehir içinde doğa harikası. Plajlarda üstsüz güneşlenme kabul görmez.",
+      "food": "Piyaz (Antalya'ya özel kuru fasulye salatası, tahinli), tandır kebabı, şiş köfte, Antalya tava (portakallı et), ve taze sıkılmış portakal suyu mutlaka deneyin. Kaleiçi'nde deniz manzaralı restoranlarda taze balık yiyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155",
+      "currency": "Tourist areas accept EUR/USD but paying in TRY is cheaper.",
+      "transport": "Use Antalyakart for the tram (Antray) and buses (~₺15/ride). A nostalgic tram runs between Kaleici and the Museum. Explore Kaleici on foot. Frequent buses to resort towns like Kemer, Side, and Alanya. Rent a car or book a day tour for ancient sites (Perge, Aspendos, Termessos).",
+      "culture": "Kaleici historic district is full of Ottoman and Roman-era relics — walk its narrow streets. Antalya Museum is one of Turkey's richest archaeology museums. Aspendos has the world's best-preserved Roman theater, still in use today. Duden and Kursunlu Waterfalls are natural wonders within the city. Topless sunbathing is not acceptable on public beaches.",
+      "food": "Try piyaz (Antalya-style bean salad with tahini), tandir kebab, sis kofte, Antalya tava (meat with orange), and fresh-squeezed orange juice. Enjoy fresh fish at seafront restaurants in Kaleici."
+    }
+  },
+  "kapadokya": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155",
+      "currency": "Küçük köylerde nakit bulundurun. Göreme merkezde kartlar kabul edilir.",
+      "transport": "Bölge içi dolmuşlar sınırlı, araç kiralama şiddetle önerilir. Göreme-Ürgüp-Avanos arası dolmuşlar mevcut. ATV turları popüler. Balon turları için en az 1 gün önceden rezervasyon yapın (hava koşullarına bağlı, sabah erken kalkış gerekir). Kayseri ve Nevşehir havalimanlarından servisler var.",
+      "culture": "Göreme Açıkhava Müzesi (UNESCO) Bizans dönemi kaya kiliselerini barındırır, freskler muhteşem. Derinkuyu ve Kaymaklı yeraltı şehirlerinde dar geçitler var, klostrofobi yaşayabilirsiniz. Peri bacalarına tırmanmak yasaktır. Uçhisar Kalesi'nden panoramik manzara görülür. Avanos'ta çömlekçilik atölyelerine katılabilirsiniz. Gece vadi yürüyüşleri (Aşk Vadisi, Güvercinlik Vadisi) çok popüler.",
+      "food": "Testi kebabı mutlaka deneyin (masada testi kırılarak servis edilir). Yerel şaraplar (Ürgüp/Avanos bağları, Kalecik Karası ve Emir üzümü) ünlüdür. Mantı, gözleme ve Nevşehir'in tandır ekmeği de deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155",
+      "currency": "Carry cash in small villages. Cards accepted in Goreme center.",
+      "transport": "Limited minibuses between towns — car rental is highly recommended. Minibuses run between Goreme, Urgup, and Avanos. ATV tours are popular. Book balloon rides at least 1 day ahead (weather-dependent, early morning departure). Shuttle services from Kayseri and Nevsehir airports.",
+      "culture": "Goreme Open-Air Museum (UNESCO) houses Byzantine-era rock-cut churches with stunning frescoes. Derinkuyu and Kaymakli underground cities have narrow passages — not ideal if you have claustrophobia. Climbing fairy chimneys is prohibited. Uchisar Castle offers panoramic views. Join a pottery workshop in Avanos. Evening valley walks (Love Valley, Pigeon Valley) are very popular.",
+      "food": "Must-try testi kebab (served by breaking a clay pot at your table). Local wines (Urgup/Avanos vineyards, Kalecik Karasi and Emir grapes) are famous. Also try manti, gozleme, and Nevsehir tandoor bread."
+    }
+  },
+  "izmir": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155",
+      "currency": "Kemeraltı Çarşısı'nda pazarlık yapın. Alışveriş merkezlerinde sabit fiyat.",
+      "transport": "İzmirkart ile metro, otobüs, vapur ve İZBAN (banliyö treni) kullanın (~₺15 biniş). Alsancak-Karşıyaka vapuru manzaralıdır ve güzel bir deneyim. Konak Meydanı ulaşım merkezi. Efes Antik Kenti'ne İZBAN + dolmuş ile ulaşılabilir. Şehir içi bisiklet paylaşım sistemi (Bisim) mevcuttur.",
+      "culture": "Efes Antik Kenti (UNESCO) için sabah erken gidin, kalabalıktan kaçının; Celsus Kütüphanesi ikonik. Şirince köyü el yapımı şarapları ve taş evleriyle ünlü. Agora Açıkhava Müzesi şehir merkezinde Roma kalıntıları. İzmir Saat Kulesi Konak Meydanı'nın simgesi. Kadifekale'den körfez manzarası muhteşem. Alaçatı rüzgâr sörfü ve taş sokakları ile popüler.",
+      "food": "Kumru (özel İzmir sandviçi, Çeşme'de meşhur), boyoz (Seferad Yahudi mirası hamur işi), gevrek (İzmir simidi), İzmir köfte (domatesli), tulum peyniri ve taze deniz ürünleri mutlaka deneyin. Kemeraltı'nda lokma tatlısı ikram edilir."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155",
+      "currency": "Bargain at Kemералti Bazaar. Fixed prices at malls.",
+      "transport": "Use Izmirkart for metro, bus, ferry, and IZBAN commuter train (~₺15/ride). The Alsancak-Karsiyaka ferry offers scenic views. Konak Square is the transit hub. Reach Ephesus via IZBAN + minibus. The city has a bike-sharing system (Bisim).",
+      "culture": "Visit Ephesus (UNESCO) early morning to avoid crowds — the Library of Celsus is iconic. Sirince village is known for handmade wines and stone houses. Agora Open-Air Museum has Roman ruins right in the city center. Izmir Clock Tower is Konak Square's landmark. Kadifekale offers stunning bay views. Alacati is popular for windsurfing and charming stone streets.",
+      "food": "Try kumru (special Izmir sandwich, famous in Cesme), boyoz (Sephardic Jewish pastry), gevrek (Izmir's sesame ring), Izmir kofte (in tomato sauce), tulum cheese, and fresh seafood. Lokma (fried dough soaked in syrup) is often offered free at Kemералti."
+    }
+  },
+  "trabzon": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155",
+      "currency": "Yaylalarda nakit bulundurun, kart geçmeyen yerler olabilir.",
+      "transport": "Şehir içi dolmuş ve minibüsler yaygın. Trabzon Kart ile otobüslerde ödeme yapılır (~₺10-15). Uzungöl'e dolmuşler var ama sınırlı, özel araç veya tur önerilir. Ayder Yaylası için Rize üzerinden geçiş gerekir. Trabzon-Sürmene sahil yolu manzaralıdır. Havalimanı şehir merkezine 5 km.",
+      "culture": "Sümela Manastırı (Karadağ yamacında, 4. yy) UNESCO geçici listesinde — yürüyüş ayakkabısı giyin. Ayasofya Müzesi (Trabzon) Bizans freskleriyle ünlü. Boztepe'den şehir ve deniz manzarası. Yaylalarda doğaya saygılı olun, çöp bırakmayın. Karadeniz insanı sıcakkanlı, çay ikramını reddetmeyin.",
+      "food": "Kuymak/muhlama (tereyağında erimiş peynir fondue), Akçaabat köftesi (kendi adını taşıyan ilçede yiyin), hamsi tava ve hamsi pilavı, Karadeniz pidesi (yumurtalı, kıymalı veya peynirli), karalahana çorbası ve laz böreği mutlaka deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155",
+      "currency": "Carry cash for highland areas where cards may not work.",
+      "transport": "Minibuses are common in the city. Use Trabzon Kart for buses (~₺10-15). Minibuses to Uzungol are limited — a private car or tour is recommended. Ayder Plateau requires going through Rize. The Trabzon-Surmene coastal road is scenic. Airport is just 5 km from center.",
+      "culture": "Sumela Monastery (4th century, clinging to a cliff) is on the UNESCO tentative list — wear hiking shoes. Trabzon Hagia Sophia Museum has famous Byzantine frescoes. Boztepe viewpoint offers city and sea panoramas. Respect nature in the highlands, don't litter. Black Sea people are warm — don't refuse their tea.",
+      "food": "Must-try: kuymak/muhlama (melted cheese fondue in butter), Akcaabat meatballs (eat them in Akcaabat itself), fried anchovies and anchovy pilaf, Black Sea pide (with egg, mince, or cheese), black cabbage soup, and laz boregi pastry."
+    }
+  },
+  "gaziantep": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155",
+      "currency": "Bakırcılar çarşısında pazarlık yapın. Yemek fiyatları İstanbul'a göre çok uygun.",
+      "transport": "Kentkart ile şehir içi otobüsler kullanılır (~₺10-15). Zeugma Müzesi, çarşılar ve yemek sokakları merkeze yakın, çoğu yer yürünebilir. Antep kalesi ve çarşılar arasında yaya dostu güzergâhlar var. Havalimanı şehir merkezine 20 km, otobüs ve taksi mevcut.",
+      "culture": "Gaziantep UNESCO Yaratıcı Şehirler Ağı Gastronomi Şehri'dir. Zeugma Mozaik Müzesi dünyanın en büyük mozaik koleksiyonlarından birini barındırır ('Çingene Kız' mozaiği ünlü). Bakırcılar Çarşısı'nda el işi bakır ürünler. Baklava ustalarını izleyebilirsiniz. Gaziantep Kalesi ve Savunma Müzesi (Panorama 25 Aralık) görülmeye değer.",
+      "food": "Gaziantep baklavası (İmam Çağdaş, Güllüoğlu, Koçak — fıstıklı baklavanın anavatanı), beyran çorbası (kuzu eti ve pirinçli sabah çorbası), lahmacun, katmer (fıstıklı ve kaymaklı ince hamur tatlısı), Ali Nazik kebabı (patlıcan üstü kuşbaşı), küşleme ve yuvalama çorbası mutlaka deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155",
+      "currency": "Bargain at coppersmith bazaar. Food prices much cheaper than Istanbul.",
+      "transport": "Use Kentkart for city buses (~₺10-15). Zeugma Museum, bazaars, and food streets are central — most places are walkable. Pedestrian-friendly routes connect the castle and bazaars. Airport is 20 km from center with bus and taxi options.",
+      "culture": "Gaziantep is a UNESCO Creative Cities Network City of Gastronomy. Zeugma Mosaic Museum houses one of the world's largest mosaic collections (the 'Gypsy Girl' mosaic is iconic). Coppersmith Bazaar sells handcrafted copperware. You can watch baklava masters at work. Gaziantep Castle and the Defense Museum (Panorama 25 December) are worth visiting.",
+      "food": "Gaziantep baklava (Imam Cagdas, Gulluoglu, Kocak — birthplace of pistachio baklava), beyran soup (lamb and rice morning soup), lahmacun, katmer (thin pastry with pistachios and cream), Ali Nazik kebab (diced meat on eggplant puree), kusleme, and yuvalama soup are all must-tries."
+    }
+  },
+  "ankara": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Ankarakart ile metro (4 hat), otobüs, Ankaray (hafif metro) ve EGO otobüslerini kullanın (~₺13-17 biniş). Kızılay merkezi aktarma noktasıdır. Başkent trafik yoğunluğu yaşar, toplu taşıma önerilir. YHT (Yüksek Hızlı Tren) ile İstanbul 4 saat, Eskişehir 1.5 saat, Konya 2 saat. Ankara Esenboğa Havalimanı şehir merkezine 28 km, Havaş servisleri çalışır.",
+      "culture": "Anıtkabir (Atatürk'ün anıt mezarı) Türkiye Cumhuriyeti'nin kurucusuna saygı mekanı — nöbet değişim töreni izleyin. Anadolu Medeniyetleri Müzesi dünya çapında ünlü, Hitit eserlerinin en zengin koleksiyonuna sahip. Ankara Kalesi'nden şehir manzarası. Hamamönü tarihi evleri restore edilmiş, kafe ve galeri dolu. Atakule'den panoramik manzara. CerModern çağdaş sanat galerisi.",
+      "food": "Ankara döneri (kalın pide ekmeği arasında), Beypazarı kurusu (gevrek kurabiye), Çubuk turşusu, Kızılcahamam kaplıca suyu, sac kavurma ve İç Anadolu mantısı deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Use Ankarakart for metro (4 lines), bus, Ankaray (light rail), and EGO buses (~₺13-17/ride). Kizilay is the central transit hub. Traffic can be heavy — public transit recommended. High-speed trains (YHT) connect to Istanbul (4h), Eskisehir (1.5h), and Konya (2h). Esenboga Airport is 28 km from center with Havas shuttles.",
+      "culture": "Anitkabir (Ataturk's mausoleum) honors the founder of the Turkish Republic — watch the changing of the guard. Museum of Anatolian Civilizations is world-renowned with the richest Hittite collection. Ankara Castle offers city views. Hamamonu has restored historic houses full of cafes and galleries. Atakule for panoramic views. CerModern is a contemporary art gallery.",
+      "food": "Try Ankara-style doner (in thick pide bread), Beypazari cookies (crispy biscuits), Cubuk pickles, Kizilcahamam mineral water, sac kavurma (pan-fried meat), and Central Anatolian manti."
+    }
+  },
+  "bursa": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Bursakart ile metro, otobüs, tramvay ve Bursaray kullanın (~₺13-17 biniş). Uludağ'a teleferikle (8 km, Türkiye'nin en uzun teleferiği) çıkabilirsiniz. Mudanya'ya deniz otobüsü ile İstanbul bağlantısı var (BUDO). Cumalıkızık köyüne dolmuş mevcuttur. Şehir merkezi (Yeşil Cami - Koza Han arası) yürünebilir.",
+      "culture": "Osmanlı İmparatorluğu'nun ilk başkentidir (1326-1365). Yeşil Cami ve Yeşil Türbe çini sanatının şaheseri. Koza Han ipek alışverişi için ünlü. Cumalıkızık köyü (UNESCO) 700 yıllık Osmanlı evleriyle yaşayan bir müze. Uludağ Milli Parkı kışın kayak, yazın trekking. Ulu Cami 20 kubbelidir ve hat sanatı eserleriyle dolu.",
+      "food": "İskender kebap Bursa'da doğdu — mutlaka orijinal İskender'de veya Kebapçı İskender'de deneyin (döner et, pideli, tereyağı ve yoğurtlu). Kestane şekeri (Bursa'ya özel), İnegöl köftesi (kendi ilçesinde yenilmeli), pideli köfte, Kemalpaşa tatlısı ve süt helvası da meşhurdur."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Use Bursakart for metro, bus, tram, and Bursaray (~₺13-17/ride). Cable car to Uludag (8 km, Turkey's longest). Sea bus (BUDO) to Mudanya connects to Istanbul. Minibuses to Cumalikizik village. City center (Green Mosque to Koza Han) is walkable.",
+      "culture": "The first capital of the Ottoman Empire (1326-1365). Green Mosque and Green Tomb are masterpieces of tile art. Koza Han is famous for silk shopping. Cumalikizik village (UNESCO) is a living museum with 700-year-old Ottoman houses. Uludag National Park offers skiing in winter and trekking in summer. Ulu Mosque has 20 domes and is filled with calligraphy art.",
+      "food": "Iskender kebab was born in Bursa — try it at the original Iskender or Kebapci Iskender (doner meat on pide bread with butter and yogurt). Candied chestnuts (Bursa specialty), Inegol meatballs (best eaten in Inegol itself), pideli kofte, Kemalpasa dessert, and sut helvasi are also famous."
+    }
+  },
+  "mugla": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Muğlakart ile şehir içi otobüsler. Bodrum, Marmaris ve Fethiye'ye şehirlerarası otobüsler sık kalkar. Dalaman Havalimanı Fethiye ve çevresinin, Milas-Bodrum Havalimanı Bodrum bölgesinin ana kapısıdır. İlçeler arası dolmuşlar yaygın. Deniz taksileri ve feribot seferleri (Bodrum-Yunan adaları dahil) mevcuttur.",
+      "culture": "Bodrum Kalesi ve Sualtı Arkeoloji Müzesi Akdeniz'in en iyi müzelerinden. Ölüdeniz (Fethiye) paraşüt turlarıyla dünyaca ünlü. Knidos, Kaunos ve Stratonikeia antik kentleri görülmeli. Datça yarımadası sakin ve doğal güzelliğiyle öne çıkar. Marmaris ve Bodrum gece hayatıyla canlı. Yatçılık için Mavi Yolculuk (Blue Cruise) bu bölgede başlar.",
+      "food": "Ege mutfağından zeytinyağlı ot yemekleri (otlu, pırasa, enginar), ahtapot salatası ve ızgara, Bodrum mandalinası, keşkek (Muğla usulü), çökertme kebabı (kızartılmış patates üstü kuşbaşı et) ve taze balık deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Use Muglakart for city buses. Frequent intercity buses to Bodrum, Marmaris, and Fethiye. Dalaman Airport serves Fethiye area, Milas-Bodrum Airport serves the Bodrum region. Minibuses between districts are common. Water taxis and ferries available (including Bodrum to Greek islands).",
+      "culture": "Bodrum Castle and Underwater Archaeology Museum are among the Mediterranean's best. Oludeniz (Fethiye) is world-famous for paragliding. Visit Knidos, Kaunos, and Stratonikeia ancient cities. Datca Peninsula stands out for its serenity and natural beauty. Marmaris and Bodrum have lively nightlife. Blue Cruise (gulet sailing) starts from this region.",
+      "food": "Try Aegean olive oil dishes (herb stews, leek, artichoke), octopus salad and grilled octopus, Bodrum tangerines, keskek (Mugla-style), cokertme kebab (diced meat on fried potatoes), and fresh fish."
+    }
+  },
+  "konya": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Konya Kart ile tramvay (2 hat) ve otobüslerle ulaşım (~₺10-15). Mevlana Müzesi ve Alaeddin Tepesi merkeze yakın ve yürünebilir. YHT (Yüksek Hızlı Tren) ile Ankara 2 saat, İstanbul'a da bağlantılı. Çatalhöyük'e özel araç veya tur gerekli. Konya büyük bir şehir, ilçelere otobüs seferleri düzenli.",
+      "culture": "Mevlana Müzesi (Mevlâna Celâleddîn-i Rûmî'nin türbesi) Türkiye'nin en çok ziyaret edilen müzesidir. Sema gösterileri her Cumartesi ve özellikle Aralık Şeb-i Aruz törenlerinde izlenebilir. Muhafazakâr bir şehir — kıyafetlere dikkat edin, cami çevresinde açık giyimden kaçının. Alaeddin Camii Selçuklu döneminden. Karatay Medresesi çini müzesi. Çatalhöyük (UNESCO) 9.000 yıllık neolitik yerleşim.",
+      "food": "Konya etli ekmek (uzun ve ince, fırında pişirilir — lahmacundan farklı), fırın kebabı (kuzu eti, uzun pişirilir), bamya çorbası, tandır kebabı, höşmerim (kaymak tatlısı) ve Mevlana şekeri mutlaka deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Use Konya Kart for tram (2 lines) and buses (~₺10-15). Mevlana Museum and Alaeddin Hill are central and walkable. High-speed train (YHT) to Ankara takes 2 hours, Istanbul also connected. Private car or tour needed for Catalhoyuk. Regular bus services to surrounding districts.",
+      "culture": "Mevlana Museum (tomb of Rumi) is Turkey's most visited museum. Whirling dervish ceremonies every Saturday, especially during December Seb-i Arus celebrations. Conservative city — dress modestly, avoid revealing clothing near mosques. Alaeddin Mosque dates to the Seljuk era. Karatay Madrasa is a tile museum. Catalhoyuk (UNESCO) is a 9,000-year-old Neolithic settlement.",
+      "food": "Try Konya etli ekmek (long thin meat flatbread, baked in oven — different from lahmacun), firin kebab (slow-cooked lamb), okra soup, tandir kebab, hosmerim (clotted cream dessert), and Mevlana candy."
+    }
+  },
+  "eskisehir": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "EsKart ile tramvay (Estram, 3 hat) ve otobüsler kullanılır (~₺10-15). Tramvay şehrin ana ulaşım aracı ve çok kullanışlı. Porsuk Çayı kenarında gondol turları yapılabilir (Venedik atmosferi). YHT (Yüksek Hızlı Tren) ile Ankara 1.5 saat, İstanbul 3 saat. Üniversite şehri olarak genç ve canlı, bisiklet dostu.",
+      "culture": "Odunpazarı tarihi evleri (UNESCO geçici listesi) rengarenk restore edilmiş Osmanlı evleri. Odunpazarı Modern Müze (OMM) çağdaş sanat için dünya standartlarında. Kentpark ve Sazova Bilim Parkı aileler için ideal. Porsuk Çayı kenarı kafe ve barlarla dolu. Lületaşı (meerschaum) Eskişehir'e özgü — atölyelerde izleyin, hediyelik alın.",
+      "food": "Eskişehir çiğ böreği (kıymalı, kızarmış börek — şehrin simgesi), balaban kebabı (pide üstü döner, yoğurtlu), met helvası (un helvası çeşidi), Sivrihisar dondurması ve Eskişehir'in ünlü nargile kafelerinde Türk kahvesi deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Use EsKart for tram (Estram, 3 lines) and buses (~₺10-15). The tram is the main transport and very convenient. Gondola rides along Porsuk River offer a Venice-like atmosphere. High-speed train to Ankara in 1.5h and Istanbul in 3h. A youthful university town that is bike-friendly.",
+      "culture": "Odunpazari historic houses (UNESCO tentative list) are colorfully restored Ottoman homes. Odunpazari Modern Museum (OMM) is a world-class contemporary art venue. Kentpark and Sazova Science Park are great for families. Porsuk riverside is lined with cafes and bars. Meerschaum (lületasi) is unique to Eskisehir — watch artisans carve it and buy souvenirs.",
+      "food": "Try Eskisehir cig boregi (fried pastry with minced meat — the city's signature), balaban kebab (doner on pide with yogurt), met halvasi (a flour halva variety), Sivrihisar ice cream, and Turkish coffee at one of Eskisehir's famous hookah cafes."
+    }
+  },
+  "sanliurfa": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi otobüsler Kentkart ile kullanılır (~₺10). Balıklıgöl, Gümrükhanı ve çarşılar birbirine yakın, yürünebilir. Göbeklitepe'ye (18 km) özel araç, taksi veya organize tur önerilir. Harran'a (44 km) dolmuş veya tur mevcuttur. GAP Havalimanı şehir merkezine 35 km.",
+      "culture": "Göbeklitepe (UNESCO) dünyanın bilinen en eski tapınağıdır (~12.000 yıl, tarımdan önce). Balıklıgöl Hz. İbrahim'in ateşe atıldığı yer olarak kutsal kabul edilir, havuzdaki balıklara dokunmak yasaktır. Harran konik kubbeli evleri ve dünyanın ilk üniversitesi ile ünlü. Gümrükhanı çarşısında geleneksel esnaf. Çok muhafazakâr bir şehir — kıyafetlere dikkat edin.",
+      "food": "Urfa kebabı (acısız, Adana'nın aksine), çiğ köfte (Urfa usulü, etsiz, isot biberli), lahmacun, küşleme (ince dilim kuzu eti), şıllık tatlısı (hamur tatlısı) ve mırra (çok acı, geleneksel kahve) mutlaka deneyin. Urfa isot biberi ünlüdür."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City buses use Kentkart (~₺10). Balikligol, Gumrukhani, and bazaars are close together and walkable. Private car, taxi, or organized tour recommended for Gobeklitepe (18 km). Minibus or tour to Harran (44 km). GAP Airport is 35 km from center.",
+      "culture": "Gobeklitepe (UNESCO) is the world's oldest known temple (~12,000 years, pre-agriculture). Balikligol is sacred as the site where Prophet Abraham was thrown into fire — touching the fish is forbidden. Harran is famous for cone-shaped houses and the world's first university. Traditional artisans at Gumrukhani bazaar. Very conservative city — dress modestly.",
+      "food": "Try Urfa kebab (mild, unlike Adana), cig kofte (Urfa-style, meatless, with isot pepper), lahmacun, kusleme (thin-sliced lamb), sillik dessert (fried dough pastry), and mirra (very bitter traditional coffee). Urfa isot pepper is renowned."
+    }
+  },
+  "mardin": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Eski şehir yürüyerek gezilir — yokuşlara hazırlıklı olun, rahat ayakkabı giyin. Midyat'a (yaklaşık 1 saat) ve Dara Antik Kenti'ne dolmuş veya özel araç mevcuttur. Mardin Havalimanı şehir merkezine 20 km. Şehir içi minibüsler çalışır ama tarihi merkez dar sokaklar nedeniyle araç giremez.",
+      "culture": "Mardin taş evleri Mezopotamya ovası manzarasına bakar — gün batımı muhteşemdir. Deyrulzafaran Manastırı (5. yy, Süryani Ortodoks) ve Kasımiye Medresesi mutlaka görülmeli. Dara Antik Kenti (Anastasiopolis) yeraltı su sarnıcıyla etkileyici. Midyat Telkari gümüş işçiliği ve Mor Gabriel Manastırı (397 yılından) ünlü. Farklı din ve kültürlerin (Süryani, Kürt, Arap) bir arada yaşadığı çok kültürlü bir şehir.",
+      "food": "Mardin kaburga dolması (pirinç ve baharatla doldurulmuş kuzu kaburga), sembüsek (kıymalı börek, Mardin'e özgü), allajuk (badem tatlısı), kibe (bulgurlu içli köfte), lebeniye çorbası (yoğurtlu çorba) ve mırra (geleneksel acı kahve) mutlaka deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Old city is walkable — be prepared for steep hills, wear comfortable shoes. Minibuses or private car to Midyat (~1 hour) and Dara ancient city. Mardin Airport is 20 km from center. Local minibuses operate but the historic center has narrow streets closed to vehicles.",
+      "culture": "Mardin's stone houses overlook the Mesopotamian plain — sunset views are spectacular. Deyrulzafaran Monastery (5th century, Syriac Orthodox) and Kasimiye Madrasa are must-sees. Dara Ancient City (Anastasiopolis) impresses with its underground cistern. Midyat is known for Telkari silver filigree craftsmanship and Mor Gabriel Monastery (from 397 AD). A multicultural city where Syriac, Kurdish, and Arab communities coexist.",
+      "food": "Try Mardin kaburga dolmasi (lamb ribs stuffed with rice and spices), sembusek (meat pastry unique to Mardin), allajuk (almond dessert), kibe (bulgur-coated stuffed meatball), lebeniye soup (yogurt soup), and mirra (traditional bitter coffee)."
+    }
+  },
+  "edirne": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir merkezi kompakt ve yürüyerek gezilebilir — tarihi yerler birbirine 10-15 dakika yürüme mesafesinde. Şehir içi minibüsler ve otobüsler mevcut. Edirne İstanbul'a 230 km, otobüsle 2.5 saat. Bulgaristan ve Yunanistan sınırına çok yakın (Kapıkule sınır kapısı). Tren garı şehir merkezinde.",
+      "culture": "Selimiye Camii (Mimar Sinan'ın şaheseri, 1575) UNESCO Dünya Mirası'dır — Osmanlı mimarisinin zirvesi. Eski Cami ve Üç Şerefeli Cami de görülmeli. Kırkpınar Yağlı Güreşleri (Temmuz) dünyanın en eski spor organizasyonudur (660+ yıl, UNESCO Somut Olmayan Kültürel Miras). Sarayiçi'nde Osmanlı saray kalıntıları. Edirne tarihi olarak üç imparatorluğun başkentliğini yapmıştır.",
+      "food": "Edirne tava ciğeri (ince kızartılmış ciğer, kıtır ve hafif — Türkiye'de en ünlüsü), Edirne peynir helvası (peynirli tatlı, özgün lezzet), badem ezmesi (marzipan, Osmanlı geleneği), Edirne peyniri (beyaz peynir çeşidi) ve mis gibi ayçiçeği balı deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City center is compact and walkable — historic sites are 10-15 minutes apart on foot. Local minibuses and buses available. Edirne is 230 km from Istanbul, 2.5 hours by bus. Very close to Bulgaria and Greece borders (Kapikule border gate). Train station is in the city center.",
+      "culture": "Selimiye Mosque (Sinan's masterpiece, 1575) is a UNESCO World Heritage Site — the pinnacle of Ottoman architecture. Old Mosque and Uc Serefeli Mosque are also worth seeing. Kirkpinar Oil Wrestling (July) is the world's oldest sporting event (660+ years, UNESCO Intangible Heritage). Ottoman palace ruins at Sarayici. Edirne was historically the capital of three empires.",
+      "food": "Try Edirne fried liver (thinly fried liver, crispy and light — the most famous in Turkey), Edirne peynir helvasi (cheese dessert, unique flavor), badem ezmesi (marzipan, Ottoman tradition), Edirne white cheese, and sunflower honey."
+    }
+  },
+  "kayseri": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Kayseray tramvay (2 hat) ve otobüslerle ulaşım, Kayserikart kullanılır (~₺10-15). Erciyes Kayak Merkezi'ne (25 km) kış sezonunda servis otobüsleri çalışır. Kayseri Havalimanı şehir merkezine 5 km (Türkiye'nin en merkezi havalimanlarından). Kapadokya'ya (Göreme) 1 saat mesafe, dolmuş ve servisler var.",
+      "culture": "Erciyes Dağı (3.917 m) Türkiye'nin en popüler kayak merkezlerinden, modern altyapı. Selçuklu mimarisi eserleri: Hunat Hatun Külliyesi, Döner Kümbet, Çifte Medrese. Kayseri Kapalıçarşısı geleneksel alışveriş için ideal. Kayseri iş dünyasıyla ünlü — Anadolu kaplanı olarak bilinir. Kapadokya turlarının çoğu Kayseri'den başlar.",
+      "food": "Kayseri mantısı (Türkiye'nin en meşhur mantısı — minicik hamur, yoğurt ve sarımsaklı tereyağıyla), pastırma ve sucuğun anavatanı (özellikle pastırma — çemen soslu kurutulmuş et), yağlama (mantı benzeri ama katlı), Kayseri pidesi ve Develi cıvıklısı deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Kayseray tram (2 lines) and buses, use Kayserikart (~₺10-15/ride). Shuttle buses to Erciyes Ski Resort (25 km) during winter season. Kayseri Airport is just 5 km from center (one of Turkey's most central airports). Cappadocia (Goreme) is 1 hour away with minibuses and shuttles.",
+      "culture": "Mount Erciyes (3,917 m) is one of Turkey's most popular ski resorts with modern infrastructure. Seljuk architectural gems: Hunat Hatun Complex, Doner Kumbet, Cifte Madrasa. Kayseri Grand Bazaar for traditional shopping. Known as an 'Anatolian Tiger' for its business culture. Most Cappadocia tours start from Kayseri.",
+      "food": "Kayseri manti (Turkey's most famous — tiny dumplings with yogurt and garlic butter), birthplace of pastirma and sucuk (especially pastirma — dried meat with cemen paste), yaglama (layered manti-like dish), Kayseri pide, and Develi civiklisi."
+    }
+  },
+  "bodrum": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155",
+      "currency": "Turistik bölgelerde Euro kabul edilir ama TL ile ödeme daha avantajlıdır. Yaz sezonunda fiyatlar yüksektir.",
+      "transport": "Milas-Bodrum Havalimanı'ndan merkeze Havaş servisleri (~35 km). Bodrum yarımadası içinde dolmuşlar yaygın (Gümüşlük, Türkbükü, Bitez, Yalıkavak arası). Bodrum-Yunan adaları (Kos, Rodos) arası feribot seferleri mevcut. Şehir merkezinde yürüyerek dolaşılabilir. Deniz taksileri sahil kasabaları arasında çalışır.",
+      "culture": "Bodrum Kalesi (St. Peter Kalesi) ve Sualtı Arkeoloji Müzesi Akdeniz'in en önemli müzelerinden. Halikarnas Mozolesi (Dünyanın Yedi Harikası'ndan biri) kalıntıları görülebilir. Bodrum gece hayatı Türkiye'nin en ünlüsü — Barlar Sokağı ve sahil kulüpleri. Gümüşlük (antik Myndos) sakin ve sanatçı köyü, batık adaya yürünebilir. Yalıkavak Marina lüks yat turizmi merkezi.",
+      "food": "Ege mutfağından zeytinyağlı ot yemekleri (sirken, ebegümeci), Bodrum mandalinası ve marmelatı, ahtapot güveç, Gümüşlük'te denize sıfır balık, süzme yoğurtlu mezeler ve çökertme kebabı deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155",
+      "currency": "Tourist areas accept EUR but paying in TRY is cheaper. Prices are high in summer season.",
+      "transport": "Havas shuttles from Milas-Bodrum Airport to center (~35 km). Minibuses are common across the Bodrum peninsula (between Gumusluk, Turkbuku, Bitez, Yalikavak). Ferries to Greek islands (Kos, Rhodes) available. City center is walkable. Water taxis run between coastal towns.",
+      "culture": "Bodrum Castle (St. Peter's Castle) and Underwater Archaeology Museum are among the Mediterranean's most important. Ruins of the Mausoleum of Halicarnassus (one of the Seven Wonders of the Ancient World) can be seen. Bodrum has Turkey's most famous nightlife — Bar Street and beachfront clubs. Gumusluk (ancient Myndos) is a peaceful artists' village where you can walk to a sunken island. Yalikavak Marina is a luxury yacht tourism hub.",
+      "food": "Try Aegean olive oil herb dishes (sirken, mallow), Bodrum tangerines and marmalade, octopus stew, seaside fish dining in Gumusluk, strained yogurt mezes, and cokertme kebab."
+    }
+  },
+  "fethiye": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155",
+      "currency": "Turistik bölgelerde Euro ve Dolar kabul edilir ama TL ile ödeme daha avantajlıdır.",
+      "transport": "Dalaman Havalimanı'ndan Fethiye'ye Havaş servisleri (~45 dk). Ölüdeniz'e dolmuşlar çok sık kalkar. Kelebekler Vadisi ve Kabak Koyu'na dolmuş + tekne ile ulaşılır. 12 Adalar tekne turu popüler (tam gün). Kayaköy'e dolmuşla ulaşılır. Likya Yolu yürüyüş parkuru burada başlar. Şehir merkezinde taksi ve dolmuş yaygın.",
+      "culture": "Ölüdeniz (Mavi Lagün) dünyanın en güzel plajlarından, Babadağ'dan (1.960 m) yamaç paraşütü yapılır. Kaya Köyü (Kayaköy) terk edilmiş Rum köyü, tarihi atmosferiyle etkileyici. Amintas Kaya Mezarları (Likya dönemi) şehir merkezinde. Fethiye Müzesi antik eserler barındırır. Kelebekler Vadisi doğa harikası. Tlos, Xanthos (UNESCO) ve Patara gibi Likya antik kentleri yakınlarda.",
+      "food": "Taze balık ve deniz ürünleri (Fethiye Balık Hali'nde seçip pişirtme), Ege usulü mezeler (humus, acılı ezme, deniz börülcesi), gözleme, Fethiye'nin ünlü yörük pidesi ve keçi peynirli salata deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155",
+      "currency": "Tourist areas accept EUR/USD but paying in TRY is cheaper.",
+      "transport": "Havas shuttles from Dalaman Airport to Fethiye (~45 min). Very frequent minibuses to Oludeniz. Butterfly Valley and Kabak Bay reached by minibus + boat. 12 Islands boat tour is popular (full day). Minibus to Kayakoy. The Lycian Way hiking trail starts here. Taxis and minibuses common in town.",
+      "culture": "Oludeniz (Blue Lagoon) is one of the world's most beautiful beaches, with paragliding from Babadag (1,960 m). Kaya Village (Kayakoy) is an abandoned Greek village with haunting atmosphere. Amintas Rock Tombs (Lycian era) are in the city center. Fethiye Museum houses ancient artifacts. Butterfly Valley is a natural wonder. Lycian cities like Tlos, Xanthos (UNESCO), and Patara are nearby.",
+      "food": "Fresh fish and seafood (pick your fish at Fethiye Fish Market and have it cooked), Aegean mezes (hummus, spicy ezme, sea beans), gozleme, Fethiye's famous yoruk pide, and goat cheese salad."
+    }
+  },
+  "kas": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155",
+      "currency": "Turistik kasaba, Euro yaygın kabul edilir ama TL avantajlıdır. Butik otel ve restoranlar pahalı olabilir.",
+      "transport": "Dalaman Havalimanı'ndan Kaş'a transfer (~3 saat) veya Antalya Havalimanı'ndan (~4 saat). Şehir merkezi küçük ve yürünebilir. Kekova batık şehre tekne turları mevcuttur (Simena/Kaleköy dahil). Meis (Yunan adası) Kaş'a 20 dakika feribot mesafesinde. Likya Yolu parkuru Kaş'tan geçer. Çevre köylere dolmuşlar sınırlı, araç kiralama önerilir.",
+      "culture": "Kekova batık şehir (Apollonia kalıntıları, cam tabanlı teknelerle görülür) eşsiz bir deneyim. Antiphellos antik tiyatrosu şehir merkezinde Akdeniz manzaralı. Simena (Kaleköy) deniz üzerindeki kaleyi ve Likya lahitlerini barındırır. Kaş dalış turizmi için Türkiye'nin en iyi noktası — berrak sular ve batıklar. Sakin, bohem atmosferiyle butik turizm merkezi.",
+      "food": "Taze balık ve deniz ürünleri (karides güveç, kalamar, ahtapot salatası), Ege-Akdeniz usulü zeytinyağlı mezeler, keçi peynirli salata, Kaş'ın butik restoranlarında füzyon mutfak ve geleneksel gözleme deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155",
+      "currency": "Tourist town, EUR widely accepted but TRY is better value. Boutique hotels and restaurants can be pricey.",
+      "transport": "Transfer from Dalaman Airport (~3 hours) or Antalya Airport (~4 hours). Town center is small and walkable. Boat tours to Kekova sunken city (including Simena/Kalekoy). Meis (Greek island of Kastellorizo) is a 20-minute ferry ride. The Lycian Way trail passes through Kas. Limited minibuses to surrounding villages — car rental recommended.",
+      "culture": "Kekova sunken city (ruins of Apollonia, seen through glass-bottom boats) is a unique experience. Antiphellos ancient theater sits in the town center with Mediterranean views. Simena (Kalekoy) has a seaside castle and Lycian sarcophagi. Kas is Turkey's best spot for scuba diving — crystal clear waters and shipwrecks. A calm, bohemian boutique tourism hub.",
+      "food": "Fresh fish and seafood (shrimp casserole, calamari, octopus salad), Aegean-Mediterranean olive oil mezes, goat cheese salad, fusion cuisine at Kas's boutique restaurants, and traditional gozleme."
+    }
+  },
+  "denizli": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Denizlikart ile şehir içi otobüsler. Pamukkale'ye (20 km) dolmuşlar sık kalkar (~30 dk). Denizli Çardak Havalimanı şehre 65 km, servisler mevcut. Laodikeia antik kenti Denizli merkezine 6 km. Afrodisias'a (çok yakında, Aydın sınırı) tur veya özel araç gerekli. Denizli otobüs terminali büyük ve merkezi.",
+      "culture": "Pamukkale travertenleri ve Hierapolis antik kenti (UNESCO) dünyanın en ünlü doğa harikalarından — bembeyaz kireçtaşı teraslar ve antik havuz (Kleopatra Havuzu). Travertenlerde çıplak ayakla yürünür, ayakkabı yasak. Laodikeia antik kenti (yedi kiliseden biri) yeni kazılarla zenginleşiyor. Kaklik Mağarası yeraltı Pamukkale olarak bilinir.",
+      "food": "Denizli tandır kebabı (uzun pişirilmiş kuzu), yöresel gözleme, Babadağ köftesi, keşkek (buğday ve et yemeği) ve Çal bağ bozumu şarabı deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Use Denizlikart for city buses. Frequent minibuses to Pamukkale (20 km, ~30 min). Denizli Cardak Airport is 65 km from center with shuttle services. Laodicea ancient city is 6 km from Denizli center. Tour or private car needed for Aphrodisias (nearby, Aydin border). Denizli bus terminal is large and central.",
+      "culture": "Pamukkale travertines and Hierapolis ancient city (UNESCO) are among the world's most famous natural wonders — white limestone terraces and an ancient pool (Cleopatra's Pool). Walk barefoot on the travertines — shoes prohibited. Laodicea (one of the Seven Churches) is growing with new excavations. Kaklik Cave is known as the underground Pamukkale.",
+      "food": "Try Denizli tandoor kebab (slow-cooked lamb), local gozleme, Babadag meatballs, keskek (wheat and meat dish), and Cal vineyard wine."
+    }
+  },
+  "rize": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler ve otobüsler mevcut. Ayder Yaylası'na (80 km) dolmuşler çalışır ama kış aylarında sınırlı — özel araç veya tur önerilir. Fırtına Deresi vadisi boyunca araçla keşif rotası manzaralı. Trabzon Havalimanı en yakın havalimanı (80 km). Çamlıhemşin ve Zilkale'ye dolmuş var. Dağ yolları virajlı ve dik — dikkatli sürün.",
+      "culture": "Çay bahçeleri Rize'nin simgesidir — Türkiye'nin çay üretiminin %65'i buradan. ÇAYKUR çay fabrikası ziyaret edilebilir. Ayder Yaylası kaplıcaları ve yemyeşil doğasıyla ünlü. Zilkale (Fırtına Deresi vadisinde ortaçağ kalesi) muhteşem manzaraya sahip. Pokut, Sal ve Gito yaylaları trekking için ideal. Hemşin kültürü (horon dansı, tulum müziği) bölgeye özgü.",
+      "food": "Rize çayı (Türkiye'nin çay başkenti — ince belli bardakta, koyu demlenerek), muhlama/kuymak (mısır unlu peynir fondue), laz böreği (muhallebili börek — tatlı, şaşırtıcı), hamsi tava ve hamsi pilavı, karalahana sarması ve Karadeniz pidesi mutlaka deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses and buses available. Minibuses to Ayder Plateau (80 km) but limited in winter — private car or tour recommended. Scenic driving route along Firtina Valley. Trabzon Airport is the nearest (80 km). Minibuses to Camlihemsin and Zilkale. Mountain roads are winding and steep — drive carefully.",
+      "culture": "Tea gardens are Rize's symbol — 65% of Turkey's tea is produced here. Visit a CAYKUR tea factory. Ayder Plateau is famous for hot springs and lush green nature. Zilkale (medieval castle in Firtina Valley) has spectacular views. Pokut, Sal, and Gito plateaus are ideal for trekking. Hemsin culture (horon dance, tulum bagpipe music) is unique to this region.",
+      "food": "Rize tea (Turkey's tea capital — brewed strong in tulip-shaped glasses), muhlama/kuymak (cornmeal cheese fondue), laz boregi (custard-filled pastry — sweet, surprisingly), fried and pilaf anchovies, black cabbage wraps, and Black Sea pide are all must-tries."
+    }
+  },
+  "adana": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Kentkart ile şehir içi otobüs ve metro hattı kullanılır. Adana Kart ile ulaşım sağlanır.",
+      "culture": "Taşköprü dünyanın en eski kullanılan köprülerinden biridir. Merkez Ulu Cami ve Sabancı Merkez Cami görülmeye değer.",
+      "food": "Adana kebabı doğduğu yerde tadılmalı (acılı kıyma şiş, mangalda). Şalgam suyu (turp suyu, acılı veya acısız), bici bici (nişasta tatlısı), analı kızlı çorbası ve humus mutlaka deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Use Kentkart for city buses and metro line. Adana Kart provides public transit access.",
+      "culture": "Taskopru is one of the oldest bridges still in use. Sabanci Central Mosque and Ulu Mosque are worth visiting.",
+      "food": "Try Adana kebab in its birthplace (spicy minced meat on skewer, charcoal-grilled). Don't miss salgam (turnip juice, hot or mild), bici bici (starch dessert), anali kizli soup, and hummus."
+    }
+  },
+  "adiyaman": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Nemrut Dağı'na ulaşım için özel araç veya tur önerilir. Şehir içi minibüsler mevcut.",
+      "culture": "Nemrut Dağı'ndaki dev heykeller UNESCO Dünya Mirası'dır. Gün doğumu turu için erken kalkın. Cendere Köprüsü Roma dönemi eseri.",
+      "food": "Çiğ köfte (etsiz), besni cevizi ile yapılan tatlılar, tırşik çorbası ve yerel peynirler deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Private car or tour recommended for Mount Nemrut. Minibuses available in the city.",
+      "culture": "Giant statues on Mount Nemrut are a UNESCO World Heritage Site. Wake up early for the sunrise tour. Cendere Bridge is a Roman-era monument.",
+      "food": "Try cig kofte (meatless), desserts made with Besni walnuts, tirsik soup, and local cheeses."
+    }
+  },
+  "afyonkarahisar": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Termal otellere servis araçları çalışır. YHT ile Ankara ve İstanbul'a bağlantı var.",
+      "culture": "Afyon Kalesi şehre hâkim bir tepededir. Termal kaplıcaları (Ömer, Gazlıgöl) ile ünlüdür. Frigyalılara ait kaya anıtları ilginç.",
+      "food": "Afyon sucuğu ve pastırması meşhurdur. Kaymak (sahanda kaymak ile kahvaltı), lokum ve haşhaşlı ekmek mutlaka deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Minibuses available in city. Shuttle services run to thermal hotels. High-speed train connects to Ankara and Istanbul.",
+      "culture": "Afyon Castle sits on a hilltop overlooking the city. Famous for thermal springs (Omer, Gazligol). Phrygian rock monuments are fascinating.",
+      "food": "Afyon is famous for its sucuk (sausage) and pastirma. Try kaymak (clotted cream for breakfast), lokum, and poppy seed bread."
+    }
+  },
+  "agri": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Ağrı Dağı tırmanışı için rehberli tur şart. Doğubayazıt'a dolmuş var.",
+      "culture": "Ağrı Dağı (5.137 m) Türkiye'nin en yüksek zirvesidir. İshak Paşa Sarayı Doğubayazıt'ta mutlaka görülmeli. Diyadin kaplıcaları şifalı.",
+      "food": "Doğu Anadolu mutfağından kavurma, tandır ekmeği, otlu peynir ve abdigör köftesi deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Minibuses in city. Guided tours required for Mount Ararat climbing. Minibuses to Dogubayazit.",
+      "culture": "Mount Ararat (5,137 m) is Turkey's highest peak. Ishak Pasha Palace in Dogubayazit is a must-see. Diyadin hot springs are healing.",
+      "food": "Try Eastern Anatolian kavurma (sauteed meat), tandoor bread, herbed cheese, and abdigor kofte."
+    }
+  },
+  "aksaray": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Ihlara Vadisi ve Güzelyurt'a özel araç veya dolmuş.",
+      "culture": "Ihlara Vadisi'nde kaya kiliseleri ve 14 km'lik doğa yürüyüşü yapın. Aşıklı Höyük dünyanın en eski yerleşimlerinden. Sultanhanı Kervansarayı Selçuklu dönemi.",
+      "food": "Testi kebabı, arabaşı çorbası ve Aksaray'ın yerel mantısını deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Minibuses in city. Private car or minibus for Ihlara Valley and Guzelyurt.",
+      "culture": "Hike the 14 km Ihlara Valley to see rock-cut churches. Asikli Hoyuk is one of the world's oldest settlements. Sultanhani Caravanserai dates to the Seljuk era.",
+      "food": "Try testi kebab, arabasi soup, and local Aksaray manti (dumplings)."
+    }
+  },
+  "amasya": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir merkezi yürüyerek gezilebilir. Yeşilırmak kenarındaki Osmanlı evleri yürüyüş mesafesinde.",
+      "culture": "Pontus Kral Kaya Mezarları ve Osmanlı yalıboyu evleri şehrin simgesidir. Gece aydınlatması muhteşem. Amasya Müzesi Hitit mumyaları barındırır.",
+      "food": "Amasya elması meşhurdur. Keşkek, çörek (Amasya çöreği), Suluova bamyası ve toyga çorbası deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City center is walkable. Ottoman houses along Yesilirmak River are within walking distance.",
+      "culture": "Pontus Royal Rock Tombs and Ottoman riverside houses are iconic. Night illumination is spectacular. Amasya Museum houses Hittite mummies.",
+      "food": "Amasya apples are famous. Try keskek, corek (Amasya pastry), Suluova okra dishes, and toyga soup."
+    }
+  },
+  "ardahan": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler sınırlı. Çıldır Gölü ve Şeytan Kalesi'ne özel araç gerekli.",
+      "culture": "Çıldır Gölü kışın donar, atlı kızak turları yapılır. Şeytan Kalesi Urartulara ait kalıntılar barındırır.",
+      "food": "Ardahan kaz eti, Civil peyniri (Türkiye'nin en iyi peynirlerinden), kazandibi ve tandır ekmeği deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Limited minibuses. Private car needed for Cildir Lake and Seytan Castle.",
+      "culture": "Cildir Lake freezes in winter — horse-drawn sleigh tours available. Seytan Castle has Urartian ruins.",
+      "food": "Try Ardahan goose meat, Civil cheese (among Turkey's finest), kazandibi dessert, and tandoor bread."
+    }
+  },
+  "artvin": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Dağlık arazi nedeniyle özel araç önerilir. Yusufeli ve Şavşat'a dolmuşlar sınırlı.",
+      "culture": "Gürcü kiliseleri (Dörtkilise, İşhan) ve Borçka Karagöl doğa harikasıdır. Kafkasör festivali (boğa güreşi) ünlüdür. Şavşat yaylaları muhteşem.",
+      "food": "Karadeniz mutfağından kuymak, mıhlama, yöresel ballar ve karalahana çorbası deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Private car recommended due to mountainous terrain. Limited minibuses to Yusufeli and Savsat.",
+      "culture": "Georgian churches (Dortkilise, Ishan) and Borcka Karagol lake are natural wonders. Kafkasor festival (bull wrestling) is famous. Savsat highlands are stunning.",
+      "food": "Try Black Sea cuisine: kuymak, mihlama (cheese fondue), local honeys, and black cabbage soup."
+    }
+  },
+  "aydin": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Kuşadası'na dolmuşlar sıktır. Didim ve Priene'ye minibüs veya araç önerilir.",
+      "culture": "Afrodisias (UNESCO) antik kenti muhteşem korunmuş stadyumuyla ünlü. Priene ve Miletos antik kentleri. Kuşadası popüler bir tatil beldesidir.",
+      "food": "Aydın inciri ve zeytinyağı dünyaca ünlüdür. Çine köftesi, pide ve zeytinyağlı enginar deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Frequent minibuses to Kusadasi. Car or minibus for Didim and Priene.",
+      "culture": "Aphrodisias (UNESCO) ancient city is famous for its well-preserved stadium. Priene and Miletus ancient cities. Kusadasi is a popular resort town.",
+      "food": "Aydin figs and olive oil are world-famous. Try Cine meatballs, pide, and olive oil artichoke."
+    }
+  },
+  "balikesir": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Ayvalık ve Edremit'e otobüs ve dolmuş mevcuttur. Cunda Adası'na köprüyle ulaşılır. Bandırma'ya feribot İstanbul bağlantısı var.",
+      "culture": "Ayvalık ve Cunda Adası taş evleri, zeytinlikleri ve sahilleri ile büyüler. Manyas Kuş Cenneti doğa severlere ideal.",
+      "food": "Ayvalık tostu (özel sos ve malzemelerle), zeytinyağlı yemekler, höşmerim tatlısı ve Susurluk ayranı deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Buses and minibuses to Ayvalik and Edremit. Cunda Island accessible by bridge. Ferry from Bandirma connects to Istanbul.",
+      "culture": "Ayvalik and Cunda Island charm with stone houses, olive groves, and beaches. Manyas Bird Paradise is ideal for nature lovers.",
+      "food": "Try Ayvalik toast (with special sauce and toppings), olive oil dishes, hosmerim dessert, and Susurluk ayran."
+    }
+  },
+  "bartin": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Amasra'ya dolmuş ve minibüsler çalışır. Şehir merkezi küçük ve yürünebilir.",
+      "culture": "Amasra Kalesi ve antik limanı Karadeniz'in incisidir. Küre Dağları Milli Parkı doğa yürüyüşleri için ideal.",
+      "food": "Amasra'da taze balık (özellikle hamsi), Bartın pidesi (kapalı pide) ve cevizli baklava deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Minibuses run to Amasra. City center is small and walkable.",
+      "culture": "Amasra Castle and ancient harbor are the pearl of the Black Sea. Kure Mountains National Park is great for hiking.",
+      "food": "Try fresh fish in Amasra (especially anchovies), Bartin pide (closed pide), and walnut baklava."
+    }
+  },
+  "batman": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Hasankeyf'e dolmuş veya özel araçla ulaşılır. Şehir içi minibüsler mevcut.",
+      "culture": "Hasankeyf 12.000 yıllık tarihi ile Mezopotamya'nın en eski yerleşimlerinden biridir. Kaya mezarları ve köprü kalıntıları etkileyici.",
+      "food": "Güneydoğu mutfağından çiğ köfte, kaburga dolması ve bumbar (bağırsak dolması) deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Minibuses or private car to Hasankeyf. City minibuses available.",
+      "culture": "Hasankeyf, with 12,000 years of history, is one of Mesopotamia's oldest settlements. Rock tombs and bridge ruins are impressive.",
+      "food": "Try southeastern cig kofte, stuffed ribs (kaburga dolmasi), and bumbar (stuffed intestines)."
+    }
+  },
+  "bayburt": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir küçük ve yürünebilir. Çevre ilçelere minibüsler çalışır.",
+      "culture": "Bayburt Kalesi Çoruh Nehri kenarında muhteşem bir konumdadır. Baksı Müzesi çağdaş sanat için mutlaka ziyaret edin.",
+      "food": "Bayburt çöreği (sulu çörek), ehmedek tatlısı ve keskek deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Small city, walkable. Minibuses serve surrounding districts.",
+      "culture": "Bayburt Castle sits magnificently by the Coruh River. Baksi Museum is a must-visit for contemporary art.",
+      "food": "Try Bayburt corek (juicy pastry), ehmedek dessert, and keskek."
+    }
+  },
+  "bilecik": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Söğüt'e kısa mesafe, dolmuşla ulaşılır. YHT güzergâhı üzerinde.",
+      "culture": "Söğüt, Osmanlı İmparatorluğu'nun kuruluş yeridir. Ertuğrul Gazi Türbesi ziyaret edilmelidir.",
+      "food": "Bilecik pazısı (pırasa böreği), Söğüt pidesi ve yöresel gözleme deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Sogut is a short minibus ride away. On the high-speed train route.",
+      "culture": "Sogut is the birthplace of the Ottoman Empire. Visit Ertugrul Gazi Tomb.",
+      "food": "Try Bilecik pazisi (leek pastry), Sogut pide, and local gozleme."
+    }
+  },
+  "bingol": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Karlıova ve yaylalara özel araç önerilir.",
+      "culture": "Bingöl yaylaları ve şelaleleri doğa turizminin merkezidir. Kış sporları için Hesarek Kayak Merkezi var.",
+      "food": "Bingöl balı Türkiye'nin en kaliteli balları arasındadır. Tandır kebabı, otlu peynir ve keledoş (yöresel yoğurt yemeği) deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Private car recommended for Karliova and highlands.",
+      "culture": "Bingol's highlands and waterfalls are a nature tourism hub. Hesarek Ski Resort for winter sports.",
+      "food": "Bingol honey is among Turkey's finest. Try tandoor kebab, herbed cheese, and keledos (local yogurt dish)."
+    }
+  },
+  "bitlis": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Tatvan'a ve Ahlat'a minibüsler çalışır. Van Gölü feribotu Tatvan-Van arası çalışır.",
+      "culture": "Ahlat Selçuklu Mezarlığı UNESCO adayıdır. Nemrut Krater Gölü muhteşem doğa manzarası sunar. Bitlis Kalesi tarihi.",
+      "food": "Bitlis büryanı (kuzu eti, tandırda pişirilir), Ahlat köftesi ve küp böreği deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Minibuses to Tatvan and Ahlat. Van Lake ferry operates between Tatvan and Van.",
+      "culture": "Ahlat Seljuk Cemetery is a UNESCO candidate. Nemrut Crater Lake offers stunning scenery. Bitlis Castle is historic.",
+      "food": "Try Bitlis buryani (lamb cooked in tandoor), Ahlat meatballs, and kup boregi pastry."
+    }
+  },
+  "bolu": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Abant Gölü'ne ve Kartalkaya'ya özel araç veya otel servisi önerilir. İstanbul-Ankara otoyolu üzerinde.",
+      "culture": "Abant Gölü Tabiat Parkı her mevsim güzeldir. Kartalkaya kış sporları merkezidir. Mudurnu tarihi Osmanlı evleriyle ünlü.",
+      "food": "Bolu aşçılık şehridir (Mengen ilçesi aşçılar diyarı). Bolu mantısı, mengen pilavı ve Göynük pidesi deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Private car or hotel shuttle for Abant Lake and Kartalkaya. Located on the Istanbul-Ankara highway.",
+      "culture": "Abant Lake Nature Park is beautiful in every season. Kartalkaya is a winter sports center. Mudurnu is famous for historic Ottoman houses.",
+      "food": "Bolu is a city of chefs (Mengen district is known as the land of cooks). Try Bolu manti, Mengen pilaf, and Goynuk pide."
+    }
+  },
+  "burdur": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Salda Gölü'ne (yaklaşık 60 km) özel araç önerilir.",
+      "culture": "Salda Gölü turkuaz rengiyle \"Türkiye'nin Maldivleri\" olarak bilinir. Sagalassos antik kenti dağ yamacında etkileyici.",
+      "food": "Burdur şiş köfte, cevizli sucuk, tandır çorbası ve sac kavurma deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Private car recommended for Salda Lake (~60 km).",
+      "culture": "Salda Lake, known as 'Turkey's Maldives' for its turquoise water. Sagalassos ancient city is impressive on its mountainside.",
+      "food": "Try Burdur sis kofte, walnut sucuk, tandir soup, and sac kavurma."
+    }
+  },
+  "canakkale": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Gelibolu ve Truva'ya dolmuş ve turlar mevcut. 1915 Çanakkale Köprüsü ile veya feribot ile Avrupa-Asya geçişi yapılır. Bozcaada ve Gökçeada'ya feribot seferleri var.",
+      "culture": "Gelibolu yarımadası ve Truva Antik Kenti UNESCO Dünya Mirası'dır. Şehitlikler duygusal bir deneyimdir. Bozcaada bağları ve plajlarıyla ünlü.",
+      "food": "Ezine peyniri, sardalya tava, peynir helvası, Bozcaada şarapları ve Çanakkale simidi deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Minibuses and tours to Gallipoli and Troy. Cross Asia-Europe via 1915 Canakkale Bridge or ferry. Ferries to Bozcaada and Gokceada islands.",
+      "culture": "Gallipoli Peninsula and Troy are UNESCO World Heritage Sites. War memorials are an emotional experience. Bozcaada is famous for vineyards and beaches.",
+      "food": "Try Ezine cheese, fried sardines, peynir helvasi, Bozcaada wines, and Canakkale simit."
+    }
+  },
+  "cankiri": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Ilgaz Dağı'na özel araç veya servis önerilir.",
+      "culture": "Ilgaz Dağı Milli Parkı kayak ve doğa yürüyüşü için popüler. Çankırı Tuz Mağarası şifa amaçlı ziyaret edilir.",
+      "food": "Çankırı pastırması, bandırma çorbası ve tahin helvası deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Private car or shuttle for Ilgaz Mountain.",
+      "culture": "Ilgaz Mountain National Park is popular for skiing and hiking. Cankiri Salt Cave is visited for therapeutic purposes.",
+      "food": "Try Cankiri pastirma, bandirma soup, and tahini halva."
+    }
+  },
+  "corum": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Hattuşaş'a (82 km) özel araç veya tur önerilir. Şehir içi minibüsler mevcut.",
+      "culture": "Hattuşaş (Hitit başkenti) UNESCO Dünya Mirası'dır. Alacahöyük müzesi Hitit uygarlığını anlatır. Yerkaya Hitit kapısı etkileyici.",
+      "food": "Çorum leblebisi Türkiye'nin en meşhurudur. İskilip dolması, mantı ve Çorum tandır kebabı deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Private car or tour for Hattusa (82 km). City minibuses available.",
+      "culture": "Hattusa (Hittite capital) is a UNESCO World Heritage Site. Alacahoyuk museum tells the Hittite story. Yerkaya Hittite gate is impressive.",
+      "food": "Corum roasted chickpeas (leblebi) are Turkey's most famous. Try Iskilip dolma, manti, and Corum tandoor kebab."
+    }
+  },
+  "diyarbakir": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi otobüsler mevcut. Sur içi (tarihi merkez) yürüyerek gezilebilir.",
+      "culture": "Diyarbakır Surları ve Hevsel Bahçeleri UNESCO listesindedir. Ulu Cami Anadolu'nun en eski camilerinden. On Gözlü Köprü tarihi.",
+      "food": "Diyarbakır karpuzu (dev boyutlu), ciğer kebabı, kaburga dolması, mırra kahvesi ve kadayıf mutlaka deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City buses available. Historic Sur district is walkable.",
+      "culture": "Diyarbakir Walls and Hevsel Gardens are UNESCO-listed. Ulu Mosque is one of Anatolia's oldest. On Gozlu Bridge is historic.",
+      "food": "Try Diyarbakir watermelon (giant-sized), liver kebab, stuffed ribs, mirra (bitter coffee), and kadayif."
+    }
+  },
+  "duzce": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Uğursuyu Şelalesi ve Samandere'ye özel araç önerilir.",
+      "culture": "Konuralp antik kenti ve müzesi tarihi merak edenler için idealdir. Yedigöller Milli Parkı'na yakın (Bolu sınırında).",
+      "food": "Düzce fındığı meşhurdur. Yöresel mantı, pideler ve cevizli tatlılar deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Private car recommended for waterfalls and Samandere.",
+      "culture": "Konuralp ancient city and museum for history buffs. Close to Yedigoller National Park (at Bolu border).",
+      "food": "Duzce hazelnuts are famous. Try regional manti, local pide varieties, and walnut desserts."
+    }
+  },
+  "elazig": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi otobüsler mevcut. Harput'a kısa mesafe, dolmuşla ulaşılır.",
+      "culture": "Harput Kalesi ve tarihi camileri Elazığ'ın kültürel merkezidir. Hazar Gölü doğa ve su sporları için ideal.",
+      "food": "Elazığ köftesi (Harput köftesi), oruk (içli köfte benzeri), Hazar Gölü balığı ve keskek deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City buses available. Harput is a short minibus ride.",
+      "culture": "Harput Castle and historic mosques are Elazig's cultural hub. Hazar Lake for nature and water sports.",
+      "food": "Try Harput kofte, oruk (similar to stuffed meatballs), Hazar Lake fish, and keskek."
+    }
+  },
+  "erzincan": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Kemaliye'ye özel araç önerilir (dağ yolları virajlı).",
+      "culture": "Kemaliye (Eğin) tarihi taş evleri ve Karanlık Kanyon ile ünlüdür. Ergan Dağı kış sporları merkezidir.",
+      "food": "Erzincan tulum peyniri meşhurdur. Kesme çorbası, tandır kebabı ve yöresel keşkek deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Private car recommended for Kemaliye (winding mountain roads).",
+      "culture": "Kemaliye (Egin) is famous for historic stone houses and Dark Canyon. Ergan Mountain for winter sports.",
+      "food": "Erzincan tulum cheese is famous. Try kesme soup, tandoor kebab, and local keskek."
+    }
+  },
+  "erzurum": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi otobüsler mevcut. Palandöken Kayak Merkezi'ne servis araçları çalışır (şehir merkezine sadece 5 km).",
+      "culture": "Çifte Minareli Medrese Selçuklu mimarisinin şaheseridir. Palandöken kış sporları için Türkiye'nin en iyi merkezlerinden. Oltu taşı (jet taşı) el işleri hediyelik.",
+      "food": "Cağ kebabı (yatay döner, odun ateşinde) Erzurum'un sembolüdür. Kadayıf dolması, su böreği ve Erzurum çorbası (ayran aşı) deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City buses available. Shuttle services to Palandoken Ski Resort (only 5 km from center).",
+      "culture": "Cifte Minareli Medrese is a Seljuk architectural masterpiece. Palandoken is one of Turkey's best ski resorts. Oltu stone (jet stone) crafts make great souvenirs.",
+      "food": "Cag kebab (horizontal doner, wood-fired) is Erzurum's signature. Try kadayif dolmasi, su boregi, and Erzurum soup (ayran asi)."
+    }
+  },
+  "giresun": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Kümbet Yaylası ve Giresun Adası'na tur düzenlenir.",
+      "culture": "Giresun Adası Karadeniz'in tek adası, Amazon efsaneleriyle ünlü. Giresun Kalesi manzara için ideal. Aksu Festivali (Mayıs) yöresel şenlik.",
+      "food": "Giresun fındığı dünyaca ünlüdür. Pide (Karadeniz usulü), kuymak, karalahana çorbası ve fındıklı tatlılar deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Tours organized to Kumbet Plateau and Giresun Island.",
+      "culture": "Giresun Island is the Black Sea's only island, famous for Amazon legends. Giresun Castle offers great views. Aksu Festival (May) is a local celebration.",
+      "food": "Giresun hazelnuts are world-famous. Try pide (Black Sea style), kuymak, black cabbage soup, and hazelnut desserts."
+    }
+  },
+  "gumushane": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Karaca Mağarası ve Zigana'ya özel araç önerilir.",
+      "culture": "Karaca Mağarası Türkiye'nin en güzel mağaralarından. Santa Harabeleri tarih meraklıları için ilginç. Zigana Dağı doğa ve kayak.",
+      "food": "Gümüşhane pestili (meyve pestili) ve köme meşhurdur. Yöresel siron böreği ve tandır ekmeği deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Private car recommended for Karaca Cave and Zigana.",
+      "culture": "Karaca Cave is one of Turkey's most beautiful caves. Santa Ruins are interesting for history buffs. Zigana Mountain for nature and skiing.",
+      "food": "Gumushane pestil (fruit leather) and kome are famous. Try local siron pastry and tandoor bread."
+    }
+  },
+  "hakkari": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler sınırlı. Cilo Dağları ve Sat Buzul Gölleri'ne rehberli tur önerilir.",
+      "culture": "Cilo-Sat Dağları buzul gölleri ve yaban hayatı ile doğa cenneti. Süryani ve Nesturi kültürel mirası önemli.",
+      "food": "Hakkari kellecoşu (kelle paça), tandır kebabı, yöresel otlu peynir ve kavut deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Limited minibuses. Guided tours recommended for Cilo Mountains and Sat Glacier Lakes.",
+      "culture": "Cilo-Sat Mountains are a nature paradise with glacial lakes and wildlife. Syriac and Nestorian cultural heritage.",
+      "food": "Try Hakkari kellecosu (head and trotter soup), tandoor kebab, herbed cheese, and kavut."
+    }
+  },
+  "hatay": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Antakya şehir içi otobüsler mevcut. Harbiye ve Samandağ'a dolmuşlar çalışır.",
+      "culture": "Hatay Arkeoloji Müzesi dünyanın en büyük mozaik koleksiyonlarından birine sahiptir. St. Pierre Kilisesi Hristiyanlığın ilk kiliselerinden.",
+      "food": "Hatay UNESCO Gastronomi Şehri'dir. Künefe (kadayıf peynirli tatlı), kağıt kebabı, humus, oruk ve sürkle peyniri mutlaka deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City buses in Antakya. Minibuses to Harbiye and Samandag.",
+      "culture": "Hatay Archaeology Museum has one of the world's largest mosaic collections. St. Pierre Church is one of Christianity's first.",
+      "food": "Hatay is a UNESCO City of Gastronomy. Must-try: kunefe (cheese pastry dessert), kagit kebab, hummus, oruk, and surk cheese."
+    }
+  },
+  "igdir": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Ağrı Dağı eteklerine özel araç gerekli.",
+      "culture": "Ağrı Dağı'nın en güzel manzarası Iğdır'dan görülür. Tuzluca Tuz Mağarası ilginç bir doğa oluşumu.",
+      "food": "Iğdır kayısısı meşhurdur. Tandır kebabı, yöresel peynirler ve doğu Anadolu kavurması deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Private car needed for Mount Ararat foothills.",
+      "culture": "Best view of Mount Ararat is from Igdir. Tuzluca Salt Cave is a unique natural formation.",
+      "food": "Igdir apricots are famous. Try tandoor kebab, local cheeses, and eastern Anatolian kavurma."
+    }
+  },
+  "isparta": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Eğirdir Gölü ve lavanta bahçelerine özel araç önerilir.",
+      "culture": "Gül bahçeleri Haziran'da en güzel halindedir (gül hasadı). Eğirdir Gölü ve Kovada Gölü doğa turizminin merkezidir. Kızıldağ Milli Parkı.",
+      "food": "Isparta gül lokumu ve gül reçeli meşhurdur. Eğirdir Gölü kereviti, yöresel pideler ve güllaç deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Private car recommended for Egirdir Lake and lavender fields.",
+      "culture": "Rose gardens are most beautiful in June (rose harvest). Egirdir and Kovada lakes are nature tourism hubs. Kizildag National Park.",
+      "food": "Isparta rose lokum and rose jam are famous. Try Egirdir Lake crayfish, local pide, and gullac."
+    }
+  },
+  "kahramanmaras": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi otobüsler mevcut. Tarihi yerler merkeze yakın ve yürünebilir.",
+      "culture": "Kahramanmaraş Kalesi ve eski evleri tarihi dokuyu yansıtır. Kurtuluş mücadelesi tarihi önemlidir. Kapıçam Tabiat Parkı.",
+      "food": "Maraş dondurması dünyaca ünlüdür (keçi sütü ve salep ile yapılır, gösteri eşliğinde tadın). Eli böreği, sac kavurma, çöp şiş ve Maraş tarhanası deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City buses available. Historic sites are central and walkable.",
+      "culture": "Kahramanmaras Castle and old houses reflect historic character. Important liberation war history. Kapicam Nature Park.",
+      "food": "Maras ice cream is world-famous (made with goat milk and sahlep, enjoy the showmanship). Try eli boregi, sac kavurma, cop sis, and Maras tarhana."
+    }
+  },
+  "karabuk": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Safranbolu'ya dolmuşlar sıktır. Şehir içi minibüsler mevcut. Ankara'dan tren bağlantısı var.",
+      "culture": "Safranbolu UNESCO Dünya Mirası'dır. Osmanlı konakları, çarşılar ve hamamları muhteşem korunmuştur. Yörük köyü geleneksel yaşamı yansıtır.",
+      "food": "Safranbolu lokumu ve safranı meşhurdur. Zencefilli lokum, yöresel gözleme ve etli ekmek deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Frequent minibuses to Safranbolu. City minibuses available. Train connection from Ankara.",
+      "culture": "Safranbolu is a UNESCO World Heritage Site. Ottoman mansions, bazaars, and baths are beautifully preserved. Yoruk village reflects traditional life.",
+      "food": "Safranbolu lokum and saffron are famous. Try ginger lokum, local gozleme, and etli ekmek."
+    }
+  },
+  "karaman": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Binbir Kilise'ye özel araç gerekli.",
+      "culture": "Karamanoğulları Beyliği'nin merkezidir. Türkçe'nin resmi dil ilan edildiği yerdir. Binbir Kilise harabeleri ilginçtir.",
+      "food": "Karaman divle obruk peyniri ünlüdür. Etli ekmek, yöresel tandır ve arabaşı çorbası deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Private car needed for Binbir Kilise.",
+      "culture": "Center of Karamanid dynasty. Where Turkish was declared the official language. Binbir Kilise ruins are fascinating.",
+      "food": "Karaman divle obruk cheese is famous. Try etli ekmek, local tandoor dishes, and arabasi soup."
+    }
+  },
+  "kars": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Ani Harabeleri'ne (42 km) özel araç veya tur önerilir. Şehir içi dolmuşlar mevcut. Doğu Ekspresi tren yolculuğu çok popüler.",
+      "culture": "Ani Harabeleri (UNESCO) Ortaçağ'da 100.000 nüfuslu bir başkentti. Kars Kalesi ve Baltık/Rus mimarisi sokakları ilginç. Çıldır Gölü kışın donar.",
+      "food": "Kars kaşarı ve gravyeri Türkiye'nin en kaliteli peynirleri. Kaz eti, Kars balı ve Doğu Ekspresi'nde çay-simit deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Private car or tour for Ani Ruins (42 km). City minibuses available. The Eastern Express train journey is very popular.",
+      "culture": "Ani Ruins (UNESCO) were a medieval capital of 100,000 people. Kars Castle and Baltic/Russian architecture streets are interesting. Cildir Lake freezes in winter.",
+      "food": "Kars kashar and gruyere are Turkey's finest cheeses. Try goose meat, Kars honey, and tea-simit on the Eastern Express."
+    }
+  },
+  "kastamonu": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Küre Dağları'na özel araç önerilir.",
+      "culture": "Kastamonu evleri tarihi Osmanlı mimarisini yansıtır. Küre Dağları UNESCO Biyosfer Rezervi'dir. Nasrullah Camii ve medresesi görülmeli.",
+      "food": "Kastamonu bandırması (et yemeği), pastırmalı börek, taş fırın ekmeği ve Kastamonu pidesi deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Private car recommended for Kure Mountains.",
+      "culture": "Kastamonu houses reflect historic Ottoman architecture. Kure Mountains are a UNESCO Biosphere Reserve. Nasrullah Mosque and madrasa worth visiting.",
+      "food": "Try Kastamonu bandirma (meat dish), pastirmali borek, stone-oven bread, and Kastamonu pide."
+    }
+  },
+  "kirikkale": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Ankara'ya çok yakın (80 km), şehirlerarası otobüsler sık. Şehir içi minibüsler mevcut.",
+      "culture": "Kırıkkale Silah Sanayi Müzesi ilginçtir. Kapulukaya Barajı piknik ve doğa için güzel.",
+      "food": "İç Anadolu mutfağından keşkek, tarhana çorbası ve yöresel gözleme deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Very close to Ankara (80 km), frequent intercity buses. City minibuses available.",
+      "culture": "Kirikkale Arms Industry Museum is interesting. Kapulukaya Dam is nice for picnics and nature.",
+      "food": "Try Central Anatolian keskek, tarhana soup, and local gozleme."
+    }
+  },
+  "kirklareli": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. İğneada ve Demirköy'e dolmuşlar çalışır.",
+      "culture": "İğneada Longoz Ormanları UNESCO Dünya Mirası geçici listesindedir. Dupnisa Mağarası ziyaret edilebilir.",
+      "food": "Kırklareli Trakya şarapları, hardaliye (üzümden yapılan fermente içecek) ve İğneada balıkları deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Minibuses to Igneada and Demirkoy.",
+      "culture": "Igneada Longoz Forests are on the UNESCO tentative list. Dupnisa Cave is visitable.",
+      "food": "Try Kirklareli Thrace wines, hardaliye (fermented grape drink), and Igneada seafood."
+    }
+  },
+  "kirsehir": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Mucur ve Kaman'a dolmuşlar çalışır.",
+      "culture": "Ahi Evran'ın şehri olarak Ahilik kültürünün merkezidir. Kaman-Kalehöyük arkeolojik kazı alanı önemli.",
+      "food": "Kırşehir un helvası, arabaşı çorbası ve yöresel mantı deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Minibuses to Mucur and Kaman.",
+      "culture": "City of Ahi Evran, center of the Ahilik guild culture. Kaman-Kalehoyuk archaeological site is significant.",
+      "food": "Try Kirsehir un helvasi (flour halva), arabasi soup, and local manti."
+    }
+  },
+  "kilis": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir küçük ve yürünebilir. Gaziantep'e sık otobüsler çalışır (60 km).",
+      "culture": "Ravanda Kalesi ve tarihi camileri görülmeye değer. Oylum Höyüğü 5.000 yıllık yerleşim.",
+      "food": "Kilis tava (etli tepsi yemeği), oruk, katmer ve Güneydoğu usulü lahmacun deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Small city, walkable. Frequent buses to Gaziantep (60 km).",
+      "culture": "Ravanda Castle and historic mosques are worth visiting. Oylum Hoyuk is a 5,000-year-old settlement.",
+      "food": "Try Kilis tava (meat tray dish), oruk, katmer, and southeastern-style lahmacun."
+    }
+  },
+  "kocaeli": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "İstanbul'a Marmaray ve banliyö treni bağlantısı var. Şehir içi otobüsler Kentkart ile. Kartepe'ye özel araç veya servis.",
+      "culture": "Kartepe kayak ve doğa merkezi. Seka Park ve Kocaeli Bilim Merkezi aileler için ideal. Değirmendere sahili.",
+      "food": "Pişmaniye (pamuk helva benzeri) İzmit'in meşhurudur. Balık ve deniz ürünleri taze, İzmit köftesi deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Marmaray and commuter train connection to Istanbul. City buses with Kentkart. Private car or shuttle to Kartepe.",
+      "culture": "Kartepe ski and nature center. Seka Park and Kocaeli Science Center are great for families. Degirmendere seaside.",
+      "food": "Pismaniye (cotton candy-like treat) is Izmit's specialty. Fresh fish and seafood, try Izmit kofte."
+    }
+  },
+  "kutahya": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Aizanoi antik kentine dolmuş veya özel araç. YHT güzergâhı üzerinde.",
+      "culture": "Kütahya çinileri dünyaca ünlüdür (çini atölyeleri ziyaret edin). Aizanoi antik kentindeki Zeus Tapınağı iyi korunmuştur. Dumlupınar Meydan Muharebesi anıtı.",
+      "food": "Kütahya yöresel mantısı, keşkek ve çini fincanlarla servis edilen Türk kahvesi deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Minibus or car to Aizanoi ancient city. On the high-speed train route.",
+      "culture": "Kutahya tiles are world-famous (visit tile workshops). Zeus Temple at Aizanoi is well-preserved. Dumlupinar Battle memorial.",
+      "food": "Try Kutahya manti, keskek, and Turkish coffee served in handmade tile cups."
+    }
+  },
+  "malatya": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi otobüsler mevcut. Battalgazi ve Aslantepe'ye dolmuşlar çalışır.",
+      "culture": "Aslantepe Höyüğü UNESCO listesindedir. Battalgazi (eski Malatya) tarihi cami ve medreseleriyle görülmeye değer.",
+      "food": "Malatya kayısısı dünyaca ünlüdür (dünya üretiminin %85'i). Kağıt kebabı, analı kızlı çorbası ve kayısı tatlıları deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City buses available. Minibuses to Battalgazi and Arslantepe.",
+      "culture": "Arslantepe Mound is UNESCO-listed. Battalgazi (old Malatya) has historic mosques and madrasas.",
+      "food": "Malatya apricots are world-famous (85% of global production). Try kagit kebab, anali kizli soup, and apricot desserts."
+    }
+  },
+  "manisa": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi otobüsler mevcut. Sardes antik kentine dolmuş çalışır. İzmir'e yakın (40 km).",
+      "culture": "Sardes antik kenti ve Artemis Tapınağı kalıntıları görülmeye değer. Mesir Macunu Festivali (UNESCO Somut Olmayan Miras) Mart'ta kutlanır.",
+      "food": "Manisa kebabı, mesir macunu (şifalı macun — 41 baharattan yapılır) ve Akhisar köftesi deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City buses available. Minibuses to Sardis ancient city. Close to Izmir (40 km).",
+      "culture": "Sardis ancient city and Artemis Temple ruins are worth visiting. Mesir Paste Festival (UNESCO Intangible Heritage) is celebrated in March.",
+      "food": "Try Manisa kebab, mesir macunu (healing paste — made from 41 spices), and Akhisar meatballs."
+    }
+  },
+  "mersin": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Kentkart ile şehir içi otobüsler yaygın. Kızkalesi ve Silifke'ye dolmuşlar çalışır. Tarsus (Adana yönü) yakın.",
+      "culture": "Kızkalesi (Maiden's Castle) denizin ortasındadır. Uzuncaburç antik kenti ve Cennet-Cehennem obrukları görülmeli. Tarsus (St. Paul'ün doğum yeri) yakın.",
+      "food": "Mersin tantunisi (ince kıyılmış etle yapılan dürüm) meşhurdur. Cezerye (havuç tatlısı), narenciye meyveleri ve taze balık deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City buses widely available with Kentkart. Minibuses to Kizkalesi and Silifke. Tarsus (toward Adana) is close.",
+      "culture": "Kizkalesi (Maiden's Castle) sits in the sea. Uzuncaburc ancient city and Heaven-Hell sinkholes are must-sees. Tarsus (St. Paul's birthplace) is nearby.",
+      "food": "Mersin tantuni (wrap with finely diced meat) is famous. Try cezerye (carrot sweet), citrus fruits, and fresh fish."
+    }
+  },
+  "mus": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Malazgirt'e dolmuş çalışır.",
+      "culture": "1071 Malazgirt Meydan Muharebesi Türk tarihinin dönüm noktasıdır. Muş Ovası lale festivaliyle ünlü.",
+      "food": "Muş köftesi, kavut (kavrulmuş buğday unu), yöresel tandır kebabı ve otlu peynir deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Minibuses to Malazgirt.",
+      "culture": "1071 Battle of Manzikert was a turning point in Turkish history. Mus Plain is famous for its tulip festival.",
+      "food": "Try Mus kofte, kavut (roasted wheat flour), local tandoor kebab, and herbed cheese."
+    }
+  },
+  "nigde": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Aladağlar Milli Parkı'na özel araç gerekli.",
+      "culture": "Aladağlar Milli Parkı dağcılık ve trekking için Türkiye'nin en iyi noktalarından. Eski Gümüşler Manastırı kaya oyma kilisedir. Niğde Kalesi Selçuklu dönemi.",
+      "food": "Niğde yöresel mantısı, Bor tarhana çorbası ve tandır kebabı deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Private car needed for Aladaglar National Park.",
+      "culture": "Aladaglar National Park is one of Turkey's best for mountaineering and trekking. Eski Gumusler Monastery is a rock-cut church. Nigde Castle is from the Seljuk era.",
+      "food": "Try Nigde manti, Bor tarhana soup, and tandoor kebab."
+    }
+  },
+  "ordu": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Boztepe'ye teleferikle çıkılır. Şehir içi minibüsler mevcut. Ordu-Giresun Havalimanı deniz üzerine inşa edilmiştir.",
+      "culture": "Boztepe'den şehir ve deniz manzarası muhteşem. Perşembe Yaylası ve Çambaşı Kayak Merkezi doğa turizminde öne çıkar.",
+      "food": "Ordu fındığı dünyaca ünlü. Pide (Karadeniz usulü), hamsi tava, kuymak ve fındık ezmesi deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Cable car to Boztepe. City minibuses available. Ordu-Giresun Airport is built on the sea.",
+      "culture": "Stunning city and sea views from Boztepe. Persembe Plateau and Cambasi Ski Center stand out for nature tourism.",
+      "food": "Ordu hazelnuts are world-famous. Try pide (Black Sea style), fried anchovies, kuymak, and hazelnut paste."
+    }
+  },
+  "osmaniye": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Karatepe-Aslantaş'a özel araç gerekli.",
+      "culture": "Karatepe-Aslantaş Açıkhava Müzesi Geç Hitit dönemine ait önemli kabartmalar barındırır. Castabala antik kenti.",
+      "food": "Osmaniye tava (etli sebze yemeği), tandır kebabı ve yöresel tarhana çorbası deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Private car needed for Karatepe-Aslantas.",
+      "culture": "Karatepe-Aslantas Open Air Museum has important Late Hittite reliefs. Castabala ancient city.",
+      "food": "Try Osmaniye tava (meat and vegetable dish), tandoor kebab, and local tarhana soup."
+    }
+  },
+  "sakarya": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "İstanbul'a hızlı tren ve otobüs bağlantısı var. Şehir içi otobüs ve minibüsler mevcut. Sapanca ve Maşukiye'ye dolmuş var.",
+      "culture": "Sapanca Gölü ve Maşukiye şelaleleri doğa turizminde popüler. Taraklı tarihi Osmanlı köyüdür (UNESCO geçici listesi).",
+      "food": "Adapazarı ıslama köfte (ıslak köfte), Geyve fındığı, yöresel pideler ve Sapanca Gölü balığı deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "High-speed train and bus connections to Istanbul. City buses and minibuses available. Minibuses to Sapanca and Masukiye.",
+      "culture": "Sapanca Lake and Masukiye waterfalls are popular for nature tourism. Tarakli is a historic Ottoman village (UNESCO tentative list).",
+      "food": "Try Adapazari islama kofte (soaked meatballs), Geyve hazelnuts, local pide, and Sapanca Lake fish."
+    }
+  },
+  "samsun": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Tramvay ve otobüslerle şehir içi ulaşım (Samsunkart). Sahil yolu yürüyüşe uygun. Havzalar ve Ladik'e dolmuş var.",
+      "culture": "Atatürk'ün 19 Mayıs 1919'da karaya çıktığı yerdir. Bandırma Vapuru müze olarak ziyaret edilebilir. Amasya ve Sinop günübirlik gidilir.",
+      "food": "Samsun pidesi (kapalı pide, Karadeniz'in en meşhuru), simidi, taze Karadeniz balıkları ve bafra nokulu deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Tram and buses for city travel (Samsunkart). Coastal road is suitable for walking. Minibuses to surrounding areas.",
+      "culture": "Where Ataturk landed on May 19, 1919 to start the War of Independence. Bandirma Ferry is a museum. Day trips to Amasya and Sinop.",
+      "food": "Try Samsun pide (closed pide, Black Sea's most famous), simit, fresh Black Sea fish, and bafra nokul."
+    }
+  },
+  "siirt": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Botan Vadisi'ne özel araç önerilir.",
+      "culture": "Botan Vadisi doğa yürüyüşleri için muhteşem. Ulu Cami ve tarihi çarşı görülmeye değer. Veysel Karani Türbesi ziyaretçi çeker.",
+      "food": "Siirt büryanı (kuzu eti, tandırda pişirilmiş) şehrin sembolüdür. Perde pilavı (hamur içinde pilav) ve Pervari balı deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Private car recommended for Botan Valley.",
+      "culture": "Botan Valley is stunning for nature hikes. Ulu Mosque and historic bazaar worth visiting. Veysel Karani Tomb attracts visitors.",
+      "food": "Siirt buryani (lamb cooked in tandoor) is the city's symbol. Try perde pilavi (rice baked in dough) and Pervari honey."
+    }
+  },
+  "sinop": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir merkezi yürüyerek gezilebilir. Hamsilos Koyu'na özel araç önerilir. İnceburun (Türkiye'nin en kuzeyi) yakın.",
+      "culture": "Sinop Cezaevi tarihi müze, Hamsilos Koyu Türkiye'nin fiyordu olarak bilinir. Türkiye'nin en mutlu şehri olarak tanınır. Balatlar Kilisesi.",
+      "food": "Sinop mantısı, nokul (cevizli hamur işi), taze Karadeniz balıkları ve boyoz deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City center is walkable. Private car recommended for Hamsilos Bay. Inceburun (Turkey's northernmost point) is nearby.",
+      "culture": "Sinop Prison is a historic museum. Hamsilos Bay is known as Turkey's fjord. Known as Turkey's happiest city. Balatlar Church.",
+      "food": "Try Sinop manti, nokul (walnut pastry), fresh Black Sea fish, and boyoz."
+    }
+  },
+  "sivas": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi otobüsler mevcut. Divriği'ye tren veya araç ile ulaşılır (170 km). YHT ile Ankara'ya bağlantı var.",
+      "culture": "Divriği Ulu Cami ve Darüşşifası UNESCO Dünya Mirası'dır — Selçuklu taş işçiliği eşsiz. Gök Medrese ve Buruciye Medresesi.",
+      "food": "Sivas köftesi, keşkek, madımak (ıspanak benzeri ot yemeği) ve Kangal balığı (doktor balık terapisi) deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City buses available. Train or car to Divrigi (170 km). High-speed train connects to Ankara.",
+      "culture": "Divrigi Great Mosque and Hospital is a UNESCO World Heritage Site — unique Seljuk stone carving. Gok Madrasa and Buruciye Madrasa.",
+      "food": "Try Sivas kofte, keskek, madimak (herb dish similar to spinach), and Kangal fish (doctor fish therapy)."
+    }
+  },
+  "sirnak": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Cizre'ye dolmuşlar çalışır.",
+      "culture": "Cizre, Nuh'un Gemisi efsanesiyle ilişkilendirilir. Nuh Peygamber Türbesi ziyaret edilebilir. Cudi Dağı doğa manzarası.",
+      "food": "Güneydoğu mutfağından çiğ köfte, kaburga dolması ve tandır kebabı deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Minibuses to Cizre.",
+      "culture": "Cizre is associated with the legend of Noah's Ark. Tomb of Prophet Noah can be visited. Mount Cudi has natural scenery.",
+      "food": "Try southeastern cig kofte, stuffed ribs, and tandoor kebab."
+    }
+  },
+  "tekirdag": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "İstanbul'a otoyol ve otobüs bağlantısı var. Şehir içi otobüsler mevcut. Şarköy ve Marmara Ereğlisi'ne dolmuşlar.",
+      "culture": "Namık Kemal Evi müze olarak ziyaret edilebilir. Trakya bağ bozumu şenliği Eylül'de yapılır. Şarköy sahilleri güzel.",
+      "food": "Tekirdağ köftesi Türkiye'nin en meşhuru (baharatlı, ızgara). Trakya şarapları, rakısı ve Şarköy zeytinyağı meşhurdur."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Highway and bus connections to Istanbul. City buses available. Minibuses to Sarkoy and Marmara Ereglisi.",
+      "culture": "Namik Kemal House is open as a museum. Thrace grape harvest festival is held in September. Sarkoy beaches are lovely.",
+      "food": "Tekirdag kofte is one of Turkey's most famous (spiced, grilled). Thrace wines, raki, and Sarkoy olive oil are renowned."
+    }
+  },
+  "tokat": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Ballıca Mağarası'na dolmuş veya özel araç.",
+      "culture": "Ballıca Mağarası UNESCO Dünya Mirası geçici listesindedir. Tokat Kalesi ve Gök Medrese tarihi dokuyu yansıtır. Sulusaray antik termal.",
+      "food": "Tokat kebabı (patlıcanlı şiş — et ve sebze aynı şişte), Zile pekmezi ve leblebisi, Tokat yazması (baskı kumaş) deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Minibus or car to Ballica Cave.",
+      "culture": "Ballica Cave is on the UNESCO tentative list. Tokat Castle and Gok Madrasa reflect historic character. Sulusaray ancient thermal.",
+      "food": "Try Tokat kebab (eggplant and meat on same skewer), Zile molasses and roasted chickpeas, and Tokat yazmasi (printed fabric)."
+    }
+  },
+  "tunceli": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir küçük, merkez yürünebilir. Munzur Vadisi'ne özel araç önerilir.",
+      "culture": "Munzur Vadisi Milli Parkı el değmemiş doğasıyla eşsiz. Munzur Suyu kaynağı ve şelaleleri görülmeli. Pertek Kalesi.",
+      "food": "Tunceli keşkeği, gulik (yöresel et yemeği), yöresel otlu peynir ve keledoş deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "Small city, center is walkable. Private car recommended for Munzur Valley.",
+      "culture": "Munzur Valley National Park has untouched nature. Munzur Springs and waterfalls are must-sees. Pertek Castle.",
+      "food": "Try Tunceli keskek, gulik (local meat dish), herbed cheese, and keledos."
+    }
+  },
+  "usak": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Ulubey Kanyonu'na özel araç önerilir.",
+      "culture": "Ulubey Kanyonu dünyanın en uzun ikinci kanyonudur. Uşak halıları tarihi olarak önemlidir. Blandus antik kenti.",
+      "food": "Uşak tarhanası, keşkek, yöresel gözleme ve tarhana çorbası deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Private car recommended for Ulubey Canyon.",
+      "culture": "Ulubey Canyon is the world's second longest canyon. Usak carpets are historically significant. Blandus ancient city.",
+      "food": "Try Usak tarhana, keskek, local gozleme, and tarhana soup."
+    }
+  },
+  "van": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Akdamar Adası'na (Gevaş'tan) tekne turları düzenlenir. Van Gölü feribotu Tatvan'a çalışır.",
+      "culture": "Akdamar Kilisesi (10. yy, Ermeni) Van Gölü ortasındaki adada, kabartmaları eşsiz. Van Kalesi Urartu dönemine ait. Van kedisi (farklı renk gözler) meşhur.",
+      "food": "Van kahvaltısı efsanedir (20+ çeşit kahvaltılık, otlu peynir, kaymak, bal). Otlu peynir (40+ ot çeşidiyle), murtuğa (yumurta yemeği) ve kavut deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Boat tours to Akdamar Island (from Gevas). Van Lake ferry to Tatvan.",
+      "culture": "Akdamar Church (10th c., Armenian) sits on an island in Lake Van with unique reliefs. Van Castle is from the Urartian era. Van cats (odd-colored eyes) are famous.",
+      "food": "Van breakfast is legendary (20+ items including herbed cheese, cream, honey). Try otlu peynir (cheese with 40+ herbs), murtuga (egg dish), and kavut."
+    }
+  },
+  "yalova": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "İstanbul'dan İDO feribotu ile ulaşılır (1 saat, Yenikapı-Yalova). Termal'e ve Çınarcık'a dolmuşlar çalışır. Bursa'ya 60 km.",
+      "culture": "Yalova Termal Kaplıcaları Osmanlı döneminden beri ünlüdür. Atatürk'ün köşkü ziyaret edilebilir. Çınarcık plajları.",
+      "food": "Deniz mahsulleri taze ve uygun fiyatlı. Yalova zeytinyağı, yöresel pide ve Çınarcık balıkları deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "IDO ferry from Istanbul (1 hour, Yenikapi-Yalova). Minibuses to Termal and Cinarcik. 60 km to Bursa.",
+      "culture": "Yalova Thermal Springs have been famous since Ottoman era. Ataturk's mansion can be visited. Cinarcik beaches.",
+      "food": "Fresh and affordable seafood. Try Yalova olive oil, local pide, and Cinarcik fish."
+    }
+  },
+  "yozgat": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi minibüsler mevcut. Çamlık Milli Parkı şehir merkezine yakın.",
+      "culture": "Çamlık Milli Parkı Türkiye'nin ilk milli parkıdır. Roma dönemine ait Basilica Therma termal tesisi var.",
+      "food": "Yozgat arabaşı çorbası, testi kebabı, yöresel mantı ve keşkek deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City minibuses available. Camlik National Park is close to city center.",
+      "culture": "Camlik National Park is Turkey's first national park. Basilica Therma is a Roman-era thermal site.",
+      "food": "Try Yozgat arabasi soup, testi kebab, local manti, and keskek."
+    }
+  },
+  "zonguldak": {
+    "tr": {
+      "emergency": "Acil: 112 | Polis: 155 | Jandarma: 156",
+      "currency": "Para birimi: Türk Lirası (₺). Kredi kartı yaygın, küçük işletmelerde nakit bulundurun.",
+      "transport": "Şehir içi otobüsler mevcut. Ereğli ve Devrek'e dolmuşlar çalışır.",
+      "culture": "Türkiye'nin maden şehridir, Zonguldak Maden Müzesi tarihini anlatır. Gökgöl Mağarası görülmeye değer.",
+      "food": "Zonguldak pidesi (yumurtalı kapalı pide) meşhurdur. Devrek bastonu hediyelik, taze Karadeniz balıkları deneyin."
+    },
+    "en": {
+      "emergency": "Emergency: 112 | Police: 155 | Gendarmerie: 156",
+      "currency": "Currency: Turkish Lira (₺). Credit cards widely accepted, carry cash for small shops.",
+      "transport": "City buses available. Minibuses to Eregli and Devrek.",
+      "culture": "Turkey's mining city — Zonguldak Mining Museum tells its history. Gokgol Cave is worth visiting.",
+      "food": "Zonguldak pide (closed pide with egg) is famous. Devrek walking sticks make great souvenirs, try fresh Black Sea fish."
+    }
+  }
+}

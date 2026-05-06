@@ -1,0 +1,114 @@
+{
+  "nav": {
+    "explore": "Keşfet",
+    "saved": "Kayıtlı"
+  },
+  "hero": {
+    "badge": "Yapay Zeka Destekli",
+    "title1": "Türkiye'yi",
+    "title2": "Keşfet",
+    "subtitle": "Şehir seç, tercihlerini belirle — yapay zeka sana özel günlük rota oluştursun."
+  },
+  "wizard": {
+    "steps": {
+      "city": "Şehir",
+      "duration": "Süre",
+      "budget": "Bütçe",
+      "interests": "İlgi Alanları"
+    },
+    "city": {
+      "title": "Nereyi keşfetmek istiyorsun?",
+      "desc": "Hayalindeki şehri yaz, gerisini bize bırak.",
+      "placeholder": "İstanbul, Antalya, Kapadokya..."
+    },
+    "days": {
+      "title": "Ne zaman gideceksin?",
+      "desc": "Seyahat tarihlerini seç. (en fazla 14 gün)",
+      "unit": "gün",
+      "startDate": "Başlangıç Tarihi",
+      "endDate": "Bitiş Tarihi",
+      "duration": "{{count}} gün"
+    },
+    "budget": {
+      "title": "Bütçe tercihin nedir?",
+      "desc": "Sana uygun seçimleri oluşturalım.",
+      "low": "Ekonomik",
+      "lowDesc": "Bütçeye uygun seçenekler",
+      "medium": "Orta",
+      "mediumDesc": "Kalite-fiyat dengesi",
+      "high": "Premium",
+      "highDesc": "En iyi deneyimler"
+    },
+    "interests": {
+      "title": "Neleri seviyorsun?",
+      "desc": "En az bir ilgi alanı seç. Rotanı buna göre oluşturacağız.",
+      "history": "Tarih",
+      "food": "Yemek",
+      "nature": "Doğa",
+      "museum": "Müze",
+      "shopping": "Alışveriş",
+      "nightlife": "Gece Hayatı",
+      "art": "Sanat",
+      "culture": "Kültür",
+      "ottoman": "Osmanlı Mirası",
+      "beach": "Sahil & Deniz",
+      "thermal": "Termal & Kaplıca",
+      "cuisine": "Türk Mutfağı",
+      "bazaar": "Çarşı & Pazar",
+      "hiking": "Doğa Yürüyüşü"
+    },
+    "back": "Geri",
+    "next": "Devam",
+    "generate": "Plan Oluştur",
+    "generating": "Oluşturuluyor..."
+  },
+  "loading": {
+    "message": "Seyahat planın hazırlanıyor...",
+    "step1": "Mekanlar aranıyor...",
+    "step2": "Sonuçlar filtreleniyor...",
+    "step3": "Yapay zeka rota oluşturuyor..."
+  },
+  "result": {
+    "newPlan": "Yeni Plan",
+    "save": "Kaydet",
+    "saving": "Kaydediliyor...",
+    "saved": "Kaydedildi",
+    "saveSuccess": "Plan başarıyla kaydedildi!",
+    "saveError": "Plan kaydedilirken hata oluştu.",
+    "day": "Gün",
+    "places": "Mekan",
+    "restaurants": "Restoran",
+    "tips": "İpuçları",
+    "noResult": "Henüz bir plan oluşturulmadı",
+    "noResultDesc": "Seyahat planı oluşturmak için formu doldur.",
+    "createPlan": "Plan Oluştur"
+  },
+  "savedTrips": {
+    "title": "Kayıtlı Planlar",
+    "empty": "Henüz kayıtlı plan yok",
+    "emptyDesc": "Oluşturduğun planları kaydet ve burada görüntüle.",
+    "loadError": "Planlar yüklenirken hata oluştu. Veritabanı bağlantısını kontrol edin.",
+    "detailError": "Plan detayı yüklenirken hata oluştu."
+  },
+  "time": {
+    "morning": "Sabah",
+    "lunch": "Öğle Yemeği",
+    "afternoon": "Öğleden Sonra",
+    "dinner": "Akşam Yemeği",
+    "evening": "Akşam"
+  },
+  "map": {
+    "loading": "Harita yükleniyor...",
+    "restaurant": "Restoran",
+    "attraction": "Gezilecek Yer",
+    "openInGoogleMaps": "Google Haritalar'da Aç"
+  },
+  "budget": {
+    "low": "Ekonomik",
+    "medium": "Orta",
+    "high": "Premium"
+  },
+  "error": {
+    "generic": "Plan oluşturulurken bir hata oluştu. Lütfen tekrar deneyin."
+  }
+}
