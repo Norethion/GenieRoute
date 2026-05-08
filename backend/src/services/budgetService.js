@@ -46,7 +46,7 @@ function computeFromStructure(prices, budgetLevel) {
   };
 }
 
-// 2+ örnek varsa daily.total'in min/max aralığını hesaplar.
+// dailyTotals frontend tooltip'inin dağılım çubuklarını çizmek için döner.
 function computeDailyRange(samples, budgetLevel) {
   if (!Array.isArray(samples) || samples.length < 2) return null;
   const totals = [];
@@ -58,7 +58,12 @@ function computeDailyRange(samples, budgetLevel) {
     }
   }
   if (totals.length < 2) return null;
-  return { min: Math.round(Math.min(...totals)), max: Math.round(Math.max(...totals)) };
+  const rounded = totals.map((t) => Math.round(t)).sort((a, b) => a - b);
+  return {
+    min: rounded[0],
+    max: rounded[rounded.length - 1],
+    dailyTotals: rounded,
+  };
 }
 
 async function buildResponse({ days, budgetLevel, prices, currencyCode, source, sampleCount, cityKey, samples }) {
@@ -138,4 +143,4 @@ async function calculateBudget({ city, days, budget, countryCode }) {
   }
 }
 
-module.exports = { calculateBudget, normalizeCityKey };
+module.exports = { calculateBudget, normalizeCityKey, computeFromStructure, computeDailyRange };

@@ -4,6 +4,8 @@ import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import ResultPage from './pages/ResultPage';
 import SavedTripsPage from './pages/SavedTripsPage';
+import AdminHomePage from './pages/AdminHomePage';
+import AdminPage from './pages/AdminPage';
 import './i18n';
 import './index.css';
 
@@ -20,6 +22,8 @@ function App() {
                 <Routes>
                   <Route path="/" element={<HomePage />} />
                   <Route path="/saved" element={<SavedTripsPage />} />
+                  <Route path="/admin" element={<AdminHomePage />} />
+                  <Route path="/admin/cities" element={<AdminPage />} />
                 </Routes>
               </main>
             </>

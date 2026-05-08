@@ -1,8 +1,8 @@
-import { UtensilsCrossed, Bus, Ticket, Hotel, Calculator } from 'lucide-react';
+import { UtensilsCrossed, Bus, Ticket, Hotel, Calculator, Info } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 export default function BudgetSummary({ budget }) {
-  const { i18n } = useTranslation();
+  const { i18n, t: tt } = useTranslation();
   const lang = i18n.language === 'tr' ? 'tr' : 'en';
 
   if (!budget) return null;
@@ -59,6 +59,12 @@ export default function BudgetSummary({ budget }) {
   const formatLocal = (amount) => formatMoney(amount, localCurrency);
   const totalLocal = budget.total?.local ?? budget.total?.try ?? 0;
 
+  const dailyTotals = budget.dailyRange?.dailyTotals || [];
+  const dailyMedian = dailyTotals.length
+    ? dailyTotals[Math.floor(dailyTotals.length / 2)]
+    : null;
+  const span = budget.dailyRange ? budget.dailyRange.max - budget.dailyRange.min : 0;
+
   return (
     <div className="budget-summary">
       <div className="budget-summary-header">
@@ -109,6 +115,35 @@ export default function BudgetSummary({ budget }) {
             {formatLocal(budget.dailyRange.min)} – {formatLocal(budget.dailyRange.max)}
           </span>
           <span className="budget-range-samples">({budget.sampleCount} {t.samples})</span>
+          {dailyTotals.length >= 2 && (
+            <span className="budget-range-tooltip-anchor" tabIndex={0} role="button" aria-label={tt('budget.rangeTooltipTitle')}>
+              <Info size={12} className="budget-range-info-icon" />
+              <span className="budget-range-tooltip" role="tooltip">
+                <strong className="budget-range-tooltip-title">{tt('budget.rangeTooltipTitle')}</strong>
+                <span className="budget-range-tooltip-row">
+                  <span>{tt('budget.rangeTooltipMedian')}:</span>
+                  <strong>{formatLocal(dailyMedian)}</strong>
+                </span>
+                <span className="budget-range-tooltip-bars">
+                  {dailyTotals.map((value, idx) => {
+                    // Min sample %30, max sample %100; min'den ölçeklenir ki yakın örneklerde fark görünür olsun
+                    const w = span === 0 ? 100 : 30 + ((value - budget.dailyRange.min) / span) * 70;
+                    const isMedian = value === dailyMedian;
+                    return (
+                      <span key={idx} className="budget-range-tooltip-bar-row">
+                        <span
+                          className={`budget-range-tooltip-bar${isMedian ? ' median' : ''}`}
+                          style={{ width: `${w}%` }}
+                        />
+                        <span className="budget-range-tooltip-bar-value">{formatLocal(value)}</span>
+                      </span>
+                    );
+                  })}
+                </span>
+                <span className="budget-range-tooltip-hint">{tt('budget.rangeTooltipHint')}</span>
+              </span>
+            </span>
+          )}
         </div>
       )}
 

@@ -106,12 +106,45 @@
   "budget": {
     "low": "Budget",
     "medium": "Mid-range",
-    "high": "Premium"
+    "high": "Premium",
+    "rangeTooltipTitle": "Sample Distribution",
+    "rangeTooltipMedian": "Median",
+    "rangeTooltipLowest": "Lowest",
+    "rangeTooltipHighest": "Highest",
+    "rangeTooltipHint": "Daily estimates from LLM ensemble samples"
   },
   "error": {
     "generic": "Something went wrong while creating the plan. Please try again."
   },
   "attribution": {
     "cities": "City data: GeoNames (CC BY 4.0)"
+  },
+  "admin": {
+    "homeTitle": "Admin Panel",
+    "homeIntro": "System observation and management tools. Pick a module to access.",
+    "modules": {
+      "citiesTitle": "Cache Observation",
+      "citiesDesc": "Inspect city rows in the LLM ensemble price and tips cache."
+    },
+    "title": "Cache Observation Panel",
+    "refresh": "Refresh",
+    "loading": "Loading...",
+    "empty": "No data yet.",
+    "totalPriceRows": "Price rows",
+    "totalTipsRows": "Tip rows",
+    "totalSamples": "Total samples",
+    "pricesTitle": "Price Pools",
+    "tipsTitle": "Tip Pools",
+    "col": {
+      "city": "City",
+      "country": "Country",
+      "currency": "Currency",
+      "budget": "Budget",
+      "samples": "Samples",
+      "median": "Median/day",
+      "range": "Range",
+      "updated": "Last Updated",
+      "categories": "Categories"
+    }
   }
 }

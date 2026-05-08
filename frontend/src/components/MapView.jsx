@@ -4,6 +4,7 @@ import { Loader, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { lightStyle, darkStyle, DAY_COLORS } from '../data/mapStyles';
+import PhotoWithFallback from './PhotoWithFallback';
 
 const containerStyle = { width: '100%', height: '100%' };
 const defaultCenter = { lat: 39.9208, lng: 32.8541 };
@@ -177,6 +178,8 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
         mapRef.current.panTo({ lat: found.lat, lng: found.lng });
         mapRef.current.setZoom(16);
       }
+      // DayCard'dan yeni bir yer seçilince açık InfoWindow yeni odağı gizlememeli
+      setSelectedMarker(null);
     }
   }, [highlightedPlace, markers]);
 
@@ -186,6 +189,8 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
       visibleMarkers.forEach((m) => bounds.extend({ lat: m.lat, lng: m.lng }));
       mapRef.current.fitBounds(bounds, { padding: 60 });
     }
+    // Gün değişince eski seçim bağlamdan düşer
+    setSelectedMarker(null);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDay]);
 
@@ -289,13 +294,13 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
           <div className="info-window">
             {selectedPhotos.length > 0 && (
               <div className="info-window-photo-wrap">
-                <img
+                <PhotoWithFallback
                   key={selectedPhotos[photoIndex]}
-                  className="info-window-img"
+                  imgClassName="info-window-img"
+                  className="info-window-fallback"
                   src={getPhotoSrc(selectedPhotos[photoIndex])}
                   alt={selectedMarker.name}
-                  loading="lazy"
-                  onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }}
+                  fallbackText={selectedMarker.name}
                 />
                 {selectedPhotos.length > 1 && (
                   <>

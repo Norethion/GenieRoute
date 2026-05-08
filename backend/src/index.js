@@ -13,6 +13,7 @@ const plannerRouter = require('./routes/planner');
 const tripsRouter = require('./routes/trips');
 const routesRouter = require('./routes/routes');
 const chatRouter = require('./routes/chat');
+const adminRouter = require('./routes/admin');
 
 const app = express();
 const server = http.createServer(app);
@@ -41,6 +42,7 @@ app.use('/api/planner', plannerRouter);
 app.use('/api/trips', tripsRouter);
 app.use('/api/routes', routesRouter);
 app.use('/api/chats', chatRouter);
+app.use('/api/admin', adminRouter);
 
 // Error handler
 app.use(errorHandler);

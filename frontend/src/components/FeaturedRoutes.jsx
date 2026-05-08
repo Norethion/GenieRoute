@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { MapPin, CalendarDays, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { getFeaturedRoutes } from '../services/api';
+import PhotoWithFallback from './PhotoWithFallback';
 
 export default function FeaturedRoutes({ onRouteSelect }) {
   const { t, i18n } = useTranslation();
@@ -33,7 +34,13 @@ export default function FeaturedRoutes({ onRouteSelect }) {
               onClick={() => onRouteSelect(route)}
             >
               <div className="featured-card-image">
-                <img src={route.image} alt={info.title} loading="lazy" />
+                <PhotoWithFallback
+                  src={route.image}
+                  alt={info.title}
+                  fallbackText={info.title}
+                  fallbackIcon={MapPin}
+                  className="featured-card-fallback"
+                />
                 <div className="featured-card-overlay">
                   <span className="featured-card-cta">
                     {lang === 'tr' ? 'Keşfet' : 'Explore'} <ArrowRight size={14} />

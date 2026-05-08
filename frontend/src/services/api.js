@@ -110,4 +110,9 @@ export async function updateTripPlan(tripId, { planText, placesJson, restaurants
   return response.data;
 }
 
+export async function getAdminCities() {
+  const response = await api.get('/admin/cities');
+  return response.data;
+}
+
 export default api;

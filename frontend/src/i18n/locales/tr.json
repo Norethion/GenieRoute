@@ -106,12 +106,45 @@
   "budget": {
     "low": "Ekonomik",
     "medium": "Orta",
-    "high": "Premium"
+    "high": "Premium",
+    "rangeTooltipTitle": "Örnek Dağılımı",
+    "rangeTooltipMedian": "Medyan",
+    "rangeTooltipLowest": "En düşük",
+    "rangeTooltipHighest": "En yüksek",
+    "rangeTooltipHint": "LLM ensemble örneklerinin günlük tahmini"
   },
   "error": {
     "generic": "Plan oluşturulurken bir hata oluştu. Lütfen tekrar deneyin."
   },
   "attribution": {
     "cities": "Şehir verisi: GeoNames (CC BY 4.0)"
+  },
+  "admin": {
+    "homeTitle": "Yönetim Paneli",
+    "homeIntro": "Sistem gözlem ve yönetim araçları. Erişmek istediğin modülü seç.",
+    "modules": {
+      "citiesTitle": "Cache Gözleme",
+      "citiesDesc": "LLM ensemble fiyat ve ipucu önbelleğindeki şehir satırlarını incele."
+    },
+    "title": "Cache Gözleme Paneli",
+    "refresh": "Yenile",
+    "loading": "Yükleniyor...",
+    "empty": "Henüz veri yok.",
+    "totalPriceRows": "Fiyat satırı",
+    "totalTipsRows": "İpucu satırı",
+    "totalSamples": "Toplam örnek",
+    "pricesTitle": "Fiyat Havuzları",
+    "tipsTitle": "İpucu Havuzları",
+    "col": {
+      "city": "Şehir",
+      "country": "Ülke",
+      "currency": "Para",
+      "budget": "Bütçe",
+      "samples": "Örnek",
+      "median": "Medyan/gün",
+      "range": "Aralık",
+      "updated": "Son Güncelleme",
+      "categories": "Kategoriler"
+    }
   }
 }

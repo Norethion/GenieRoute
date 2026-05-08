@@ -75,9 +75,31 @@ async function upsertTips({ cityKey, cityDisplay, countryCode, samples, merged }
   return result.rows[0];
 }
 
+async function getAllPricesRows() {
+  const result = await pool.query(
+    `SELECT city_key, city_display, country_code, currency_code, budget_level,
+            samples, merged, sample_count, created_at, updated_at
+       FROM city_prices_cache
+      ORDER BY updated_at DESC, city_key ASC, budget_level ASC`
+  );
+  return result.rows;
+}
+
+async function getAllTipsRows() {
+  const result = await pool.query(
+    `SELECT city_key, city_display, country_code, sample_count,
+            samples, merged, created_at, updated_at
+       FROM city_tips_cache
+      ORDER BY updated_at DESC, city_key ASC`
+  );
+  return result.rows;
+}
+
 module.exports = {
   getPricesRow,
   upsertPrices,
   getTipsRow,
   upsertTips,
+  getAllPricesRows,
+  getAllTipsRows,
 };
