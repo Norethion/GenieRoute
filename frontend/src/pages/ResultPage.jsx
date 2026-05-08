@@ -210,6 +210,8 @@ export default function ResultPage() {
         planText: JSON.stringify(dailyPlan),
         placesJson: places,
         restaurantsJson: restaurants,
+        budgetEstimate,
+        cityInfo,
       });
       const newTripId = data?.trip?.id;
       if (newTripId) {

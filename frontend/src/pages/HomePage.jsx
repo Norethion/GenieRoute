@@ -79,6 +79,7 @@ export default function HomePage() {
         <>
           <TripForm onSubmit={handleSubmit} isLoading={isLoading} />
           <FeaturedRoutes onRouteSelect={handleRouteSelect} />
+          <p className="attribution-note">{t('attribution.cities')}</p>
         </>
       )}
     </div>

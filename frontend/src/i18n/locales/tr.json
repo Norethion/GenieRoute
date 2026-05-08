@@ -5,7 +5,7 @@
   },
   "hero": {
     "badge": "Yapay Zeka Destekli",
-    "title1": "Türkiye'yi",
+    "title1": "Dünyayı",
     "title2": "Keşfet",
     "subtitle": "Şehir seç, tercihlerini belirle — yapay zeka sana özel günlük rota oluştursun."
   },
@@ -19,7 +19,7 @@
     "city": {
       "title": "Nereyi keşfetmek istiyorsun?",
       "desc": "Hayalindeki şehri yaz, gerisini bize bırak.",
-      "placeholder": "İstanbul, Antalya, Kapadokya..."
+      "placeholder": "Istanbul, Paris, Tokyo, Bangkok..."
     },
     "days": {
       "title": "Ne zaman gideceksin?",
@@ -53,7 +53,7 @@
       "ottoman": "Osmanlı Mirası",
       "beach": "Sahil & Deniz",
       "thermal": "Termal & Kaplıca",
-      "cuisine": "Türk Mutfağı",
+      "cuisine": "Yerel Mutfak",
       "bazaar": "Çarşı & Pazar",
       "hiking": "Doğa Yürüyüşü"
     },
@@ -110,5 +110,8 @@
   },
   "error": {
     "generic": "Plan oluşturulurken bir hata oluştu. Lütfen tekrar deneyin."
+  },
+  "attribution": {
+    "cities": "Şehir verisi: GeoNames (CC BY 4.0)"
   }
 }

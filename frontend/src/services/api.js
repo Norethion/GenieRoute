@@ -45,7 +45,7 @@ export async function generatePlanWithProgress(formData, onStep) {
   }).then((r) => r.data);
   notify(2);
 
-  // Stage 3: LLM
+  // Stage 3: LLM (countryCode prepare'den geliyor — country-aware prompt için)
   const { dailyPlan } = await api.post('/planner/llm', {
     city, days: daysNum, budget, interests, language: lang,
     places: prep.places,
@@ -53,11 +53,12 @@ export async function generatePlanWithProgress(formData, onStep) {
     optimizedPlaces: prep.optimizedPlaces,
     optimizedRestaurants: prep.optimizedRestaurants,
     maxDailyDiameterKm: prep.maxDailyDiameterKm,
+    countryCode: prep.countryCode,
   }).then((r) => r.data);
   notify(3);
 
   return {
-    trip: { city, days: daysNum, budget, interests, startDate, endDate },
+    trip: { city, days: daysNum, budget, interests, startDate, endDate, countryCode: prep.countryCode },
     language: lang,
     dailyPlan,
     places: prep.places,

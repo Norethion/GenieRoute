@@ -5,7 +5,7 @@ const tripModel = require('../models/tripModel');
 // POST /api/trips - Yeni trip kaydet
 router.post('/', async (req, res, next) => {
   try {
-    const { city, days, budget, interests, planText, placesJson, restaurantsJson } = req.body;
+    const { city, days, budget, interests, planText, placesJson, restaurantsJson, budgetEstimate, cityInfo } = req.body;
 
     const trip = await tripModel.createTrip({ city, days, budget, interests });
     await tripModel.savePlan({
@@ -13,6 +13,8 @@ router.post('/', async (req, res, next) => {
       planText,
       placesJson,
       restaurantsJson,
+      budgetEstimate,
+      cityInfo,
     });
 
     res.status(201).json({ trip });
@@ -38,8 +40,8 @@ router.put('/:id/plan', async (req, res, next) => {
     if (isNaN(id) || id < 1) {
       return res.status(400).json({ error: 'Invalid trip id' });
     }
-    const { planText, placesJson, restaurantsJson } = req.body;
-    const updated = await tripModel.updatePlan({ tripId: id, planText, placesJson, restaurantsJson });
+    const { planText, placesJson, restaurantsJson, budgetEstimate, cityInfo } = req.body;
+    const updated = await tripModel.updatePlan({ tripId: id, planText, placesJson, restaurantsJson, budgetEstimate, cityInfo });
     if (!updated) return res.status(404).json({ error: 'Plan not found' });
     res.json({ plan: updated });
   } catch (err) {

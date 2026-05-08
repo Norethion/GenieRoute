@@ -13,7 +13,7 @@ function buildDayMeta(dayPlaces, dayRestaurants) {
   return { maxKm: Math.round(km * 10) / 10, transit: suggestTransit(km) };
 }
 
-function buildPrompt({ city, days, budget, interests, places, restaurants, optimizedPlaces, optimizedRestaurants, maxDailyDiameterKm }) {
+function buildPrompt({ city, days, budget, interests, places, restaurants, optimizedPlaces, optimizedRestaurants, maxDailyDiameterKm, countryName }) {
   let placesText;
   let restaurantsText;
 
@@ -42,15 +42,14 @@ function buildPrompt({ city, days, budget, interests, places, restaurants, optim
     ? `\nGeographic constraint: the per-day cluster diameter cap was ${Math.round(maxDailyDiameterKm * 10) / 10} km. Days with a higher max distance contain a forced outlier — call out the longer transit explicitly in that day's descriptions.`
     : '';
 
-  return `You are a professional travel planner specialized in Turkey.
-The user will spend ${days} days in ${city}.
+  const destination = countryName ? `${city}, ${countryName}` : city;
+
+  return `You are a professional travel planner. You generate plans for any city worldwide.
+The user will spend ${days} days in ${destination}.
 Budget level: ${budgetLabelEn} (${budgetLabelTr})
 Interests: ${interests.join(', ')}
 
-This plan is for Turkey. Include culturally relevant tips.
-For mosque visits, mention dress code requirements.
-For food recommendations, highlight local Turkish cuisine.
-For bazaar/market visits, mention bargaining culture.${capLine}
+Include culturally relevant tips appropriate for ${destination}: local etiquette, dress codes for religious sites if applicable, local cuisine highlights, and any market or bargaining customs that apply in this destination.${capLine}
 
 Create a daily travel plan using ONLY the following REAL place and restaurant data.
 
@@ -114,8 +113,8 @@ JSON format:
 }`;
 }
 
-async function generateDailyPlan({ city, days, budget, interests, places, restaurants, language, optimizedPlaces, optimizedRestaurants, maxDailyDiameterKm }) {
-  const prompt = buildPrompt({ city, days, budget, interests, places, restaurants, optimizedPlaces, optimizedRestaurants, maxDailyDiameterKm });
+async function generateDailyPlan({ city, days, budget, interests, places, restaurants, optimizedPlaces, optimizedRestaurants, maxDailyDiameterKm, countryName }) {
+  const prompt = buildPrompt({ city, days, budget, interests, places, restaurants, optimizedPlaces, optimizedRestaurants, maxDailyDiameterKm, countryName });
 
   const response = await openai.chat.completions.create({
     model: 'gpt-4o-mini',

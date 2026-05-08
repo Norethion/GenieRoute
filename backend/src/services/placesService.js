@@ -31,13 +31,14 @@ function normalizePlace(place) {
 }
 
 // Şehir adını lat/lng'ye çevirir (location bias için).
-// Ek olarak viewport bilgisini döndürür ki çağıran şehir yarıçapını tahmin edebilsin.
-async function geocodeCity(city) {
+// Ek olarak viewport ve country code'u döndürür — country code multi-currency
+// budget akışı ve country-aware LLM prompt'u için gereklidir.
+async function geocodeCity(city, language = 'en') {
   const response = await axios.get(GEOCODE_URL, {
     params: {
       address: city,
       key: API_KEY,
-      language: 'tr',
+      language,
     },
   });
 
@@ -50,7 +51,11 @@ async function geocodeCity(city) {
           southwest: result.geometry.viewport.southwest,
         }
       : null;
-    return { lat: loc.lat, lng: loc.lng, viewport };
+    const countryComponent = (result.address_components || []).find((c) =>
+      Array.isArray(c.types) && c.types.includes('country')
+    );
+    const countryCode = countryComponent?.short_name || null;
+    return { lat: loc.lat, lng: loc.lng, viewport, countryCode };
   }
   return null;
 }
@@ -65,7 +70,7 @@ async function searchPlaces(city, interests = [], language = 'en') {
     language,
   };
 
-  const coords = await geocodeCity(city);
+  const coords = await geocodeCity(city, language);
   if (coords) {
     params.location = `${coords.lat},${coords.lng}`;
     params.radius = 50000;
@@ -89,7 +94,7 @@ async function searchRestaurants(city, budget, language = 'en') {
     language,
   };
 
-  const coords = await geocodeCity(city);
+  const coords = await geocodeCity(city, language);
   if (coords) {
     params.location = `${coords.lat},${coords.lng}`;
     params.radius = 50000;
@@ -120,7 +125,7 @@ async function lookupPlace(name, city, language = 'en') {
   const query = `${name} in ${city}`;
   const params = { query, key: API_KEY, language };
 
-  const coords = await geocodeCity(city);
+  const coords = await geocodeCity(city, language);
   if (coords) {
     params.location = `${coords.lat},${coords.lng}`;
     params.radius = 30000;

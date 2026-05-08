@@ -404,14 +404,27 @@ body {
 }
 .city-suggestion:hover { background: var(--bg-tertiary); }
 .city-suggestion svg { color: var(--text-muted); flex-shrink: 0; }
-.popular-badge {
+.city-country-code {
   margin-left: auto;
   padding: 2px 8px;
-  background: var(--accent-light);
-  color: var(--accent);
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
   border-radius: var(--radius-full);
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.popular-city-btn .city-country-code {
+  margin-left: 4px;
+  padding: 1px 6px;
+  font-size: 9px;
+}
+.attribution-note {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 32px;
+  opacity: 0.7;
 }
 
 /* Date Range Picker */
@@ -1453,6 +1466,19 @@ body {
   background: var(--bg-secondary);
   border-radius: var(--radius-full);
 }
+
+.budget-range {
+  padding: 6px 20px 0;
+  font-size: 11px;
+  color: var(--text-muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: baseline;
+}
+.budget-range-label { font-weight: 600; }
+.budget-range-value { color: var(--text-secondary); }
+.budget-range-samples { opacity: 0.7; }
 
 .budget-note {
   padding: 8px 20px 12px;

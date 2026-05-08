@@ -129,9 +129,8 @@ function clusterByDay(places, days, maxDiameterKm) {
     let bestDist = Infinity;
     for (let c = 0; c < clusters.length; c++) {
       if (clusters[c].length === 0) {
-        // Boş gün varsa, bu yer onun başlangıç noktası olur
+        // Boş gün varsa bu yer onun başlangıç noktası olur — distance kıyaslamasını atla
         bestCluster = c;
-        bestDist = -1;
         break;
       }
       const center = centroid(clusters[c]);

@@ -1,0 +1,16 @@
+{
+  "tr": {
+    "emergency": "Seyahat öncesi gideceğiniz şehrin yerel acil durum numaralarını öğrenin. Çoğu ülkede polis, ambulans ve itfaiye için ayrı numaralar bulunur.",
+    "currency": "Yerel para birimini ve ATM erişimini kontrol edin. Büyük şehirlerde kredi kartı yaygın olarak kabul edilir; küçük dükkânlar ve pazarlar için bir miktar nakit bulundurun. Pazarlık kültürü olan bölgelerde fiyatları sorun.",
+    "transport": "Toplu taşıma için yerel ulaşım kartı veya tek bilet seçeneklerini öğrenin. Taksi için resmi uygulamaları (Uber, Bolt, yerel benzeri) tercih edin; taksimetre açtırın. Havalimanı bağlantıları için resmi tren/otobüs hatları genelde en güvenli ve uygun fiyatlıdır.",
+    "culture": "Dini ve kültürel mekanlarda yerel kıyafet ve davranış kurallarına uyun. Bazı camii, tapınak ya da kilise ziyaretlerinde kapalı kıyafet veya örtü gerekebilir. Açılış saatleri ve haftalık kapalı günleri önceden kontrol edin.",
+    "food": "Yerel mutfağı denemekten çekinmeyin; popüler dining caddelerinde tabela olmayan, yerel halkın doluştuğu yerler genellikle en otantik ve uygun fiyatlı seçeneklerdir."
+  },
+  "en": {
+    "emergency": "Look up the local emergency numbers for your destination before traveling. Most countries have separate numbers for police, ambulance, and fire services.",
+    "currency": "Learn the local currency and ATM availability. Credit cards are widely accepted in major cities, but carry some cash for small shops and markets. Ask about prices in regions where bargaining is the norm.",
+    "transport": "Find the local transit card or single-ticket options for public transport. For taxis, prefer official apps (Uber, Bolt, or local equivalents) and confirm the meter is on. Airport connections via official train/bus lines are usually safest and cheapest.",
+    "culture": "Follow local dress codes and etiquette at religious and cultural sites. Mosques, temples, or churches may require modest clothing or head covering. Check opening hours and weekly closed days in advance.",
+    "food": "Don't hesitate to try local cuisine; small unsigned places packed with locals on popular dining streets are often the most authentic and affordable options."
+  }
+}

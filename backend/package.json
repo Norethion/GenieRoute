@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "lint": "eslint src/"
+    "lint": "eslint src/",
+    "build:cities": "node scripts/buildWorldCitiesList.js"
   },
   "dependencies": {
     "axios": "^1.7.0",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "adm-zip": "^0.5.17",
     "eslint": "^10.2.0",
     "nodemon": "^3.1.0"
   }

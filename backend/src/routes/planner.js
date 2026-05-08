@@ -4,7 +4,9 @@ const placesService = require('../services/placesService');
 const filterService = require('../services/filterService');
 const llmService = require('../services/llmService');
 const budgetService = require('../services/budgetService');
-const cityTips = require('../data/cityTips.json');
+const cityDataService = require('../services/cityDataService');
+const defaultTips = require('../data/defaultTips.json');
+const countryInfo = require('../data/countryInfo.json');
 const routeOptimizer = require('../services/routeOptimizer');
 const weatherService = require('../services/weatherService');
 
@@ -46,6 +48,30 @@ function resolveLanguage(language) {
   return ['tr', 'en'].includes(language) ? language : 'en';
 }
 
+// Tüm şehirler LLM ensemble + cache yolundan geçer; LLM hata verirse generic
+// default ipuçları döner.
+async function resolveCityTips({ city, countryCode }) {
+  const country = countryCode ? countryInfo[countryCode] : null;
+  const countryName = country?.name || countryCode || 'Unknown';
+
+  try {
+    const { merged } = await cityDataService.getTipsForCity({
+      cityName: city,
+      countryCode,
+      countryName,
+    });
+    return { tr: merged?.tr || defaultTips.tr, en: merged?.en || defaultTips.en };
+  } catch (err) {
+    console.error('[planner] tips LLM failed, using default:', err.message);
+    return { tr: defaultTips.tr, en: defaultTips.en };
+  }
+}
+
+function resolveCountryName(countryCode) {
+  if (!countryCode) return null;
+  return countryInfo[countryCode]?.name || null;
+}
+
 // POST /api/planner/generate - Tam rota üretimi (tek çağrıda)
 router.post('/generate', async (req, res, next) => {
   try {
@@ -56,51 +82,48 @@ router.post('/generate', async (req, res, next) => {
     const lang = resolveLanguage(language);
     const daysNum = Number(days);
 
-    // 1. Google Places API'den mekan, restoran ve şehir geocode'unu çek
     const [rawPlaces, rawRestaurants, cityGeo] = await Promise.all([
       placesService.searchPlaces(city, interests, lang),
       placesService.searchRestaurants(city, budget, lang),
-      placesService.geocodeCity(city),
+      placesService.geocodeCity(city, lang),
     ]);
 
-    // 2. Filtreleme
+    const countryCode = cityGeo?.countryCode || null;
+    const countryName = resolveCountryName(countryCode);
+
     const places = filterService.filterPlaces(rawPlaces, { days: daysNum });
     const restaurants = filterService.filterRestaurants(rawRestaurants, { budget, days: daysNum });
 
-    // 3. Rota optimizasyonu (şehir büyüklüğüne göre dinamik gün-içi çap sınırı)
+    // Rota optimizasyonu — gün-içi çap sınırı şehir geocode viewport'undan türetilir
     const cityRadiusKm = computeCityRadiusKm(cityGeo);
     const { optimizedPlaces, optimizedRestaurants, maxDailyDiameterKm } =
       routeOptimizer.optimizeRoute(places, restaurants, daysNum, cityRadiusKm);
 
-    // 4. LLM ile günlük plan üret
-    const dailyPlan = await llmService.generateDailyPlan({
-      city, days: daysNum, budget, interests,
-      places, restaurants, language: lang,
-      optimizedPlaces, optimizedRestaurants,
-      maxDailyDiameterKm,
-    });
+    // LLM plan + bütçe + ipuçları paralel (her biri bağımsız, toplam süreyi düşürür)
+    const [dailyPlan, budgetEstimate, cityInfo] = await Promise.all([
+      llmService.generateDailyPlan({
+        city, days: daysNum, budget, interests,
+        places, restaurants, language: lang,
+        optimizedPlaces, optimizedRestaurants,
+        maxDailyDiameterKm,
+        countryName,
+      }),
+      budgetService.calculateBudget({ city, days: daysNum, budget, countryCode }),
+      resolveCityTips({ city, countryCode }),
+    ]);
 
-    // 5. Harita marker'ları
     const mapMarkers = [
       ...places.map((p) => ({ ...p, markerType: 'attraction' })),
       ...restaurants.map((r) => ({ ...r, markerType: 'restaurant' })),
     ];
 
-    // 6. Bütçe
-    const budgetEstimate = await budgetService.calculateBudget({ city, days: daysNum, budget });
-
-    // 7. Şehir ipuçları
-    const tips = cityTips[budgetEstimate.city] || cityTips.default;
-    const cityInfo = { tr: tips.tr, en: tips.en };
-
-    // 8. Hava durumu (cityGeo'yu yeniden kullan)
     let weather = null;
     if (startDate && endDate && cityGeo) {
       weather = await weatherService.getWeatherForecast(cityGeo.lat, cityGeo.lng, startDate, endDate);
     }
 
     res.json({
-      trip: { city, days, budget, interests, startDate, endDate },
+      trip: { city, days, budget, interests, startDate, endDate, countryCode },
       language: lang,
       dailyPlan,
       places, restaurants, mapMarkers,
@@ -129,8 +152,9 @@ router.post('/prepare', async (req, res, next) => {
     const places = filterService.filterPlaces(rawPlaces, { days: daysNum });
     const restaurants = filterService.filterRestaurants(rawRestaurants, { budget, days: daysNum });
 
-    // Şehir geocode + dinamik gün-içi çap sınırı
-    const cityGeo = await placesService.geocodeCity(city);
+    const cityGeo = await placesService.geocodeCity(city, lang);
+    const countryCode = cityGeo?.countryCode || null;
+
     const cityRadiusKm = computeCityRadiusKm(cityGeo);
     const { optimizedPlaces, optimizedRestaurants, maxDailyDiameterKm } =
       routeOptimizer.optimizeRoute(places, restaurants, daysNum, cityRadiusKm);
@@ -140,9 +164,11 @@ router.post('/prepare', async (req, res, next) => {
       ...restaurants.map((r) => ({ ...r, markerType: 'restaurant' })),
     ];
 
-    const budgetEstimate = await budgetService.calculateBudget({ city, days: daysNum, budget });
-    const tips = cityTips[budgetEstimate.city] || cityTips.default;
-    const cityInfo = { tr: tips.tr, en: tips.en };
+    // Bütçe ve ipuçları paralel — LLM yolu için 2-3 sn tasarruf
+    const [budgetEstimate, cityInfo] = await Promise.all([
+      budgetService.calculateBudget({ city, days: daysNum, budget, countryCode }),
+      resolveCityTips({ city, countryCode }),
+    ]);
 
     let weather = null;
     if (startDate && endDate && cityGeo) {
@@ -151,6 +177,7 @@ router.post('/prepare', async (req, res, next) => {
 
     res.json({
       language: lang,
+      countryCode,
       places, restaurants,
       optimizedPlaces, optimizedRestaurants,
       maxDailyDiameterKm,
@@ -167,7 +194,7 @@ router.post('/llm', async (req, res, next) => {
     const err = validatePlanInput(req.body);
     if (err) return res.status(400).json({ error: err });
 
-    const { city, days, budget, interests, language, places, restaurants, optimizedPlaces, optimizedRestaurants, maxDailyDiameterKm } = req.body;
+    const { city, days, budget, interests, language, places, restaurants, optimizedPlaces, optimizedRestaurants, maxDailyDiameterKm, countryCode } = req.body;
 
     if (!Array.isArray(places) || !Array.isArray(restaurants)) {
       return res.status(400).json({ error: 'places and restaurants must be arrays' });
@@ -175,12 +202,14 @@ router.post('/llm', async (req, res, next) => {
 
     const lang = resolveLanguage(language);
     const daysNum = Number(days);
+    const countryName = resolveCountryName(countryCode);
 
     const dailyPlan = await llmService.generateDailyPlan({
       city, days: daysNum, budget, interests,
       places, restaurants, language: lang,
       optimizedPlaces, optimizedRestaurants,
       maxDailyDiameterKm,
+      countryName,
     });
 
     res.json({ dailyPlan });

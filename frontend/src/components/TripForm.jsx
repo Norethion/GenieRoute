@@ -10,9 +10,35 @@ import {
   Waves, Droplets, Coffee, Mountain,
   ArrowRight, ArrowLeft, Sparkles
 } from 'lucide-react';
-import TURKEY_CITIES from '../data/turkeyCities';
+import worldCities from '../data/worldCities.json';
 
 registerLocale('tr', tr);
+
+// Türk diakritiklerini Latin karşılığına çevirir, "İstanbul" araması "Istanbul"u
+// eşler. Replace toLowerCase'den ÖNCE yapılmalı: JS varsayılanı "İ".toLowerCase()
+// "i̇" (i + combining dot, 2 codepoint) üretir, regex /İ/ ile yakalanmaz.
+function foldDiacritics(s) {
+  return s
+    .replace(/[ıİ]/g, 'i')
+    .replace(/[şŞ]/g, 's')
+    .replace(/[çÇ]/g, 'c')
+    .replace(/[öÖ]/g, 'o')
+    .replace(/[üÜ]/g, 'u')
+    .replace(/[ğĞ]/g, 'g')
+    .toLowerCase();
+}
+
+// Anasayfada gösterilen popüler kartlar — isim + ülke kodu çiftleri
+const POPULAR_CITY_PAIRS = [
+  ['Istanbul', 'TR'],
+  ['Antalya', 'TR'],
+  ['Izmir', 'TR'],
+  ['Ankara', 'TR'],
+  ['Paris', 'FR'],
+  ['Tokyo', 'JP'],
+  ['Rome', 'IT'],
+  ['Bangkok', 'TH'],
+];
 
 const DateInput = forwardRef(({ value, onClick, placeholder, disabled }, ref) => (
   <button type="button" className="date-input" onClick={onClick} ref={ref} disabled={disabled}>
@@ -74,14 +100,38 @@ export default function TripForm({ onSubmit, isLoading }) {
     return d;
   }, [startDate]);
 
-  const popularCities = useMemo(() => TURKEY_CITIES.filter((c) => c.popular), []);
+  const popularCities = useMemo(() => {
+    return POPULAR_CITY_PAIRS
+      .map(([name, country]) => {
+        const folded = foldDiacritics(name);
+        return worldCities.find(
+          (c) => c.country === country && foldDiacritics(c.name) === folded
+        );
+      })
+      .filter(Boolean);
+  }, []);
 
   const filteredCities = useMemo(() => {
     if (city.trim().length === 0) return [];
-    const query = city.toLowerCase();
-    return TURKEY_CITIES.filter(
-      (c) => c.name.toLowerCase().includes(query) || c.nameEn.toLowerCase().includes(query)
-    ).slice(0, 5);
+    const query = foldDiacritics(city.trim());
+    if (query.length === 0) return [];
+    const matches = [];
+    for (const c of worldCities) {
+      const folded = foldDiacritics(c.name);
+      if (folded.includes(query)) {
+        matches.push({ city: c, starts: folded.startsWith(query) });
+        if (matches.length >= 60) break;
+      }
+    }
+    matches.sort((a, b) => {
+      // Önce prefix match, sonra TR önceliği, sonra nüfus
+      if (a.starts !== b.starts) return a.starts ? -1 : 1;
+      const aTr = a.city.country === 'TR';
+      const bTr = b.city.country === 'TR';
+      if (aTr !== bTr) return aTr ? -1 : 1;
+      return (b.city.pop || 0) - (a.city.pop || 0);
+    });
+    return matches.slice(0, 8).map((m) => m.city);
   }, [city]);
 
   useEffect(() => {
@@ -96,7 +146,7 @@ export default function TripForm({ onSubmit, isLoading }) {
   }, []);
 
   const selectCity = (c) => {
-    setCity(isEn ? c.nameEn : c.name);
+    setCity(c.name);
     setShowSuggestions(false);
   };
 
@@ -170,14 +220,15 @@ export default function TripForm({ onSubmit, isLoading }) {
               <div className="popular-cities-grid">
                 {popularCities.map((c) => (
                   <button
-                    key={c.name}
-                    className={`popular-city-btn ${city === (isEn ? c.nameEn : c.name) ? 'active' : ''}`}
+                    key={`${c.name}-${c.country}`}
+                    className={`popular-city-btn ${city === c.name ? 'active' : ''}`}
                     onClick={() => selectCity(c)}
                     type="button"
                     disabled={isLoading}
                   >
                     <MapPin size={14} />
-                    <span>{isEn ? c.nameEn : c.name}</span>
+                    <span>{c.name}</span>
+                    <span className="city-country-code">{c.country}</span>
                   </button>
                 ))}
               </div>
@@ -200,14 +251,14 @@ export default function TripForm({ onSubmit, isLoading }) {
                 <div className="city-suggestions" ref={suggestionsRef}>
                   {filteredCities.map((c) => (
                     <button
-                      key={c.name}
+                      key={`${c.name}-${c.country}`}
                       className="city-suggestion"
                       onClick={() => selectCity(c)}
                       type="button"
                     >
                       <MapPin size={14} />
-                      <span>{isEn ? c.nameEn : c.name}</span>
-                      {c.popular && <span className="popular-badge">{isEn ? 'Popular' : 'Popüler'}</span>}
+                      <span>{c.name}</span>
+                      <span className="city-country-code">{c.country}</span>
                     </button>
                   ))}
                 </div>

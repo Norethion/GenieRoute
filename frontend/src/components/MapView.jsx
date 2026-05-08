@@ -46,18 +46,18 @@ function normalize(str) {
 
 function findMarkerForPlace(markers, placeName) {
   if (!placeName) return null;
-  // 1. Birebir eşleşme (case-insensitive)
   const exact = markers.find((m) => m.name.toLowerCase() === placeName.toLowerCase());
   if (exact) return exact;
-  // 2. Türkçe karakter farkları için normalized birebir eşleşme
   const norm = normalize(placeName);
+  if (!norm) return null;
   const normExact = markers.find((m) => normalize(m.name) === norm);
   if (normExact) return normExact;
-  // 3. Substring fallback — birden fazla aday varsa uzunluk farkı en küçük
-  // olanı seç. Bu sayede "Hagia Sophia" araması "Hagia Sophia Mosque" yerine
-  // (varsa) "Hagia Sophia"yı bulur — uzunluğu en yakın olan en spesifik eştir.
+  // Substring fallback. Boş normalize edilmiş adları (CJK/Arap-only isimler
+  // "" döner) atla, aksi halde "".includes() her şeyi sahte eşler.
+  // Birden fazla aday varsa uzunluk farkı en küçük olan en spesifik kabul edilir.
   const candidates = markers.filter((m) => {
     const mn = normalize(m.name);
+    if (!mn) return false;
     return mn.includes(norm) || norm.includes(mn);
   });
   if (candidates.length === 0) return null;
@@ -106,6 +106,13 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
       return dayPlaces;
     });
   }, [dailyPlan, markers]);
+
+  // Tek seferlik global eşleşme — render içinde marker bazında çağrı yaparsak
+  // substring fallback birden fazla marker'a yanlış BOUNCE verir.
+  const highlightedMarker = useMemo(
+    () => findMarkerForPlace(markers, highlightedPlace),
+    [markers, highlightedPlace]
+  );
 
   const visibleMarkers = useMemo(() => {
     if (!dayMarkers.length) return markers;
@@ -265,7 +272,7 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
               scaledSize: new window.google.maps.Size(32, 42),
             }}
             animation={
-              highlightedPlace && findMarkerForPlace([marker], highlightedPlace)
+              highlightedMarker && marker.name === highlightedMarker.name
                 ? window.google.maps.Animation.BOUNCE
                 : undefined
             }

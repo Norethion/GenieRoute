@@ -41,6 +41,14 @@ export default function SavedTripsPage() {
         ? JSON.parse(trip.interests)
         : trip.interests || [];
 
+      const budgetEstimate = typeof trip.budget_estimate === 'string'
+        ? JSON.parse(trip.budget_estimate)
+        : trip.budget_estimate || null;
+
+      const cityInfo = typeof trip.city_info === 'string'
+        ? JSON.parse(trip.city_info)
+        : trip.city_info || null;
+
       const mapMarkers = [
         ...places.map((p) => ({ ...p, markerType: 'attraction' })),
         ...restaurants.map((r) => ({ ...r, markerType: 'restaurant' })),
@@ -52,6 +60,7 @@ export default function SavedTripsPage() {
           result: {
             trip: { city: trip.city, days: trip.days, budget: trip.budget, interests },
             dailyPlan, places, restaurants, mapMarkers,
+            budgetEstimate, cityInfo,
           },
         },
       });

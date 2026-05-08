@@ -6,7 +6,7 @@
   "hero": {
     "badge": "AI Powered",
     "title1": "Discover",
-    "title2": "Turkey",
+    "title2": "the World",
     "subtitle": "Pick a city, set your preferences — let AI create a personalized daily itinerary for you."
   },
   "wizard": {
@@ -19,7 +19,7 @@
     "city": {
       "title": "Where do you want to explore?",
       "desc": "Type your dream destination, we'll handle the rest.",
-      "placeholder": "Istanbul, Antalya, Cappadocia..."
+      "placeholder": "Istanbul, Paris, Tokyo, Bangkok..."
     },
     "days": {
       "title": "When are you going?",
@@ -53,7 +53,7 @@
       "ottoman": "Ottoman Heritage",
       "beach": "Beach & Sea",
       "thermal": "Thermal & Spa",
-      "cuisine": "Turkish Cuisine",
+      "cuisine": "Local Cuisine",
       "bazaar": "Bazaar & Markets",
       "hiking": "Hiking & Trekking"
     },
@@ -110,5 +110,8 @@
   },
   "error": {
     "generic": "Something went wrong while creating the plan. Please try again."
+  },
+  "attribution": {
+    "cities": "City data: GeoNames (CC BY 4.0)"
   }
 }
