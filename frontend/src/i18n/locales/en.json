@@ -14,6 +14,7 @@
       "city": "City",
       "duration": "Duration",
       "budget": "Budget",
+      "style": "Style",
       "interests": "Interests"
     },
     "city": {
@@ -38,6 +39,30 @@
       "mediumDesc": "Quality-price balance",
       "high": "Premium",
       "highDesc": "Best experiences"
+    },
+    "style": {
+      "title": "What's your travel style?",
+      "desc": "Choose how busy each day should be and how you'd like to get around.",
+      "intensity": {
+        "title": "Pace",
+        "relaxed": "Relaxed",
+        "relaxedDesc": "Fewer stops, lots of breaks",
+        "normal": "Normal",
+        "normalDesc": "Balanced day",
+        "intensive": "Intensive",
+        "intensiveDesc": "More sights, brisk pace"
+      },
+      "transport": {
+        "title": "Transport",
+        "walking": "Walking-first",
+        "walkingDesc": "Stops close together",
+        "transit": "Public transit",
+        "transitDesc": "Metro / tram / bus",
+        "car": "Taxi / Car",
+        "carDesc": "Larger area",
+        "mixed": "Mixed",
+        "mixedDesc": "Pick per leg"
+      }
     },
     "interests": {
       "title": "What do you enjoy?",
@@ -92,10 +117,13 @@
   },
   "time": {
     "morning": "Morning",
+    "mid-morning": "Mid-morning",
     "lunch": "Lunch",
     "afternoon": "Afternoon",
+    "late-afternoon": "Late afternoon",
     "dinner": "Dinner",
-    "evening": "Evening"
+    "evening": "Evening",
+    "snack": "Snack"
   },
   "map": {
     "loading": "Loading map...",
@@ -118,6 +146,54 @@
   },
   "attribution": {
     "cities": "City data: GeoNames (CC BY 4.0)"
+  },
+  "usage": {
+    "title": "API Usage",
+    "subtitle": "Observability for OpenAI and Google Cloud calls.",
+    "refresh": "Refresh",
+    "range": {
+      "24h": "Last 24 hours",
+      "7d": "Last 7 days",
+      "30d": "Last 30 days",
+      "all": "All time"
+    },
+    "common": {
+      "loading": "Loading...",
+      "noData": "No data in this range.",
+      "errorTitle": "Failed to load",
+      "configHint": "Check backend/.env configuration.",
+      "lastUpdated": "Updated",
+      "cached": "(from cache)"
+    },
+    "relative": {
+      "justNow": "just now",
+      "minutes": "{{count}}m ago",
+      "hours": "{{count}}h ago"
+    },
+    "openai": {
+      "title": "OpenAI (Admin API)",
+      "estimatedCost": "Estimated cost",
+      "officialCost": "Official (Costs API)",
+      "totalTokens": "Total tokens",
+      "inputTokens": "Input tokens",
+      "outputTokens": "Output tokens",
+      "byModel": "By model",
+      "byDay": "By day (USD)",
+      "modelHeader": "Model",
+      "tokensHeader": "In / Out",
+      "modelCostHeader": "Estimated USD",
+      "freeTier": "Estimate: token count × model price (e.g. gpt-4o-mini $0.15/M input, $0.60/M output). Official USD comes from /costs endpoint; may show 0 on new accounts until the daily bucket is finalized."
+    },
+    "googleCloud": {
+      "title": "Google Cloud (Monitoring API)",
+      "totalRequests": "Total requests",
+      "estimatedCost": "Estimated cost",
+      "serviceHeader": "Service",
+      "requestsHeader": "Requests",
+      "errorsHeader": "Errors",
+      "costHeader": "Estimated USD",
+      "freeTier": "Cloud Monitoring doesn't report dollar cost; numbers × price computed locally. Usage under the $200 monthly credit is not billed."
+    }
   },
   "admin": {
     "homeTitle": "Admin Panel",

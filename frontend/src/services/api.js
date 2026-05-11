@@ -7,12 +7,14 @@ const api = axios.create({
   },
 });
 
-export async function generatePlan({ city, days, budget, interests, language, startDate, endDate }) {
+export async function generatePlan({ city, days, budget, interests, language, startDate, endDate, intensity, transportMode }) {
   const response = await api.post('/planner/generate', {
     city,
     days: Number(days),
     budget,
     interests,
+    intensity: intensity || 'normal',
+    transportMode: transportMode || 'mixed',
     language: language || 'en',
     startDate: startDate || undefined,
     endDate: endDate || undefined,
@@ -25,6 +27,8 @@ export async function generatePlan({ city, days, budget, interests, language, st
 export async function generatePlanWithProgress(formData, onStep) {
   const { city, days, budget, interests, startDate, endDate } = formData;
   const lang = formData.language || 'en';
+  const intensity = formData.intensity || 'normal';
+  const transportMode = formData.transportMode || 'mixed';
   const daysNum = Number(days);
   const notify = (step) => { try { onStep && onStep(step); } catch { /* ignore */ } };
 
@@ -38,6 +42,7 @@ export async function generatePlanWithProgress(formData, onStep) {
   // Stage 2: filter + optimize + budget + tips + weather
   const prep = await api.post('/planner/prepare', {
     city, days: daysNum, budget, interests, language: lang,
+    intensity, transportMode,
     startDate: startDate || undefined,
     endDate: endDate || undefined,
     rawPlaces: placesRes.places || [],
@@ -48,17 +53,19 @@ export async function generatePlanWithProgress(formData, onStep) {
   // Stage 3: LLM (countryCode prepare'den geliyor — country-aware prompt için)
   const { dailyPlan } = await api.post('/planner/llm', {
     city, days: daysNum, budget, interests, language: lang,
+    intensity, transportMode,
     places: prep.places,
     restaurants: prep.restaurants,
     optimizedPlaces: prep.optimizedPlaces,
     optimizedRestaurants: prep.optimizedRestaurants,
+    optimizedItinerary: prep.optimizedItinerary,
     maxDailyDiameterKm: prep.maxDailyDiameterKm,
     countryCode: prep.countryCode,
   }).then((r) => r.data);
   notify(3);
 
   return {
-    trip: { city, days: daysNum, budget, interests, startDate, endDate, countryCode: prep.countryCode },
+    trip: { city, days: daysNum, budget, interests, startDate, endDate, countryCode: prep.countryCode, intensity, transportMode },
     language: lang,
     dailyPlan,
     places: prep.places,
@@ -112,6 +119,16 @@ export async function updateTripPlan(tripId, { planText, placesJson, restaurants
 
 export async function getAdminCities() {
   const response = await api.get('/admin/cities');
+  return response.data;
+}
+
+export async function getOpenAIUsage(range = '7d') {
+  const response = await api.get('/usage/openai', { params: { range } });
+  return response.data;
+}
+
+export async function getGoogleCloudUsage(range = '7d') {
+  const response = await api.get('/usage/google/cloud', { params: { range } });
   return response.data;
 }
 

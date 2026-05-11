@@ -14,6 +14,7 @@
       "city": "Şehir",
       "duration": "Süre",
       "budget": "Bütçe",
+      "style": "Tarz",
       "interests": "İlgi Alanları"
     },
     "city": {
@@ -38,6 +39,30 @@
       "mediumDesc": "Kalite-fiyat dengesi",
       "high": "Premium",
       "highDesc": "En iyi deneyimler"
+    },
+    "style": {
+      "title": "Seyahat tarzın nasıl?",
+      "desc": "Günün ne kadar dolu olacağını ve nasıl gezmek istediğini seç.",
+      "intensity": {
+        "title": "Yoğunluk",
+        "relaxed": "Rahat",
+        "relaxedDesc": "Daha az yer, bol mola",
+        "normal": "Normal",
+        "normalDesc": "Dengeli bir gün",
+        "intensive": "Yoğun",
+        "intensiveDesc": "Çok yer, hızlı tempo"
+      },
+      "transport": {
+        "title": "Ulaşım",
+        "walking": "Yürüyüş Ağırlıklı",
+        "walkingDesc": "Yakın mesafede gez",
+        "transit": "Toplu Taşıma",
+        "transitDesc": "Metro / tramvay / otobüs",
+        "car": "Taksi / Araç",
+        "carDesc": "Daha geniş kapsama",
+        "mixed": "Karışık",
+        "mixedDesc": "Mesafeye göre seç"
+      }
     },
     "interests": {
       "title": "Neleri seviyorsun?",
@@ -92,10 +117,13 @@
   },
   "time": {
     "morning": "Sabah",
+    "mid-morning": "Kuşluk",
     "lunch": "Öğle Yemeği",
     "afternoon": "Öğleden Sonra",
+    "late-afternoon": "İkindi",
     "dinner": "Akşam Yemeği",
-    "evening": "Akşam"
+    "evening": "Akşam",
+    "snack": "Atıştırmalık"
   },
   "map": {
     "loading": "Harita yükleniyor...",
@@ -118,6 +146,54 @@
   },
   "attribution": {
     "cities": "Şehir verisi: GeoNames (CC BY 4.0)"
+  },
+  "usage": {
+    "title": "API Kullanımı",
+    "subtitle": "OpenAI ve Google Cloud çağrılarının gözlemi.",
+    "refresh": "Yenile",
+    "range": {
+      "24h": "Son 24 saat",
+      "7d": "Son 7 gün",
+      "30d": "Son 30 gün",
+      "all": "Tüm Zamanlar"
+    },
+    "common": {
+      "loading": "Yükleniyor...",
+      "noData": "Bu aralıkta veri yok.",
+      "errorTitle": "Yüklenemedi",
+      "configHint": "backend/.env yapılandırmasını kontrol edin.",
+      "lastUpdated": "Son yenileme",
+      "cached": "(önbellekten)"
+    },
+    "relative": {
+      "justNow": "az önce",
+      "minutes": "{{count}} dk önce",
+      "hours": "{{count}} sa önce"
+    },
+    "openai": {
+      "title": "OpenAI (Admin API)",
+      "estimatedCost": "Tahmini maliyet",
+      "officialCost": "Resmi (Costs API)",
+      "totalTokens": "Toplam token",
+      "inputTokens": "Girdi token",
+      "outputTokens": "Çıktı token",
+      "byModel": "Model dağılımı",
+      "byDay": "Günlük dağılım (USD)",
+      "modelHeader": "Model",
+      "tokensHeader": "Girdi / Çıktı",
+      "modelCostHeader": "Tahmini USD",
+      "freeTier": "Tahmin: token sayısı × model fiyatı (örn. gpt-4o-mini $0.15/M girdi, $0.60/M çıktı). Resmi USD verisi /costs endpoint'inden gelir; yeni hesaplarda bucket finalize olana kadar 0 görünebilir."
+    },
+    "googleCloud": {
+      "title": "Google Cloud (Monitoring API)",
+      "totalRequests": "Toplam istek",
+      "estimatedCost": "Tahmini maliyet",
+      "serviceHeader": "Servis",
+      "requestsHeader": "İstek",
+      "errorsHeader": "Hata",
+      "costHeader": "Tahmini USD",
+      "freeTier": "Cloud Monitoring resmi maliyet vermez; sayılar × fiyat ile hesaplandı. Aylık $200 kredinin altındaki kullanım faturalandırılmaz."
+    }
   },
   "admin": {
     "homeTitle": "Yönetim Paneli",

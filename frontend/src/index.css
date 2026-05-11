@@ -578,6 +578,44 @@ body {
 .budget-card.active .budget-card-label { color: var(--accent); }
 .budget-card-desc { font-size: 12px; color: var(--text-muted); }
 
+/* Style adımı — yoğunluk + ulaşım modu seçimi (yatay iki bölüm) */
+.style-section { margin-bottom: 20px; }
+.style-section:last-child { margin-bottom: 0; }
+.style-section-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.style-options { display: flex; gap: 10px; flex-wrap: wrap; }
+.style-card {
+  flex: 1 1 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 12px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-secondary);
+  text-align: center;
+  min-height: 96px;
+}
+.style-card:hover:not(:disabled) { border-color: var(--accent); }
+.style-card.active {
+  border-color: var(--accent);
+  background: var(--accent-light);
+  color: var(--accent);
+}
+.style-card-label { font-weight: 600; font-size: 14px; color: var(--text-primary); }
+.style-card.active .style-card-label { color: var(--accent); }
+.style-card-desc { font-size: 11px; color: var(--text-muted); line-height: 1.3; }
+
 /* Interest Grid */
 .interest-grid {
   display: grid;
@@ -1982,4 +2020,224 @@ body {
 .admin-module-card:hover .admin-module-arrow {
   color: var(--accent);
   transform: translateX(2px);
+}
+
+/* /usage paneli — layout ve bileşenler */
+.usage-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+.usage-toolbar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.usage-range-tabs {
+  display: flex;
+  gap: 4px;
+}
+.usage-range-tab {
+  opacity: 0.55;
+  font-weight: 400;
+}
+.usage-range-tab[aria-selected="true"] {
+  opacity: 1;
+  font-weight: 600;
+}
+.usage-panel {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.usage-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.usage-panel-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+.usage-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+}
+.usage-stat-extra {
+  font-size: 0.72em;
+  opacity: 0.6;
+  margin-top: 2px;
+}
+.usage-section {
+  margin-top: 14px;
+}
+.usage-chart-label {
+  font-size: 0.78em;
+  opacity: 0.65;
+  margin-bottom: 4px;
+}
+.usage-chart {
+  position: relative;
+  user-select: none;
+}
+.usage-chart-bars {
+  display: flex;
+  align-items: flex-end;
+  height: 110px;
+  padding: 6px 4px 0;
+  border-bottom: 1px solid rgba(127, 127, 127, 0.18);
+  gap: 3px;
+}
+.usage-chart.is-dense .usage-chart-bars,
+.usage-chart.is-dense .usage-chart-axis {
+  gap: 1px;
+}
+.usage-chart-cell {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+  cursor: default;
+}
+.usage-chart-fill {
+  width: 100%;
+  background: linear-gradient(180deg, var(--chart-color), var(--chart-color-soft));
+  border-radius: 4px 4px 0 0;
+  transition: opacity 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.usage-chart-cell.is-hover .usage-chart-fill {
+  box-shadow: 0 0 0 1px var(--chart-color);
+  transform: translateY(-1px);
+}
+.usage-chart-cell.is-dim .usage-chart-fill {
+  opacity: 0.35;
+}
+.usage-chart-axis {
+  display: flex;
+  padding: 4px 4px 0;
+  font-size: 0.66em;
+  opacity: 0.55;
+  letter-spacing: 0.2px;
+  gap: 3px;
+}
+.usage-chart-axis span {
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.usage-tooltip {
+  position: absolute;
+  top: -4px;
+  transform: translate(-50%, -100%);
+  background: rgba(20, 22, 30, 0.95);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.78em;
+  pointer-events: none;
+  white-space: nowrap;
+  border: 1px solid var(--chart-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 2;
+}
+.usage-tooltip-date { opacity: 0.7; font-size: 0.85em; }
+.usage-tooltip-value { font-weight: 600; margin-top: 2px; }
+
+.usage-note {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  font-size: 0.82em;
+  line-height: 1.45;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.usage-note > svg { flex-shrink: 0; margin-top: 2px; opacity: 0.75; }
+.usage-note-text { opacity: 0.9; }
+
+.usage-fresh {
+  font-size: 0.72em;
+  opacity: 0.55;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.usage-skeleton-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+}
+.usage-skeleton-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.usage-skeleton-chart-bars {
+  display: flex;
+  align-items: flex-end;
+  height: 110px;
+  padding: 6px 4px 0;
+  border-bottom: 1px solid rgba(127, 127, 127, 0.18);
+  gap: 3px;
+}
+.usage-skeleton-chart-axis {
+  display: flex;
+  gap: 3px;
+  padding: 6px 4px 0;
+  justify-content: space-between;
+}
+.usage-skeleton-note {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(99, 102, 241, 0.05);
+  border: 1px solid rgba(99, 102, 241, 0.12);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Skeleton + shimmer — /usage paneli ilk yüklemede */
+@keyframes usage-shimmer {
+  0% { background-position: -150% 0; }
+  100% { background-position: 250% 0; }
+}
+.skeleton {
+  background-image: linear-gradient(
+    90deg,
+    rgba(127, 127, 127, 0.06) 0%,
+    rgba(127, 127, 127, 0.18) 50%,
+    rgba(127, 127, 127, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  background-color: rgba(127, 127, 127, 0.08);
+  animation: usage-shimmer 1.4s linear infinite;
+  border-radius: 6px;
+  display: inline-block;
+}
+[data-theme="light"] .skeleton {
+  background-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.04) 0%,
+    rgba(0, 0, 0, 0.12) 50%,
+    rgba(0, 0, 0, 0.04) 100%
+  );
+  background-color: rgba(0, 0, 0, 0.05);
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; }
 }

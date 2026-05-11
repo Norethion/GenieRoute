@@ -5,6 +5,7 @@ const filterService = require('../services/filterService');
 const llmService = require('../services/llmService');
 const budgetService = require('../services/budgetService');
 const cityDataService = require('../services/cityDataService');
+const mustSeeService = require('../services/mustSeeService');
 const defaultTips = require('../data/defaultTips.json');
 const countryInfo = require('../data/countryInfo.json');
 const routeOptimizer = require('../services/routeOptimizer');
@@ -22,8 +23,11 @@ function computeCityRadiusKm(cityGeo) {
   return (diagKm / 2) * 0.7;
 }
 
+const VALID_INTENSITY = ['relaxed', 'normal', 'intensive'];
+const VALID_TRANSPORT = ['walking', 'transit', 'car', 'mixed'];
+
 function validatePlanInput(body) {
-  const { city, days, budget, interests } = body;
+  const { city, days, budget, interests, intensity, transportMode } = body;
 
   if (!city || !days || !budget || !interests) {
     return 'city, days, budget, and interests are required';
@@ -41,7 +45,20 @@ function validatePlanInput(body) {
   if (!Array.isArray(interests) || interests.length === 0 || interests.length > 8) {
     return 'interests must be an array with 1-8 items';
   }
+  if (intensity != null && !VALID_INTENSITY.includes(intensity)) {
+    return `intensity must be one of: ${VALID_INTENSITY.join(', ')}`;
+  }
+  if (transportMode != null && !VALID_TRANSPORT.includes(transportMode)) {
+    return `transportMode must be one of: ${VALID_TRANSPORT.join(', ')}`;
+  }
   return null;
+}
+
+function resolvePreferences(body) {
+  return {
+    intensity: VALID_INTENSITY.includes(body.intensity) ? body.intensity : 'normal',
+    transportMode: VALID_TRANSPORT.includes(body.transportMode) ? body.transportMode : 'mixed',
+  };
 }
 
 function resolveLanguage(language) {
@@ -79,6 +96,7 @@ router.post('/generate', async (req, res, next) => {
     if (err) return res.status(400).json({ error: err });
 
     const { city, days, budget, interests, language, startDate, endDate } = req.body;
+    const { intensity, transportMode } = resolvePreferences(req.body);
     const lang = resolveLanguage(language);
     const daysNum = Number(days);
 
@@ -91,22 +109,48 @@ router.post('/generate', async (req, res, next) => {
     const countryCode = cityGeo?.countryCode || null;
     const countryName = resolveCountryName(countryCode);
 
-    const places = filterService.filterPlaces(rawPlaces, { days: daysNum });
+    // Must-see / curated kategorileri: LLM-curated isim listesi + Places lookup
+    // ile koordinatlandırılmış yerler. rawPlaces (Google search çıktısı)
+    // mega-popüler yerleri her zaman ilk sıralara getirmediği için iconic
+    // havuzunu burada zenginleştiriyoruz; placeId ile dedup.
+    const [mustSee, mustSeeEnriched] = await Promise.all([
+      mustSeeService.getMustSeeForCity({ cityName: city, countryCode, countryName }).catch((err) => {
+        console.error('[planner] mustSee list failed:', err.message);
+        return { iconic: [], curated: [] };
+      }),
+      mustSeeService.getMustSeePlacesEnriched({ cityName: city, countryCode, countryName, language: lang }).catch((err) => {
+        console.error('[planner] mustSee enrich failed:', err.message);
+        return [];
+      }),
+    ]);
+
+    const seenIds = new Set(rawPlaces.map((p) => p.placeId).filter(Boolean));
+    const dedupedEnriched = mustSeeEnriched.filter((p) => p.placeId && !seenIds.has(p.placeId));
+    const combinedRaw = [...rawPlaces, ...dedupedEnriched];
+
+    const annotatedRaw = filterService.annotateCategories(combinedRaw, {
+      iconicNames: mustSee.iconic,
+      curatedNames: mustSee.curated,
+    });
+
+    const places = filterService.filterPlaces(annotatedRaw, { days: daysNum, intensity });
     const restaurants = filterService.filterRestaurants(rawRestaurants, { budget, days: daysNum });
 
-    // Rota optimizasyonu — gün-içi çap sınırı şehir geocode viewport'undan türetilir
+    // Rota optimizasyonu — gün-içi çap sınırı şehir geocode viewport'undan +
+    // ulaşım modundan türetilir
     const cityRadiusKm = computeCityRadiusKm(cityGeo);
-    const { optimizedPlaces, optimizedRestaurants, maxDailyDiameterKm } =
-      routeOptimizer.optimizeRoute(places, restaurants, daysNum, cityRadiusKm);
+    const { optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm } =
+      routeOptimizer.optimizeRoute(places, restaurants, daysNum, cityRadiusKm, transportMode);
 
     // LLM plan + bütçe + ipuçları paralel (her biri bağımsız, toplam süreyi düşürür)
     const [dailyPlan, budgetEstimate, cityInfo] = await Promise.all([
       llmService.generateDailyPlan({
         city, days: daysNum, budget, interests,
         places, restaurants, language: lang,
-        optimizedPlaces, optimizedRestaurants,
+        optimizedPlaces, optimizedRestaurants, optimizedItinerary,
         maxDailyDiameterKm,
         countryName,
+        intensity, transportMode,
       }),
       budgetService.calculateBudget({ city, days: daysNum, budget, countryCode }),
       resolveCityTips({ city, countryCode }),
@@ -123,7 +167,7 @@ router.post('/generate', async (req, res, next) => {
     }
 
     res.json({
-      trip: { city, days, budget, interests, startDate, endDate, countryCode },
+      trip: { city, days, budget, interests, startDate, endDate, countryCode, intensity, transportMode },
       language: lang,
       dailyPlan,
       places, restaurants, mapMarkers,
@@ -141,6 +185,7 @@ router.post('/prepare', async (req, res, next) => {
     if (err) return res.status(400).json({ error: err });
 
     const { city, days, budget, language, startDate, endDate, rawPlaces, rawRestaurants } = req.body;
+    const { intensity, transportMode } = resolvePreferences(req.body);
 
     if (!Array.isArray(rawPlaces) || !Array.isArray(rawRestaurants)) {
       return res.status(400).json({ error: 'rawPlaces and rawRestaurants must be arrays' });
@@ -149,15 +194,36 @@ router.post('/prepare', async (req, res, next) => {
     const lang = resolveLanguage(language);
     const daysNum = Number(days);
 
-    const places = filterService.filterPlaces(rawPlaces, { days: daysNum });
-    const restaurants = filterService.filterRestaurants(rawRestaurants, { budget, days: daysNum });
-
     const cityGeo = await placesService.geocodeCity(city, lang);
     const countryCode = cityGeo?.countryCode || null;
+    const countryName = resolveCountryName(countryCode);
+
+    const [mustSee, mustSeeEnriched] = await Promise.all([
+      mustSeeService.getMustSeeForCity({ cityName: city, countryCode, countryName }).catch((err) => {
+        console.error('[planner] mustSee list failed:', err.message);
+        return { iconic: [], curated: [] };
+      }),
+      mustSeeService.getMustSeePlacesEnriched({ cityName: city, countryCode, countryName, language: lang }).catch((err) => {
+        console.error('[planner] mustSee enrich failed:', err.message);
+        return [];
+      }),
+    ]);
+
+    const seenIds = new Set(rawPlaces.map((p) => p.placeId).filter(Boolean));
+    const dedupedEnriched = mustSeeEnriched.filter((p) => p.placeId && !seenIds.has(p.placeId));
+    const combinedRaw = [...rawPlaces, ...dedupedEnriched];
+
+    const annotatedRaw = filterService.annotateCategories(combinedRaw, {
+      iconicNames: mustSee.iconic,
+      curatedNames: mustSee.curated,
+    });
+
+    const places = filterService.filterPlaces(annotatedRaw, { days: daysNum, intensity });
+    const restaurants = filterService.filterRestaurants(rawRestaurants, { budget, days: daysNum });
 
     const cityRadiusKm = computeCityRadiusKm(cityGeo);
-    const { optimizedPlaces, optimizedRestaurants, maxDailyDiameterKm } =
-      routeOptimizer.optimizeRoute(places, restaurants, daysNum, cityRadiusKm);
+    const { optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm } =
+      routeOptimizer.optimizeRoute(places, restaurants, daysNum, cityRadiusKm, transportMode);
 
     const mapMarkers = [
       ...places.map((p) => ({ ...p, markerType: 'attraction' })),
@@ -178,8 +244,9 @@ router.post('/prepare', async (req, res, next) => {
     res.json({
       language: lang,
       countryCode,
+      intensity, transportMode,
       places, restaurants,
-      optimizedPlaces, optimizedRestaurants,
+      optimizedPlaces, optimizedRestaurants, optimizedItinerary,
       maxDailyDiameterKm,
       mapMarkers, budgetEstimate, cityInfo, weather,
     });
@@ -194,7 +261,8 @@ router.post('/llm', async (req, res, next) => {
     const err = validatePlanInput(req.body);
     if (err) return res.status(400).json({ error: err });
 
-    const { city, days, budget, interests, language, places, restaurants, optimizedPlaces, optimizedRestaurants, maxDailyDiameterKm, countryCode } = req.body;
+    const { city, days, budget, interests, language, places, restaurants, optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm, countryCode } = req.body;
+    const { intensity, transportMode } = resolvePreferences(req.body);
 
     if (!Array.isArray(places) || !Array.isArray(restaurants)) {
       return res.status(400).json({ error: 'places and restaurants must be arrays' });
@@ -207,9 +275,10 @@ router.post('/llm', async (req, res, next) => {
     const dailyPlan = await llmService.generateDailyPlan({
       city, days: daysNum, budget, interests,
       places, restaurants, language: lang,
-      optimizedPlaces, optimizedRestaurants,
+      optimizedPlaces, optimizedRestaurants, optimizedItinerary,
       maxDailyDiameterKm,
       countryName,
+      intensity, transportMode,
     });
 
     res.json({ dailyPlan });

@@ -6,6 +6,7 @@ import ResultPage from './pages/ResultPage';
 import SavedTripsPage from './pages/SavedTripsPage';
 import AdminHomePage from './pages/AdminHomePage';
 import AdminPage from './pages/AdminPage';
+import UsagePage from './pages/UsagePage';
 import './i18n';
 import './index.css';
 
@@ -24,6 +25,7 @@ function App() {
                   <Route path="/saved" element={<SavedTripsPage />} />
                   <Route path="/admin" element={<AdminHomePage />} />
                   <Route path="/admin/cities" element={<AdminPage />} />
+                  <Route path="/usage" element={<UsagePage />} />
                 </Routes>
               </main>
             </>

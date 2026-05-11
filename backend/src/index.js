@@ -14,6 +14,7 @@ const tripsRouter = require('./routes/trips');
 const routesRouter = require('./routes/routes');
 const chatRouter = require('./routes/chat');
 const adminRouter = require('./routes/admin');
+const usageRouter = require('./routes/usage');
 
 const app = express();
 const server = http.createServer(app);
@@ -29,7 +30,9 @@ const io = new Server(server, {
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+// rawPlaces + photos + optimizedItinerary kombine edilince /planner/llm
+// payload'ı büyüyebilir; default 100kb limit aşılmasın.
+app.use(express.json({ limit: '5mb' }));
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -43,6 +46,7 @@ app.use('/api/trips', tripsRouter);
 app.use('/api/routes', routesRouter);
 app.use('/api/chats', chatRouter);
 app.use('/api/admin', adminRouter);
+app.use('/api/usage', usageRouter);
 
 // Error handler
 app.use(errorHandler);

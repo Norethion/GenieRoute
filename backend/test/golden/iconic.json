@@ -1,0 +1,169 @@
+{
+  "_meta": {
+    "purpose": "Iconic Recall@K metric için manuel altın liste. Her şehir için yaygın olarak kabul gören must-see yerler. Kaynaklar: Lonely Planet, Wikivoyage, TripAdvisor Top Attractions kesişimi.",
+    "matching": "Plan'daki yer adlarını bu listeyle eşlerken normalize fonksiyonu (lowercase + diakritik temizleme + parantez içi sil) kullanılır.",
+    "lastUpdated": "2026-05-08"
+  },
+  "cities": [
+    {
+      "city": "Paris",
+      "country": "FR",
+      "iconic": [
+        "Eiffel Tower",
+        "Louvre Museum",
+        "Notre-Dame Cathedral",
+        "Sacré-Cœur Basilica",
+        "Arc de Triomphe",
+        "Champs-Élysées",
+        "Musée d'Orsay",
+        "Montmartre",
+        "Palace of Versailles",
+        "Centre Pompidou"
+      ]
+    },
+    {
+      "city": "Rome",
+      "country": "IT",
+      "iconic": [
+        "Colosseum",
+        "Vatican Museums",
+        "St. Peter's Basilica",
+        "Roman Forum",
+        "Pantheon",
+        "Trevi Fountain",
+        "Sistine Chapel",
+        "Spanish Steps",
+        "Piazza Navona",
+        "Castel Sant'Angelo"
+      ]
+    },
+    {
+      "city": "Tokyo",
+      "country": "JP",
+      "iconic": [
+        "Sensō-ji",
+        "Tokyo Tower",
+        "Tokyo Skytree",
+        "Meiji Shrine",
+        "Shibuya Crossing",
+        "Imperial Palace",
+        "Tsukiji Outer Market",
+        "Akihabara",
+        "Ueno Park",
+        "Tokyo National Museum"
+      ]
+    },
+    {
+      "city": "New York",
+      "country": "US",
+      "iconic": [
+        "Statue of Liberty",
+        "Central Park",
+        "Times Square",
+        "Empire State Building",
+        "Metropolitan Museum of Art",
+        "Brooklyn Bridge",
+        "Rockefeller Center",
+        "9/11 Memorial",
+        "Museum of Modern Art",
+        "American Museum of Natural History"
+      ]
+    },
+    {
+      "city": "Amsterdam",
+      "country": "NL",
+      "iconic": [
+        "Anne Frank House",
+        "Rijksmuseum",
+        "Van Gogh Museum",
+        "Vondelpark",
+        "Dam Square",
+        "Royal Palace of Amsterdam",
+        "Heineken Experience",
+        "Stedelijk Museum",
+        "Begijnhof",
+        "NEMO Science Museum"
+      ]
+    },
+    {
+      "city": "İstanbul",
+      "country": "TR",
+      "iconic": [
+        "Hagia Sophia",
+        "Blue Mosque",
+        "Topkapı Palace",
+        "Grand Bazaar",
+        "Basilica Cistern",
+        "Galata Tower",
+        "Dolmabahçe Palace",
+        "Spice Bazaar",
+        "Süleymaniye Mosque",
+        "Bosphorus Cruise"
+      ]
+    },
+    {
+      "city": "Barcelona",
+      "country": "ES",
+      "iconic": [
+        "Sagrada Família",
+        "Park Güell",
+        "Casa Batlló",
+        "La Rambla",
+        "Casa Milà",
+        "Gothic Quarter",
+        "Picasso Museum",
+        "Camp Nou",
+        "Barceloneta Beach",
+        "Montjuïc"
+      ]
+    },
+    {
+      "city": "London",
+      "country": "GB",
+      "iconic": [
+        "Tower of London",
+        "British Museum",
+        "Buckingham Palace",
+        "London Eye",
+        "Westminster Abbey",
+        "Big Ben",
+        "Tower Bridge",
+        "Tate Modern",
+        "Hyde Park",
+        "National Gallery"
+      ]
+    },
+    {
+      "city": "Bangkok",
+      "country": "TH",
+      "iconic": [
+        "Grand Palace",
+        "Wat Pho",
+        "Wat Arun",
+        "Wat Phra Kaew",
+        "Chatuchak Weekend Market",
+        "Khao San Road",
+        "Jim Thompson House",
+        "Yaowarat",
+        "Lumphini Park",
+        "MBK Center"
+      ]
+    },
+    {
+      "city": "Berlin",
+      "country": "DE",
+      "iconic": [
+        "Brandenburg Gate",
+        "Reichstag Building",
+        "Berlin Wall Memorial",
+        "Museum Island",
+        "Checkpoint Charlie",
+        "Holocaust Memorial",
+        "East Side Gallery",
+        "Berlin Cathedral",
+        "Pergamon Museum",
+        "Tiergarten"
+      ]
+    }
+  ]
+}

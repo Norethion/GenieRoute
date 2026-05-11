@@ -95,6 +95,42 @@ async function getAllTipsRows() {
   return result.rows;
 }
 
+async function getMustSeeRow(cityKey) {
+  const result = await pool.query(
+    `SELECT city_key, city_display, country_code,
+            iconic_names, curated_names, source, created_at, updated_at
+       FROM city_must_see_cache
+      WHERE city_key = $1`,
+    [cityKey]
+  );
+  return result.rows[0] || null;
+}
+
+async function upsertMustSee({ cityKey, cityDisplay, countryCode, iconicNames, curatedNames, source }) {
+  const result = await pool.query(
+    `INSERT INTO city_must_see_cache
+       (city_key, city_display, country_code, iconic_names, curated_names, source, updated_at)
+     VALUES ($1, $2, $3, $4::jsonb, $5::jsonb, $6, NOW())
+     ON CONFLICT (city_key) DO UPDATE SET
+       city_display = EXCLUDED.city_display,
+       country_code = EXCLUDED.country_code,
+       iconic_names = EXCLUDED.iconic_names,
+       curated_names = EXCLUDED.curated_names,
+       source = EXCLUDED.source,
+       updated_at = NOW()
+     RETURNING *`,
+    [
+      cityKey,
+      cityDisplay,
+      countryCode,
+      JSON.stringify(iconicNames || []),
+      JSON.stringify(curatedNames || []),
+      source || 'llm',
+    ]
+  );
+  return result.rows[0];
+}
+
 module.exports = {
   getPricesRow,
   upsertPrices,
@@ -102,4 +138,6 @@ module.exports = {
   upsertTips,
   getAllPricesRows,
   getAllTipsRows,
+  getMustSeeRow,
+  upsertMustSee,
 };

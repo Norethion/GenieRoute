@@ -4,11 +4,12 @@ import DatePicker, { registerLocale } from 'react-datepicker';
 import tr from 'date-fns/locale/tr';
 import 'react-datepicker/dist/react-datepicker.css';
 import {
-  MapPin, Calendar, Wallet, Heart,
+  MapPin, Calendar, Wallet, Heart, Compass,
   Landmark, UtensilsCrossed, TreePine, Palette,
   ShoppingBag, Moon, Drama, BookOpen,
   Waves, Droplets, Coffee, Mountain,
-  ArrowRight, ArrowLeft, Sparkles
+  ArrowRight, ArrowLeft, Sparkles,
+  Footprints, Bus, Car, Shuffle, Zap, Battery
 } from 'lucide-react';
 import worldCities from '../data/worldCities.json';
 
@@ -67,7 +68,21 @@ const STEPS = [
   { key: 'city', icon: MapPin },
   { key: 'duration', icon: Calendar },
   { key: 'budget', icon: Wallet },
+  { key: 'style', icon: Compass },
   { key: 'interests', icon: Heart },
+];
+
+const INTENSITY_OPTIONS = [
+  { value: 'relaxed', icon: Battery },
+  { value: 'normal', icon: Compass },
+  { value: 'intensive', icon: Zap },
+];
+
+const TRANSPORT_OPTIONS = [
+  { value: 'walking', icon: Footprints },
+  { value: 'transit', icon: Bus },
+  { value: 'car', icon: Car },
+  { value: 'mixed', icon: Shuffle },
 ];
 
 export default function TripForm({ onSubmit, isLoading }) {
@@ -77,6 +92,8 @@ export default function TripForm({ onSubmit, isLoading }) {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [budget, setBudget] = useState('medium');
+  const [intensity, setIntensity] = useState('normal');
+  const [transportMode, setTransportMode] = useState('mixed');
   const [interests, setInterests] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef(null);
@@ -160,15 +177,20 @@ export default function TripForm({ onSubmit, isLoading }) {
     if (step === 0) return city.trim().length > 0;
     if (step === 1) return days >= 1 && days <= 14;
     if (step === 2) return true;
-    if (step === 3) return interests.length > 0;
+    if (step === 3) return true;
+    if (step === 4) return interests.length > 0;
     return false;
   };
 
   const handleNext = () => {
-    if (step < 3) setStep(step + 1);
+    if (step < 4) setStep(step + 1);
     else {
       const fmt = (d) => d ? d.toISOString().split('T')[0] : undefined;
-      onSubmit({ city, days, budget, interests, startDate: fmt(startDate), endDate: fmt(endDate) });
+      onSubmit({
+        city, days, budget, interests,
+        intensity, transportMode,
+        startDate: fmt(startDate), endDate: fmt(endDate),
+      });
     }
   };
 
@@ -336,6 +358,57 @@ export default function TripForm({ onSubmit, isLoading }) {
         )}
 
         {step === 3 && (
+          <div className="wizard-panel" key="style">
+            <h2 className="wizard-title">{t('wizard.style.title')}</h2>
+            <p className="wizard-desc">{t('wizard.style.desc')}</p>
+
+            <div className="style-section">
+              <div className="style-section-label">{t('wizard.style.intensity.title')}</div>
+              <div className="style-options">
+                {INTENSITY_OPTIONS.map((opt) => {
+                  const Icon = opt.icon;
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      className={`style-card ${intensity === opt.value ? 'active' : ''}`}
+                      onClick={() => setIntensity(opt.value)}
+                      disabled={isLoading}
+                    >
+                      <Icon size={22} />
+                      <span className="style-card-label">{t(`wizard.style.intensity.${opt.value}`)}</span>
+                      <span className="style-card-desc">{t(`wizard.style.intensity.${opt.value}Desc`)}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="style-section">
+              <div className="style-section-label">{t('wizard.style.transport.title')}</div>
+              <div className="style-options">
+                {TRANSPORT_OPTIONS.map((opt) => {
+                  const Icon = opt.icon;
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      className={`style-card ${transportMode === opt.value ? 'active' : ''}`}
+                      onClick={() => setTransportMode(opt.value)}
+                      disabled={isLoading}
+                    >
+                      <Icon size={22} />
+                      <span className="style-card-label">{t(`wizard.style.transport.${opt.value}`)}</span>
+                      <span className="style-card-desc">{t(`wizard.style.transport.${opt.value}Desc`)}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {step === 4 && (
           <div className="wizard-panel" key="interests">
             <h2 className="wizard-title">{t('wizard.interests.title')}</h2>
             <p className="wizard-desc">{t('wizard.interests.desc')}</p>
@@ -368,11 +441,11 @@ export default function TripForm({ onSubmit, isLoading }) {
         )}
         <div className="wizard-nav-spacer" />
         <button
-          className={`btn-next ${step === 3 ? 'btn-generate' : ''}`}
+          className={`btn-next ${step === 4 ? 'btn-generate' : ''}`}
           onClick={handleNext}
           disabled={!canGoNext() || isLoading}
         >
-          {step === 3 ? (
+          {step === 4 ? (
             <>
               <Sparkles size={16} />
               {isLoading ? t('wizard.generating') : t('wizard.generate')}

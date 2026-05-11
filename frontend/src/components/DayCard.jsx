@@ -1,12 +1,18 @@
-import { Sunrise, Sun, Sunset, UtensilsCrossed, Coffee } from 'lucide-react';
+import { Sunrise, Sun, Sunset, UtensilsCrossed, Coffee, Sandwich } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 const TIME_ICONS = {
   morning: Sunrise,
+  'mid-morning': Sun,
   lunch: Coffee,
   afternoon: Sun,
+  'late-afternoon': Sun,
   dinner: UtensilsCrossed,
   evening: Sunset,
+};
+
+const TYPE_ICONS = {
+  snack: Sandwich,
 };
 
 export default function DayCard({ day, onActivityClick }) {
@@ -23,7 +29,8 @@ export default function DayCard({ day, onActivityClick }) {
       </div>
       <div className="activities">
         {day.activities.map((activity, index) => {
-          const Icon = TIME_ICONS[activity.time] || Sun;
+          // type='snack' önceliği — atıştırmalığın sandviç ikonu olur, time'a bakılmaz
+          const Icon = TYPE_ICONS[activity.type] || TIME_ICONS[activity.time] || Sun;
           const desc = activity[`description_${lang}`] || activity.description_en || activity.description || '';
           return (
             <div

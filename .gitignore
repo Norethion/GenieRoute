@@ -18,6 +18,15 @@ build/
 **/.env.*.local
 !**/.env.example
 
+# Google Cloud service account JSON (commit edilirse Google iptal eder)
+**/gcp-*-sa.json
+**/service-account*.json
+backend/genieroute-*.json
+**/*-credentials.json
+
+# Playwright screenshot çıktıları
+usage-*.png
+
 # Logs
 logs/
 *.log
@@ -49,6 +58,9 @@ desktop.ini
 
 # Playwright MCP cache
 .playwright-mcp/
+
+# Plan kalitesi script çıktıları (her run dinamik üretir; altın liste değil)
+backend/test/golden/results/
 
 # Misc
 *.local

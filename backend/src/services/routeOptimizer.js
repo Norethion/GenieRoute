@@ -60,10 +60,26 @@ function suggestTransit(km) {
   return 'ferry/long-distance';
 }
 
-// Şehir yarıçapına göre dinamik gün-içi maksimum çap (km) hesapla
-function resolveMaxDailyDiameter(cityRadiusKm) {
-  if (!cityRadiusKm || !Number.isFinite(cityRadiusKm)) return 12;
-  return Math.max(6, Math.min(14, cityRadiusKm * 0.45));
+// Ulaşım moduna göre tavan değerleri (km). Şehir yarıçapı bu tavanın üstünde
+// olamaz; yürüyüş ağırlıklı planda gün-içi mesafe küçük tutulur.
+const TRANSPORT_DIAMETER_CAP = {
+  walking: 3,
+  transit: 8,
+  car: 15,
+  mixed: 14,
+};
+
+// Şehir yarıçapına göre dinamik gün-içi maksimum çap (km) hesapla.
+// Ulaşım modu seçilmişse, formül çıktısı moda özgü tavanla sınırlandırılır.
+function resolveMaxDailyDiameter(cityRadiusKm, transportMode = 'mixed') {
+  const cap = TRANSPORT_DIAMETER_CAP[transportMode] || TRANSPORT_DIAMETER_CAP.mixed;
+  // Yürüyüş gibi keskin tavanlarda taban da düşürülür (3 km'lik plan'da 6 km
+  // tabanı anlamsız).
+  const floor = transportMode === 'walking' ? 1.5 : transportMode === 'transit' ? 4 : 6;
+  if (!cityRadiusKm || !Number.isFinite(cityRadiusKm)) {
+    return Math.min(cap, 12);
+  }
+  return Math.max(floor, Math.min(cap, cityRadiusKm * 0.45));
 }
 
 // Yakınlık tabanlı greedy K-kümeleme; gün başına çap sınırı uygular.
@@ -175,7 +191,96 @@ function orderByNearest(places) {
     current = nearest;
   }
 
-  return order;
+  return twoOptImprove(order);
+}
+
+// 2-opt improvement: NN sezgiseli lokal-optimum bir yol verir; bazı kenar
+// çiftleri ters çevrilirse toplam mesafe azalır. 4-8 nokta için milisaniye
+// mertebesinde, açık-zincir Hamilton yolu için çalışır (kapalı turda son↔ilk
+// kenarı dahil edilmez).
+function twoOptImprove(places) {
+  const n = places.length;
+  if (n < 4) return places;
+  const dist = (a, b) => haversine(a.lat, a.lng, b.lat, b.lng);
+  let route = [...places];
+  let improved = true;
+  let safety = 0;
+  while (improved && safety < 50) {
+    improved = false;
+    safety++;
+    for (let i = 0; i < n - 2; i++) {
+      for (let j = i + 1; j < n - 1; j++) {
+        // Mevcut: ...A-B...C-D...; aday: ...A-C...B-D... (i+1..j segmenti tersine)
+        const A = route[i];
+        const B = route[i + 1];
+        const C = route[j];
+        const D = route[j + 1];
+        const before = dist(A, B) + dist(C, D);
+        const after = dist(A, C) + dist(B, D);
+        if (after + 1e-9 < before) {
+          const reversed = route.slice(i + 1, j + 1).reverse();
+          route = [...route.slice(0, i + 1), ...reversed, ...route.slice(j + 1)];
+          improved = true;
+        }
+      }
+    }
+  }
+  return route;
+}
+
+/**
+ * Restoranları gün-içi NN-sıralı yerlerin arasına en yakın komşuya göre enjekte eder.
+ * Eski assignRestaurants centroid'e en yakın 2 restoran seçtiği için lunch ve
+ * dinner konumları sıralama mantığına aykırı düşüp zig-zag yaratıyordu.
+ *
+ * Bu fonksiyon: gün için sıralı [yer1, yer2, yer3, yer4] verilince
+ * lunch'ı ortadaki yere, dinner'ı son yere en yakın restoranı seçer ve sıraya
+ * gömer → [yer1, yer2, R_lunch, yer3, yer4, R_dinner] gibi tek liste döndürür.
+ *
+ * @returns {Array<Array<Object & {kind: 'place' | 'restaurant'}>>} Gün başına karışık sıralı liste.
+ */
+function interleaveRestaurants(orderedPlacesByDay, restaurants, restPerDay = 2) {
+  const remaining = [...restaurants];
+  return orderedPlacesByDay.map((dayPlaces) => {
+    if (!Array.isArray(dayPlaces) || dayPlaces.length === 0) return [];
+    const n = dayPlaces.length;
+    const restCount = Math.min(restPerDay, remaining.length);
+    if (restCount === 0) {
+      return dayPlaces.map((p) => ({ ...p, kind: 'place' }));
+    }
+
+    // Pozisyon = kaç yerden sonra restoran enjekte edilecek (1-tabanlı)
+    const positions = restCount === 1
+      ? [Math.max(1, Math.floor(n / 2))]
+      : [Math.max(1, Math.floor(n / 2)), n];
+
+    const insertions = [];
+    for (const pos of positions) {
+      if (remaining.length === 0) break;
+      const refPlace = dayPlaces[Math.min(pos, n) - 1];
+      let nearestIdx = 0;
+      let nearestDist = Infinity;
+      for (let i = 0; i < remaining.length; i++) {
+        const d = haversine(refPlace.lat, refPlace.lng, remaining[i].lat, remaining[i].lng);
+        if (d < nearestDist) { nearestDist = d; nearestIdx = i; }
+      }
+      insertions.push({ pos, restaurant: remaining.splice(nearestIdx, 1)[0] });
+    }
+    insertions.sort((a, b) => a.pos - b.pos);
+
+    const result = [];
+    let insIdx = 0;
+    for (let placeIdx = 0; placeIdx <= n; placeIdx++) {
+      while (insIdx < insertions.length && insertions[insIdx].pos === placeIdx) {
+        result.push({ ...insertions[insIdx].restaurant, kind: 'restaurant' });
+        insIdx++;
+      }
+      if (placeIdx < n) {
+        result.push({ ...dayPlaces[placeIdx], kind: 'place' });
+      }
+    }
+    return result;
+  });
 }
 
 // Assign restaurants to days (nearest to day's cluster centroid)
@@ -222,10 +327,10 @@ function assignRestaurants(clusters, restaurants) {
  *   maxDailyDiameterKm: number,
  * }}
  */
-function optimizeRoute(places, restaurants, days, cityRadiusKm = null) {
+function optimizeRoute(places, restaurants, days, cityRadiusKm = null, transportMode = 'mixed') {
   const validPlaces = places.filter((p) => p.lat && p.lng);
   const validRestaurants = restaurants.filter((r) => r.lat && r.lng);
-  const maxDailyDiameterKm = resolveMaxDailyDiameter(cityRadiusKm);
+  const maxDailyDiameterKm = resolveMaxDailyDiameter(cityRadiusKm, transportMode);
 
   if (validPlaces.length === 0) {
     return {
@@ -238,8 +343,9 @@ function optimizeRoute(places, restaurants, days, cityRadiusKm = null) {
   const { clusters } = clusterByDay(validPlaces, days, maxDailyDiameterKm);
   const optimizedPlaces = clusters.map(orderByNearest);
   const optimizedRestaurants = assignRestaurants(optimizedPlaces, validRestaurants);
+  const optimizedItinerary = interleaveRestaurants(optimizedPlaces, validRestaurants);
 
-  return { optimizedPlaces, optimizedRestaurants, maxDailyDiameterKm };
+  return { optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm };
 }
 
 module.exports = {
@@ -248,4 +354,5 @@ module.exports = {
   maxPairwiseDistance,
   suggestTransit,
   resolveMaxDailyDiameter,
+  interleaveRestaurants,
 };
