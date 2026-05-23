@@ -113,7 +113,13 @@
     "empty": "Henüz kayıtlı plan yok",
     "emptyDesc": "Oluşturduğun planları kaydet ve burada görüntüle.",
     "loadError": "Planlar yüklenirken hata oluştu. Veritabanı bağlantısını kontrol edin.",
-    "detailError": "Plan detayı yüklenirken hata oluştu."
+    "detailError": "Plan detayı yüklenirken hata oluştu.",
+    "filter": {
+      "all": "Tümü",
+      "city": "Şehir",
+      "budget": "Bütçe",
+      "empty": "Bu filtre için kayıtlı plan yok."
+    }
   },
   "time": {
     "morning": "Sabah",
@@ -188,6 +194,7 @@
       "title": "Google Cloud (Monitoring API)",
       "totalRequests": "Toplam istek",
       "estimatedCost": "Tahmini maliyet",
+      "byDay": "Günlük istek",
       "serviceHeader": "Servis",
       "requestsHeader": "İstek",
       "errorsHeader": "Hata",

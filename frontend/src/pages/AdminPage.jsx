@@ -3,21 +3,30 @@ import { useTranslation } from 'react-i18next';
 import { Database, RefreshCw, AlertCircle, CheckCircle, Clock } from 'lucide-react';
 import { getAdminCities } from '../services/api';
 
+// Cache timestamp'leri DB'de UTC tutulur; admin paneli geliştirici aracı
+// olduğu için Türkiye saatinde gösterilir (tarayıcı saat dilimine bağlı kalmaz).
 function formatDate(iso, locale) {
   if (!iso) return '—';
   try {
     return new Date(iso).toLocaleString(locale, {
       year: 'numeric', month: '2-digit', day: '2-digit',
       hour: '2-digit', minute: '2-digit',
+      timeZone: 'Europe/Istanbul',
     });
   } catch {
     return iso;
   }
 }
 
+// Cache rolling cap: 200 sample. ok = median istatistiksel olarak güvenli sayılır
+// (≥25), stable = doygunluğa yakın (≥50). Aşağıda hem badge sınıfı hem ikon
+// seçimi bu eşiği kullanır.
+const OK_THRESHOLD = 25;
+const STABLE_THRESHOLD = 50;
+
 function badgeClass(count) {
-  if (count >= 50) return 'sample-badge stable';
-  if (count >= 3) return 'sample-badge ok';
+  if (count >= STABLE_THRESHOLD) return 'sample-badge stable';
+  if (count >= OK_THRESHOLD) return 'sample-badge ok';
   return 'sample-badge low';
 }
 
@@ -127,7 +136,7 @@ export default function AdminPage() {
                         <td><span className={`budget-tag ${row.budgetLevel}`}>{t(`budget.${row.budgetLevel}`)}</span></td>
                         <td>
                           <span className={badgeClass(row.sampleCount)}>
-                            {row.sampleCount >= 3 ? <CheckCircle size={11} /> : <Clock size={11} />}
+                            {row.sampleCount >= OK_THRESHOLD ? <CheckCircle size={11} /> : <Clock size={11} />}
                             {row.sampleCount}
                           </span>
                         </td>
@@ -169,7 +178,7 @@ export default function AdminPage() {
                         <td>{row.countryCode || '—'}</td>
                         <td>
                           <span className={badgeClass(row.sampleCount)}>
-                            {row.sampleCount >= 3 ? <CheckCircle size={11} /> : <Clock size={11} />}
+                            {row.sampleCount >= OK_THRESHOLD ? <CheckCircle size={11} /> : <Clock size={11} />}
                             {row.sampleCount}
                           </span>
                         </td>

@@ -135,11 +135,13 @@ echo.
 echo [*] Veritabani hazir olana kadar bekleniyor...
 timeout /t 3 >nul
 
+call :FREE_PORT 3001
 echo [*] Backend baslatiliyor (port 3001)...
 start "GenieRoute Backend" cmd /k "cd /d %~dp0backend && npm run dev"
 echo [OK] Backend baslatildi.
 echo.
 
+call :FREE_PORT 5173
 echo [*] Frontend baslatiliyor (port 5173)...
 start "GenieRoute Frontend" cmd /k "cd /d %~dp0frontend && npm run dev"
 echo [OK] Frontend baslatildi.
@@ -178,6 +180,7 @@ REM   SADECE BACKEND
 REM ==============================================================
 :START_BACKEND
 echo.
+call :FREE_PORT 3001
 echo [*] Backend baslatiliyor (port 3001)...
 start "GenieRoute Backend" cmd /k "cd /d %~dp0backend && npm run dev"
 echo [OK] Backend baslatildi: http://localhost:3001
@@ -189,6 +192,7 @@ REM   SADECE FRONTEND
 REM ==============================================================
 :START_FRONTEND
 echo.
+call :FREE_PORT 5173
 echo [*] Frontend baslatiliyor (port 5173)...
 start "GenieRoute Frontend" cmd /k "cd /d %~dp0frontend && npm run dev"
 echo [OK] Frontend baslatildi: http://localhost:5173
@@ -266,7 +270,10 @@ if errorlevel 1 (
 )
 echo [OK] Containerlar durduruldu.
 echo.
-echo [*] Backend/Frontend pencereleri aciksa manuel kapatin (Ctrl+C).
+echo [*] Backend (3001) ve Frontend (5173) portlari serbest birakiliyor...
+call :FREE_PORT 3001
+call :FREE_PORT 5173
+echo [OK] Portlar serbest. Acik cmd pencereleri varsa kapatabilirsiniz.
 pause
 goto MENU
 
@@ -324,6 +331,23 @@ echo ==============================================================
 echo.
 pause
 goto MENU
+
+REM ==============================================================
+REM   YARDIMCI: Belirtilen porttaki LISTENING surecini sonlandir
+REM   Kullanim: call :FREE_PORT 3001
+REM ==============================================================
+:FREE_PORT
+set "_port=%~1"
+set "_pid="
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":%_port% " ^| findstr "LISTENING"') do (
+    set "_pid=%%a"
+)
+if defined _pid (
+    echo [*] Port %_port% kullaniliyor PID=!_pid! - sonlandiriliyor...
+    taskkill /PID !_pid! /F >nul 2>&1
+    timeout /t 1 >nul
+)
+exit /b 0
 
 REM ==============================================================
 REM   CIKIS

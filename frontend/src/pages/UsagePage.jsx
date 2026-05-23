@@ -88,12 +88,15 @@ function useUsageData(cacheKey, fetcher, range, force) {
       : { loading: true, data: null, error: null, fetchedAt: null, fromCache: false };
   });
   const prevKey = useRef(cacheKey);
+  const prevForce = useRef(force);
 
   useEffect(() => {
     let cancelled = false;
     const cached = readCache(cacheKey);
     const keyChanged = prevKey.current !== cacheKey;
+    const forceChanged = prevForce.current !== force;
     prevKey.current = cacheKey;
+    prevForce.current = force;
 
     if (cached?.data && !force) {
       setState({
@@ -103,11 +106,12 @@ function useUsageData(cacheKey, fetcher, range, force) {
         fetchedAt: cached.fetchedAt,
         fromCache: true,
       });
-    } else if (keyChanged) {
-      // Yeni range için cache yok — eski range'in verisi ekranda kalmasın.
+    } else if (keyChanged || forceChanged) {
+      // Yeni range veya explicit refresh — eski veriyi temizle ki skeleton
+      // slot'ları görünür ve kullanıcı yenilemenin başladığını anlasın.
       setState({ loading: true, data: null, error: null, fetchedAt: null, fromCache: false });
     } else {
-      // Aynı range refresh edildi; eski veriyi koru, üst rozet spin etsin.
+      // İlk render veya başka tetik — eski veriyi koruyup loading bayrağı set et.
       setState((s) => ({ ...s, loading: true, error: null }));
     }
 
@@ -297,20 +301,6 @@ function SkeletonTable({ rows = 3, cols = 3 }) {
   );
 }
 
-function PanelSkeleton({ tableCols = 3 }) {
-  return (
-    <>
-      <SkeletonStats />
-      <SkeletonChart />
-      <SkeletonTable rows={2} cols={tableCols} />
-      <div className="usage-skeleton-note">
-        <SkBox w={14} h={14} style={{ borderRadius: '50%' }} />
-        <SkBox w={'85%'} h={9} />
-      </div>
-    </>
-  );
-}
-
 function ErrorBlock({ error, hint }) {
   return (
     <div className="admin-error" role="alert">
@@ -345,7 +335,10 @@ function FreshnessBadge({ fetchedAt, loading, fromCache, locale, t }) {
   );
 }
 
-function PanelShell({ icon: Icon, title, errorNode, badge, children }) {
+// Her panel daima 5 satır (header + stats + chart + table + note) render eder
+// ki .usage-grid subgrid ile iki paneli satır satır hizalayabilsin. Boş slot'lar
+// için `usage-slot-empty` placeholder kullanılır.
+function PanelShell({ icon: Icon, title, badge, children }) {
   return (
     <section className="admin-section usage-panel">
       <div className="usage-panel-header">
@@ -355,10 +348,13 @@ function PanelShell({ icon: Icon, title, errorNode, badge, children }) {
         </h2>
         {badge}
       </div>
-      {errorNode}
       {children}
     </section>
   );
+}
+
+function EmptySlot() {
+  return <div className="usage-slot-empty" aria-hidden="true" />;
 }
 
 function StatGrid({ children }) {
@@ -374,10 +370,6 @@ function OpenAIPanel({ range, force, locale }) {
     force
   );
 
-  const errorNode = error
-    ? <ErrorBlock error={error} hint={t('usage.common.configHint')} />
-    : null;
-
   // estimatedCostUSD öncelikli — resmi costUSD geç finalize olduğu için
   // 24h/7d aralığında genelde 0 görünür.
   const chartData = data?.byDay?.map((d) => ({
@@ -386,76 +378,101 @@ function OpenAIPanel({ range, force, locale }) {
   })) || [];
   const hasChart = chartData.length > 0 && chartData.some((d) => d.value > 0);
 
+  // 5 slot: header + stats + chart + table + note. Hata olduğunda stats slot'a
+  // hata bloğu yerleştirilir, sonraki slot'lar boş kalır — subgrid hizalama korunur.
+  let statsSlot, chartSlot, tableSlot, noteSlot;
+
+  if (error) {
+    statsSlot = <ErrorBlock error={error} hint={t('usage.common.configHint')} />;
+    chartSlot = <EmptySlot />;
+    tableSlot = <EmptySlot />;
+    noteSlot = <EmptySlot />;
+  } else if (!data) {
+    statsSlot = <SkeletonStats />;
+    chartSlot = <SkeletonChart />;
+    tableSlot = <SkeletonTable rows={2} cols={3} />;
+    noteSlot = (
+      <div className="usage-skeleton-note">
+        <SkBox w={14} h={14} style={{ borderRadius: '50%' }} />
+        <SkBox w={'85%'} h={9} />
+      </div>
+    );
+  } else {
+    statsSlot = (
+      <StatGrid>
+        <div className="admin-stat">
+          <span className="admin-stat-label">{t('usage.openai.estimatedCost')}</span>
+          <span className="admin-stat-value">{formatUSD(data.totalEstimatedCostUSD, locale)}</span>
+          {data.totalCostUSD > 0 && (
+            <span className="usage-stat-extra">
+              {t('usage.openai.officialCost')}: {formatUSD(data.totalCostUSD, locale)}
+            </span>
+          )}
+        </div>
+        <div className="admin-stat">
+          <span className="admin-stat-label">{t('usage.openai.totalTokens')}</span>
+          <span className="admin-stat-value">{formatNumber(data.totalTokens, locale)}</span>
+          <span className="usage-stat-extra">
+            {formatNumber(data.totalInputTokens, locale)} / {formatNumber(data.totalOutputTokens, locale)}
+          </span>
+        </div>
+      </StatGrid>
+    );
+    chartSlot = (
+      <div className="usage-section usage-chart-slot">
+        <div className="usage-chart-label">{t('usage.openai.byDay')}</div>
+        {hasChart ? (
+          <BarChart
+            data={chartData}
+            color="#10b981"
+            locale={locale}
+            dense={chartData.length > 30}
+            formatValue={(v) => formatUSD(v, locale)}
+          />
+        ) : (
+          <div className="usage-empty-block">{t('usage.common.noData')}</div>
+        )}
+      </div>
+    );
+    tableSlot = data.byModel?.length > 0 ? (
+      <div className="admin-table-wrap usage-section usage-table-slot">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>{t('usage.openai.modelHeader')}</th>
+              <th>{t('usage.openai.tokensHeader')}</th>
+              <th>{t('usage.openai.modelCostHeader')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.byModel.map((m) => (
+              <tr key={m.model}>
+                <td>{m.model}</td>
+                <td>
+                  {formatNumber(m.inputTokens, locale)} / {formatNumber(m.outputTokens, locale)}
+                </td>
+                <td>{formatUSD(m.estimatedCostUSD, locale)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    ) : (
+      <EmptySlot />
+    );
+    noteSlot = <FreeTierNote text={t('usage.openai.freeTier')} />;
+  }
+
   return (
     <PanelShell
       icon={Cpu}
       title={t('usage.openai.title')}
-      errorNode={errorNode}
       badge={<FreshnessBadge fetchedAt={fetchedAt} loading={loading} fromCache={fromCache} locale={locale} t={t} />}
     >
-      {!data && loading && !error && <PanelSkeleton tableCols={3} />}
-      {data && (
-        <>
-          <StatGrid>
-            <div className="admin-stat">
-              <span className="admin-stat-label">{t('usage.openai.estimatedCost')}</span>
-              <span className="admin-stat-value">{formatUSD(data.totalEstimatedCostUSD, locale)}</span>
-              {data.totalCostUSD > 0 && (
-                <span className="usage-stat-extra">
-                  {t('usage.openai.officialCost')}: {formatUSD(data.totalCostUSD, locale)}
-                </span>
-              )}
-            </div>
-            <div className="admin-stat">
-              <span className="admin-stat-label">{t('usage.openai.totalTokens')}</span>
-              <span className="admin-stat-value">{formatNumber(data.totalTokens, locale)}</span>
-              <span className="usage-stat-extra">
-                {formatNumber(data.totalInputTokens, locale)} / {formatNumber(data.totalOutputTokens, locale)}
-              </span>
-            </div>
-          </StatGrid>
-
-          {hasChart && (
-            <div className="usage-section">
-              <div className="usage-chart-label">{t('usage.openai.byDay')}</div>
-              <BarChart
-                data={chartData}
-                color="#10b981"
-                locale={locale}
-                dense={chartData.length > 30}
-                formatValue={(v) => formatUSD(v, locale)}
-              />
-            </div>
-          )}
-
-          {data.byModel?.length > 0 && (
-            <div className="admin-table-wrap usage-section">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>{t('usage.openai.modelHeader')}</th>
-                    <th>{t('usage.openai.tokensHeader')}</th>
-                    <th>{t('usage.openai.modelCostHeader')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.byModel.map((m) => (
-                    <tr key={m.model}>
-                      <td>{m.model}</td>
-                      <td>
-                        {formatNumber(m.inputTokens, locale)} / {formatNumber(m.outputTokens, locale)}
-                      </td>
-                      <td>{formatUSD(m.estimatedCostUSD, locale)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-
-          <FreeTierNote text={t('usage.openai.freeTier')} />
-        </>
-      )}
+      {statsSlot}
+      {chartSlot}
+      {tableSlot}
+      {noteSlot}
     </PanelShell>
   );
 }
@@ -469,10 +486,6 @@ function GoogleCloudPanel({ range, force, locale }) {
     force
   );
 
-  const errorNode = error
-    ? <ErrorBlock error={error} hint={t('usage.common.configHint')} />
-    : null;
-
   const byDayTotal = data?.byDay
     ? Object.values(
         data.byDay.reduce((acc, row) => {
@@ -484,70 +497,93 @@ function GoogleCloudPanel({ range, force, locale }) {
     : [];
 
   const hasData = data?.byService?.length > 0;
+  const hasChart = byDayTotal.length > 0;
+
+  let statsSlot, chartSlot, tableSlot, noteSlot;
+
+  if (error) {
+    statsSlot = <ErrorBlock error={error} hint={t('usage.common.configHint')} />;
+    chartSlot = <EmptySlot />;
+    tableSlot = <EmptySlot />;
+    noteSlot = <EmptySlot />;
+  } else if (!data) {
+    statsSlot = <SkeletonStats />;
+    chartSlot = <SkeletonChart />;
+    tableSlot = <SkeletonTable rows={2} cols={4} />;
+    noteSlot = (
+      <div className="usage-skeleton-note">
+        <SkBox w={14} h={14} style={{ borderRadius: '50%' }} />
+        <SkBox w={'85%'} h={9} />
+      </div>
+    );
+  } else {
+    statsSlot = (
+      <StatGrid>
+        <div className="admin-stat">
+          <span className="admin-stat-label">{t('usage.googleCloud.totalRequests')}</span>
+          <span className="admin-stat-value">{formatNumber(data.totalRequests, locale)}</span>
+        </div>
+        <div className="admin-stat">
+          <span className="admin-stat-label">{t('usage.googleCloud.estimatedCost')}</span>
+          <span className="admin-stat-value">{formatUSD(data.estimatedCostUSD, locale)}</span>
+        </div>
+      </StatGrid>
+    );
+    chartSlot = (
+      <div className="usage-section usage-chart-slot">
+        <div className="usage-chart-label">{t('usage.googleCloud.byDay')}</div>
+        {hasChart ? (
+          <BarChart
+            data={byDayTotal}
+            color="#f59e0b"
+            locale={locale}
+            dense={byDayTotal.length > 30}
+            formatValue={(v) => `${formatNumber(v, locale)} req`}
+          />
+        ) : (
+          <div className="usage-empty-block">{t('usage.common.noData')}</div>
+        )}
+      </div>
+    );
+    tableSlot = hasData ? (
+      <div className="admin-table-wrap usage-section usage-table-slot">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>{t('usage.googleCloud.serviceHeader')}</th>
+              <th>{t('usage.googleCloud.requestsHeader')}</th>
+              <th>{t('usage.googleCloud.errorsHeader')}</th>
+              <th>{t('usage.googleCloud.costHeader')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.byService.map((row) => (
+              <tr key={row.service}>
+                <td>{row.service}</td>
+                <td>{formatNumber(row.count, locale)}</td>
+                <td>{row.errors}</td>
+                <td>{formatUSD(row.estimatedCostUSD, locale)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    ) : (
+      <p className="admin-empty usage-section">{t('usage.common.noData')}</p>
+    );
+    noteSlot = <FreeTierNote text={t('usage.googleCloud.freeTier')} />;
+  }
 
   return (
     <PanelShell
       icon={Cloud}
       title={t('usage.googleCloud.title')}
-      errorNode={errorNode}
       badge={<FreshnessBadge fetchedAt={fetchedAt} loading={loading} fromCache={fromCache} locale={locale} t={t} />}
     >
-      {!data && loading && !error && <PanelSkeleton tableCols={4} />}
-      {data && (
-        <>
-          <StatGrid>
-            <div className="admin-stat">
-              <span className="admin-stat-label">{t('usage.googleCloud.totalRequests')}</span>
-              <span className="admin-stat-value">{formatNumber(data.totalRequests, locale)}</span>
-            </div>
-            <div className="admin-stat">
-              <span className="admin-stat-label">{t('usage.googleCloud.estimatedCost')}</span>
-              <span className="admin-stat-value">{formatUSD(data.estimatedCostUSD, locale)}</span>
-            </div>
-          </StatGrid>
-
-          {byDayTotal.length > 0 && (
-            <div className="usage-section">
-              <BarChart
-                data={byDayTotal}
-                color="#f59e0b"
-                locale={locale}
-                dense={byDayTotal.length > 30}
-                formatValue={(v) => `${formatNumber(v, locale)} req`}
-              />
-            </div>
-          )}
-
-          {hasData ? (
-            <div className="admin-table-wrap usage-section">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>{t('usage.googleCloud.serviceHeader')}</th>
-                    <th>{t('usage.googleCloud.requestsHeader')}</th>
-                    <th>{t('usage.googleCloud.errorsHeader')}</th>
-                    <th>{t('usage.googleCloud.costHeader')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.byService.map((row) => (
-                    <tr key={row.service}>
-                      <td>{row.service}</td>
-                      <td>{formatNumber(row.count, locale)}</td>
-                      <td>{row.errors}</td>
-                      <td>{formatUSD(row.estimatedCostUSD, locale)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <p className="admin-empty usage-section">{t('usage.common.noData')}</p>
-          )}
-
-          <FreeTierNote text={t('usage.googleCloud.freeTier')} />
-        </>
-      )}
+      {statsSlot}
+      {chartSlot}
+      {tableSlot}
+      {noteSlot}
     </PanelShell>
   );
 }
@@ -559,7 +595,14 @@ export default function UsagePage() {
 
   const [range, setRange] = useState('7d');
   const [forceCounter, setForceCounter] = useState(0);
-  const refresh = useCallback(() => setForceCounter((k) => k + 1), []);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  // Refresh tıklanınca panellerin veri silinip skeleton'a düşmesi 1 tick alır;
+  // refresh butonu kısa süre spin + disabled olarak görsel geri bildirim verir.
+  const refresh = useCallback(() => {
+    setForceCounter((k) => k + 1);
+    setIsRefreshing(true);
+    setTimeout(() => setIsRefreshing(false), 2500);
+  }, []);
 
   return (
     <div className="admin-page">
@@ -583,8 +626,8 @@ export default function UsagePage() {
               </button>
             ))}
           </div>
-          <button className="admin-refresh-btn" onClick={refresh} type="button">
-            <RefreshCw size={14} />
+          <button className="admin-refresh-btn" onClick={refresh} type="button" disabled={isRefreshing}>
+            <RefreshCw size={14} className={isRefreshing ? 'spinning' : ''} />
             {t('usage.refresh')}
           </button>
         </div>

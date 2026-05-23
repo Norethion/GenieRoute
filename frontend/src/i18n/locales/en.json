@@ -113,7 +113,13 @@
     "empty": "No saved plans yet",
     "emptyDesc": "Save your generated plans and view them here.",
     "loadError": "Failed to load plans. Check database connection.",
-    "detailError": "Failed to load plan details."
+    "detailError": "Failed to load plan details.",
+    "filter": {
+      "all": "All",
+      "city": "City",
+      "budget": "Budget",
+      "empty": "No saved plans match this filter."
+    }
   },
   "time": {
     "morning": "Morning",
@@ -188,6 +194,7 @@
       "title": "Google Cloud (Monitoring API)",
       "totalRequests": "Total requests",
       "estimatedCost": "Estimated cost",
+      "byDay": "Requests / day",
       "serviceHeader": "Service",
       "requestsHeader": "Requests",
       "errorsHeader": "Errors",

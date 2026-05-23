@@ -1288,6 +1288,56 @@ body {
   font-weight: 700;
 }
 
+.saved-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.saved-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.saved-filter-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  min-width: 60px;
+}
+.saved-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.saved-filter-chip {
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.saved-filter-chip:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+.saved-filter-chip.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
 .trips-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -2026,8 +2076,12 @@ body {
 .usage-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-  gap: 16px;
-  align-items: start;
+  /* 5 satır: header, stats, chart, table, note.
+     Auto satır boyutları her satırın en uzun panelinin yüksekliğine ayarlanır;
+     subgrid bunu iki paneli aynı yüksekliğe çeker. */
+  grid-template-rows: repeat(5, auto);
+  gap: 14px 16px;
+  align-items: stretch;
 }
 .usage-toolbar {
   display: flex;
@@ -2049,8 +2103,13 @@ body {
 }
 .usage-panel {
   margin: 0;
-  display: flex;
-  flex-direction: column;
+  /* Subgrid: panel kendi sıralarını parent .usage-grid'in 5 satırından alır.
+     Her panel exact 5 child render eder (header + stats + chart + table + note),
+     iki panel satır satır hizalanır. */
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 5;
+  row-gap: 0;
   min-width: 0;
 }
 .usage-panel-header {
@@ -2075,8 +2134,17 @@ body {
   opacity: 0.6;
   margin-top: 2px;
 }
-.usage-section {
-  margin-top: 14px;
+/* Subgrid satır ayrımını parent .usage-grid'in row-gap'i sağlar; margin gerekmez. */
+.usage-section { margin-top: 0; }
+.usage-slot-empty { min-height: 0; }
+.usage-empty-block {
+  padding: 18px 12px;
+  text-align: center;
+  font-size: 0.85em;
+  color: var(--text-muted);
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+  border: 1px dashed var(--border);
 }
 .usage-chart-label {
   font-size: 0.78em;
@@ -2153,7 +2221,6 @@ body {
 .usage-tooltip-value { font-weight: 600; margin-top: 2px; }
 
 .usage-note {
-  margin-top: 12px;
   padding: 10px 12px;
   border-radius: 8px;
   background: rgba(99, 102, 241, 0.08);
