@@ -24,6 +24,18 @@ You MUST use this EXACT format at the END of your message:
 - The JSON must be valid, on a single line, between the tags
 - Write your explanation BEFORE the [PLAN_UPDATE] block
 - If the user asks for a change and you don't include [PLAN_UPDATE], the system cannot apply it — so ALWAYS include it
+
+PLACE NAME RULES — CRITICAL FOR MAP RENDERING:
+- "place" MUST be the FULL, OFFICIAL name as it appears on Google Maps in the local language.
+- DO NOT use abbreviations, nicknames, or shortened forms.
+  * BAD: "1. Meclis"           GOOD: "Birinci Türkiye Büyük Millet Meclisi Müzesi"
+  * BAD: "Anıt"                GOOD: "Anıtkabir"
+  * BAD: "TBMM"                GOOD: "Türkiye Büyük Millet Meclisi"
+  * BAD: "Saray"               GOOD: "Topkapı Sarayı"
+  * BAD: "the Louvre"          GOOD: "Musée du Louvre"
+- If you are not certain a place exists on Google Maps with that exact name, suggest a different well-known place instead.
+- For restaurants/cafes, prefer chains and well-rated independent places that are findable on Google Maps.
+- Always include the city or district context implicitly — the system already searches within the plan's city.
 `;
 
   if (lang === 'tr') {
@@ -105,6 +117,7 @@ function setupChatSocket(io) {
           language: language || 'en',
         });
         const messages = await chatModel.getRecentMessages(activeSession.id);
+        const appliedMap = await chatModel.getAppliedStatusMap(activeSession.id);
         socket.emit('chat:history', {
           sessionId: activeSession.id,
           messages: messages.map((m) => ({
@@ -112,10 +125,34 @@ function setupChatSocket(io) {
             role: m.role,
             content: m.content,
             createdAt: m.created_at,
+            // Asistan mesajinin onerdigi plan-update gercekten uygulandi mi?
+            applied: appliedMap[m.id] === true,
           })),
         });
       } catch (err) {
         socket.emit('chat:error', { message: err.message || 'Failed to initialize chat' });
+      }
+    });
+
+    // Kullanici "Uygula"'ya bastiginda plan_updates satirini applied=true yap
+    socket.on('chat:plan-applied', async ({ messageId } = {}) => {
+      try {
+        if (messageId) await chatModel.markPlanUpdateApplied(Number(messageId));
+      } catch (err) {
+        // Sessizce log; UX'i bozma
+        console.error('Failed to mark plan-update applied:', err.message);
+      }
+    });
+
+    // Yeni sohbet — mevcut session'ı koruyup içeriğini temizle (DB)
+    socket.on('chat:reset', async () => {
+      try {
+        if (activeSession) {
+          await chatModel.clearSession(activeSession.id);
+        }
+        socket.emit('chat:history', { sessionId: activeSession?.id || null, messages: [] });
+      } catch (err) {
+        socket.emit('chat:error', { message: err.message || 'Failed to reset chat' });
       }
     });
 
@@ -204,7 +241,9 @@ function setupChatSocket(io) {
           await chatModel.updateLastActivity(activeSession.id);
         }
 
-        socket.emit('chat:done');
+        // Mesaj id'sini frontend'e gonder — "Uygula" tıklandiginda bu id ile
+        // chat:plan-applied event'i gonderilecek
+        socket.emit('chat:done', { messageId: savedAssistantMsg?.id || null });
       } catch (err) {
         socket.emit('chat:error', { message: err.message || 'Chat error occurred' });
       }

@@ -25,6 +25,8 @@ export default function ResultPage() {
   const [highlightedPlace, setHighlightedPlace] = useState(null);
   const [activeDay, setActiveDay] = useState(-1);
   const highlightTimerRef = useRef(null);
+  // Önizleme öncesi snapshot — iptal edilince geri yükle
+  const previewSnapshotRef = useRef(null);
 
   const navResult = location.state?.result;
   const navTripId = location.state?.tripId;
@@ -60,10 +62,159 @@ export default function ResultPage() {
 
   const clearToast = useCallback(() => setToast(null), []);
 
+  // Önizleme — sadece UI state'i günceller, DB'ye yazmaz. Snapshot tutarız ki iptal
+  // edildiğinde geri yükleyelim.
+  const handlePreviewUpdate = useCallback(async (update) => {
+    const isTr = i18n.language === 'tr';
+    let newPlace = null;
+    // Kullanici farkli gun ya da "Tum Gunler"de iken degisikligin oldugu gune
+    // otomatik gec — aksi halde plan ve harita gorsel olarak guncellenmez.
+    if (update.day && update.day >= 1) {
+      const targetDay = update.day - 1;
+      setActiveDay(targetDay);
+      // Snapshot'i etkilenecek gun aktifken almak istiyoruz; bir frame bekle.
+      await new Promise((r) => setTimeout(r, 50));
+    }
+    if (update.action === 'replace_activity' && update.activity?.place) {
+      try {
+        const cityName = result?.trip?.city;
+        if (cityName) {
+          const lookupResult = await lookupPlace({
+            name: update.activity.place,
+            city: cityName,
+            language: i18n.language,
+          });
+          newPlace = lookupResult?.place || null;
+        }
+      } catch {
+        // sessiz
+      }
+      // Lookup başarısız — önizleme yapma, kullanıcıya bildir.
+      // Aksi halde plan günceller ama harita pin'i olmadığı için "yer kayboldu" izlenimi olur.
+      if (!newPlace) {
+        setToast({
+          message: isTr
+            ? `"${update.activity.place}" Google Haritalar'da bulunamadı. AI'dan tam adıyla başka bir öneri iste.`
+            : `"${update.activity.place}" not found on Google Maps. Ask the AI for an alternative with the full name.`,
+          type: 'error',
+        });
+        return;
+      }
+    }
+
+    setResult((prev) => {
+      if (!prev?.dailyPlan?.days) return prev;
+      // Snapshot (deep clone) — iptal için
+      previewSnapshotRef.current = JSON.parse(JSON.stringify(prev));
+
+      const newResult = {
+        ...prev,
+        dailyPlan: { ...prev.dailyPlan, days: [...prev.dailyPlan.days] },
+        places: [...(prev.places || [])],
+        restaurants: [...(prev.restaurants || [])],
+        mapMarkers: [...(prev.mapMarkers || [])],
+      };
+      const dayIndex = update.day - 1;
+
+      if (update.action === 'replace_activity' && newResult.dailyPlan.days[dayIndex]) {
+        const day = { ...newResult.dailyPlan.days[dayIndex] };
+        const oldActivity = day.activities.find((act) => act.time === update.time);
+        const oldPlaceName = oldActivity?.place;
+        const newPlaceName = update.activity?.place;
+
+        day.activities = day.activities.map((act) =>
+          act.time === update.time ? { ...act, ...update.activity } : act
+        );
+        newResult.dailyPlan.days[dayIndex] = day;
+
+        if (newPlace) {
+          const isRestaurant = update.activity.type === 'restaurant';
+          const targetList = isRestaurant ? newResult.restaurants : newResult.places;
+          if (!targetList.some((p) => p.name === newPlace.name)) {
+            targetList.push(newPlace);
+            const markerType = isRestaurant ? 'restaurant' : 'attraction';
+            if (!newResult.mapMarkers.some((m) => m.name === newPlace.name)) {
+              newResult.mapMarkers.push({ ...newPlace, markerType });
+            }
+          }
+        }
+
+        if (oldPlaceName && oldPlaceName !== newPlaceName) {
+          const stillReferenced = newResult.dailyPlan.days.some((dd) =>
+            dd.activities?.some((a) => a.place === oldPlaceName)
+          );
+          if (!stillReferenced) {
+            newResult.places = newResult.places.filter((p) => p.name !== oldPlaceName);
+            newResult.restaurants = newResult.restaurants.filter((r) => r.name !== oldPlaceName);
+            newResult.mapMarkers = newResult.mapMarkers.filter((m) => m.name !== oldPlaceName);
+          }
+        }
+      } else if (update.action === 'replace_day_title' && newResult.dailyPlan.days[dayIndex]) {
+        newResult.dailyPlan.days[dayIndex] = {
+          ...newResult.dailyPlan.days[dayIndex],
+          title_tr: update.title_tr,
+          title_en: update.title_en,
+        };
+      }
+      return newResult;
+    });
+
+    setToast({
+      message: isTr ? 'Önizleme — onaylamak için "Onayla"ya bas.' : 'Preview — press "Confirm" to save.',
+      type: 'success'
+    });
+  }, [i18n.language, result]);
+
+  // Önizleme iptal — snapshot'a geri dön
+  const handleCancelPreview = useCallback(() => {
+    if (previewSnapshotRef.current) {
+      setResult(previewSnapshotRef.current);
+      previewSnapshotRef.current = null;
+      const isTr = i18n.language === 'tr';
+      setToast({
+        message: isTr ? 'Önizleme iptal edildi.' : 'Preview cancelled.',
+        type: 'success'
+      });
+    }
+  }, [i18n.language]);
+
   const handlePlanUpdate = useCallback(async (update) => {
     const isTr = i18n.language === 'tr';
     let lookupFailed = false;
     let newPlace = null;
+
+    // Kullanici farkli gun veya Tum Gunler'de iken Onayla/Apply yapilirsa
+    // gorunmeyebilir — etkilenen gune otomatik gec.
+    if (update.day && update.day >= 1) {
+      setActiveDay(update.day - 1);
+    }
+
+    // Eğer önizleme akışı zaten state'i mutate ettiyse (snapshot var), tekrar uygulamadan
+    // sadece DB'ye yaz. Aksi halde tek-atışta hem state'i değiştir hem kaydet.
+    if (previewSnapshotRef.current) {
+      previewSnapshotRef.current = null; // confirm — snapshot artık gerekmez
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(result));
+      let autoSaved = false;
+      if (tripId && result) {
+        try {
+          await updateTripPlan(tripId, {
+            planText: JSON.stringify(result.dailyPlan),
+            placesJson: result.places || [],
+            restaurantsJson: result.restaurants || [],
+          });
+          autoSaved = true;
+        } catch { /* sessizce */ }
+      }
+      setToast({
+        message: autoSaved
+          ? (isTr ? 'Plan güncellendi ve kaydedildi.' : 'Plan updated and saved.')
+          : tripId
+            ? (isTr ? 'Plan güncellendi (kaydedilemedi).' : 'Plan updated (could not save).')
+            : (isTr ? 'Plan güncellendi.' : 'Plan updated.'),
+        type: 'success',
+      });
+      return;
+    }
 
     // Aktivite değişikliği için yeni mekanın koordinatlarını çek
     if (update.action === 'replace_activity' && update.activity?.place) {
@@ -80,6 +231,16 @@ export default function ResultPage() {
         }
       } catch {
         lookupFailed = true;
+      }
+      // Lookup başarısız — değişikliği uygulama; yoksa plan tutarsız olur (gün kartında var, haritada yok).
+      if (lookupFailed) {
+        setToast({
+          message: isTr
+            ? `"${update.activity.place}" Google Haritalar'da bulunamadı. Plan değiştirilmedi. AI'dan tam adıyla başka bir öneri iste.`
+            : `"${update.activity.place}" not found on Google Maps. Plan not changed. Ask the AI for an alternative with the full name.`,
+          type: 'error',
+        });
+        return;
       }
     }
 
@@ -289,12 +450,22 @@ export default function ResultPage() {
           <DailyPlan plan={dailyPlan} onActivityClick={handleActivityClick} activeDay={activeDay} onDayChange={setActiveDay} />
           <BudgetSummary budget={budgetEstimate} />
           <CityTips tips={cityInfo} weather={weather} />
-          <ChatPanel planData={{ trip, dailyPlan }} onPlanUpdate={handlePlanUpdate} tripId={tripId} />
         </div>
       </div>
 
       <div className="result-right">
         <MapView markers={mapMarkers} highlightedPlace={highlightedPlace} dailyPlan={dailyPlan} activeDay={activeDay} />
+        {/* Draggable floating chat — harita üzerinde, sürüklenebilir kart */}
+        <div className="chat-float-container">
+          <ChatPanel
+            planData={{ trip, dailyPlan }}
+            onPlanUpdate={handlePlanUpdate}
+            onPreviewUpdate={handlePreviewUpdate}
+            onCancelPreview={handleCancelPreview}
+            tripId={tripId}
+            floating
+          />
+        </div>
       </div>
     </div>
   );

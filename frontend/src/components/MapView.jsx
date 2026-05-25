@@ -1,23 +1,16 @@
-import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
-import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from '@react-google-maps/api';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import Map, { Marker, Popup, Source, Layer, NavigationControl } from 'react-map-gl/mapbox';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import { Loader, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
-import { lightStyle, darkStyle, DAY_COLORS } from '../data/mapStyles';
+import { MAPBOX_STYLES, DAY_COLORS } from '../data/mapStyles';
+import { getCategoryColor, getCategoryLabel, getMarkerCategory, CATEGORY_COLORS } from '../data/markerCategories';
+import MapFabGroup, { STYLE_CYCLE } from './MapFabGroup';
 import PhotoWithFallback from './PhotoWithFallback';
 
-const containerStyle = { width: '100%', height: '100%' };
-const defaultCenter = { lat: 39.9208, lng: 32.8541 };
-
-function createNumberedIcon(number, color) {
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="42" viewBox="0 0 32 42">
-      <path d="M16 0C7.16 0 0 7.16 0 16c0 12 16 26 16 26s16-14 16-26C32 7.16 24.84 0 16 0z" fill="${color}"/>
-      <circle cx="16" cy="16" r="10" fill="white"/>
-      <text x="16" y="21" text-anchor="middle" font-size="12" font-weight="bold" fill="${color}">${number}</text>
-    </svg>`;
-  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
-}
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || '';
+const defaultCenter = { latitude: 39.9208, longitude: 32.8541 };
 
 function getPhotoSrc(photoUrl) {
   if (!photoUrl) return null;
@@ -31,7 +24,6 @@ function buildMapsUrl(marker) {
   return marker.placeId ? `${base}&query_place_id=${marker.placeId}` : base;
 }
 
-// Normalize text for fuzzy matching (Turkish chars, trim, lowercase)
 function normalize(str) {
   return (str || '')
     .toLowerCase()
@@ -53,9 +45,6 @@ function findMarkerForPlace(markers, placeName) {
   if (!norm) return null;
   const normExact = markers.find((m) => normalize(m.name) === norm);
   if (normExact) return normExact;
-  // Substring fallback. Boş normalize edilmiş adları (CJK/Arap-only isimler
-  // "" döner) atla, aksi halde "".includes() her şeyi sahte eşler.
-  // Birden fazla aday varsa uzunluk farkı en küçük olan en spesifik kabul edilir.
   const candidates = markers.filter((m) => {
     const mn = normalize(m.name);
     if (!mn) return false;
@@ -68,15 +57,31 @@ function findMarkerForPlace(markers, placeName) {
   );
 }
 
+function NumberedPin({ number, color, bouncing }) {
+  return (
+    <div className={`map-pin${bouncing ? ' bouncing' : ''}`} style={{ '--pin-color': color }}>
+      <div className="map-pin-body">
+        <span className="map-pin-number">{number}</span>
+      </div>
+    </div>
+  );
+}
+
 export default function MapView({ markers = [], center, highlightedPlace, dailyPlan, activeDay }) {
-  const { t } = useTranslation();
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_KEY || '',
-  });
+  const { t, i18n } = useTranslation();
+  const { theme } = useTheme();
+  const mapRef = useRef(null);
 
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [photoIndex, setPhotoIndex] = useState(0);
-  const [mapReady, setMapReady] = useState(false);
+  // FAB grubu state'leri — pitch, harita stili, rota görünürlüğü, kategori filtresi
+  const [is3D, setIs3D] = useState(false);
+  const [styleKey, setStyleKey] = useState(null); // null = tema otomatik (light/dark)
+  const [routesVisible, setRoutesVisible] = useState(true);
+  // categoryFilter null ise "tümü görünür"; Set ise yalnızca içindeki kategoriler
+  const [categoryFilter, setCategoryFilter] = useState(null);
+  // Mapbox Directions API'den dönen yol-takipli rota geojson'ları — day index ile cache
+  const [directionsCache, setDirectionsCache] = useState({});
   const selectedDay = activeDay ?? -1;
 
   const selectedPhotos = useMemo(() => {
@@ -90,10 +95,7 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
   useEffect(() => {
     setPhotoIndex(0);
   }, [selectedMarker?.placeId, selectedMarker?.name]);
-  const mapRef = useRef(null);
-  const { theme } = useTheme();
 
-  // Build day-to-markers mapping with fuzzy matching
   const dayMarkers = useMemo(() => {
     if (!dailyPlan?.days || !markers.length) return [];
     return dailyPlan.days.map((day) => {
@@ -108,150 +110,220 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
     });
   }, [dailyPlan, markers]);
 
-  // Tek seferlik global eşleşme — render içinde marker bazında çağrı yaparsak
-  // substring fallback birden fazla marker'a yanlış BOUNCE verir.
   const highlightedMarker = useMemo(
     () => findMarkerForPlace(markers, highlightedPlace),
     [markers, highlightedPlace]
   );
 
   const visibleMarkers = useMemo(() => {
-    if (!dayMarkers.length) return markers;
-    if (selectedDay >= 0) return dayMarkers[selectedDay] || [];
-    // "Tüm günler" görünümünde sadece bir güne atanmış marker'ları göster.
-    // LLM'in seçmediği yerler haritayı kalabalıklaştırmaz; her marker'ın bir
-    // gün rengi olur (default mavi/kırmızı çakışması yaşanmaz).
-    const seen = new Set();
-    const result = [];
-    for (const dayList of dayMarkers) {
-      for (const m of dayList) {
-        if (!seen.has(m.name)) {
-          seen.add(m.name);
-          result.push(m);
+    let base;
+    if (!dayMarkers.length) {
+      base = markers;
+    } else if (selectedDay >= 0) {
+      base = dayMarkers[selectedDay] || [];
+    } else {
+      const seen = new Set();
+      const result = [];
+      for (const dayList of dayMarkers) {
+        for (const m of dayList) {
+          if (!seen.has(m.name)) {
+            seen.add(m.name);
+            result.push(m);
+          }
         }
       }
+      base = result;
     }
-    return result;
-  }, [selectedDay, dayMarkers, markers]);
+    if (!categoryFilter) return base;
+    return base.filter((m) => categoryFilter.has(getMarkerCategory(m)));
+  }, [selectedDay, dayMarkers, markers, categoryFilter]);
 
-  // Polyline'ları imperatif yönetiyoruz — @react-google-maps/api Polyline'ı
-  // ne path ne options prop değişikliklerini alttaki google.maps.Polyline'a
-  // güvenilir şekilde yansıtıyor (unmount sırasında setMap(null) bile
-  // çağırmıyor). Bu yüzden google.maps.Polyline objelerini bizzat oluşturup,
-  // her render'da eski olanları setMap(null) ile haritadan temizliyoruz.
-  const polylinesRef = useRef([]);
+  // Seçili gün için Mapbox Directions API'sinden yol-takipli rota çek
+  useEffect(() => {
+    if (selectedDay < 0 || !dayMarkers[selectedDay]) return;
+    const dayPlaces = dayMarkers[selectedDay];
+    if (dayPlaces.length < 2) return;
+    // Bu gün için cache'de varsa tekrar çekme
+    const cacheKey = dayPlaces.map((p) => `${p.lat},${p.lng}`).join('|');
+    if (directionsCache[selectedDay]?.cacheKey === cacheKey) return;
 
-  // Only compute center once on initial render — after that the map manages its own center
-  const mapCenter = useMemo(() => {
-    return center || (markers.length > 0
-      ? { lat: markers[0].lat, lng: markers[0].lng }
-      : defaultCenter);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const coords = dayPlaces.map((p) => `${p.lng},${p.lat}`).join(';');
+    const url = `https://api.mapbox.com/directions/v5/mapbox/walking/${coords}?geometries=geojson&overview=full&access_token=${MAPBOX_TOKEN}`;
 
-  const onMarkerClick = useCallback((marker) => {
-    setSelectedMarker(marker);
-  }, []);
+    const controller = new AbortController();
+    fetch(url, { signal: controller.signal })
+      .then((r) => r.ok ? r.json() : Promise.reject(r.status))
+      .then((data) => {
+        const route = data?.routes?.[0]?.geometry;
+        if (!route) return;
+        setDirectionsCache((prev) => ({
+          ...prev,
+          [selectedDay]: { cacheKey, geometry: route },
+        }));
+      })
+      .catch((err) => {
+        if (err?.name === 'AbortError') return;
+        // Hata durumunda düz çizgiye düş — cache'i error olarak işaretle ki tekrar denemeyelim
+        setDirectionsCache((prev) => ({
+          ...prev,
+          [selectedDay]: { cacheKey, geometry: null, error: true },
+        }));
+      });
 
-  const onMapLoad = useCallback((map) => {
-    mapRef.current = map;
-    setMapReady(true);
-    if (markers.length > 1) {
-      const bounds = new window.google.maps.LatLngBounds();
-      markers.forEach((m) => bounds.extend({ lat: m.lat, lng: m.lng }));
-      map.fitBounds(bounds, { padding: 50 });
-    }
+    return () => controller.abort();
+  }, [selectedDay, dayMarkers]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Polyline'ları GeoJSON Source+Layer ile çiziyoruz. Tüm-günler görünümünde rota yok;
+  // tek-gün modunda Directions API'den gelen yol-takipli geometri (yoksa düz çizgi fallback).
+  const routeLayers = useMemo(() => {
+    if (!dayMarkers.length || !routesVisible || selectedDay < 0) return [];
+    const dayPlaces = dayMarkers[selectedDay];
+    if (!dayPlaces || dayPlaces.length < 2) return [];
+    const cached = directionsCache[selectedDay];
+    const geometry = cached?.geometry || {
+      type: 'LineString',
+      coordinates: dayPlaces.map((p) => [p.lng, p.lat]),
+    };
+    return [{
+      id: `route-day-${selectedDay}`,
+      color: DAY_COLORS[selectedDay % DAY_COLORS.length],
+      geojson: { type: 'Feature', geometry },
+    }];
+  }, [dayMarkers, selectedDay, routesVisible, directionsCache]);
+
+  // 3D pitch toggle — easeTo ile yumuşak geçiş
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    map.easeTo({ pitch: is3D ? 60 : 0, duration: 600 });
+  }, [is3D]);
+
+  // FAB stil seçimi geçerliyse onu kullan, aksi halde tema bazlı varsayılan
+  const activeMapStyle = styleKey
+    ? MAPBOX_STYLES[styleKey]
+    : (theme === 'dark' ? MAPBOX_STYLES.dark : MAPBOX_STYLES.light);
+
+  const cycleStyle = () => {
+    setStyleKey((prev) => {
+      const base = prev || (theme === 'dark' ? 'dark' : 'light');
+      const i = STYLE_CYCLE.indexOf(base);
+      return STYLE_CYCLE[(i + 1) % STYLE_CYCLE.length];
+    });
+  };
+
+  const toggleCategoryFilter = (key) => {
+    setCategoryFilter((prev) => {
+      const all = Object.keys(CATEGORY_COLORS);
+      const current = prev || new Set(all);
+      const next = new Set(current);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      // Hepsi görünürse "filtre yok" anlamına null'a düşür
+      if (next.size === all.length) return null;
+      return next;
+    });
+  };
+
+  const initialView = useMemo(() => ({
+    latitude: center?.lat ?? (markers[0]?.lat || defaultCenter.latitude),
+    longitude: center?.lng ?? (markers[0]?.lng || defaultCenter.longitude),
+    zoom: 13,
+  }), []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // İlk yüklemede tüm marker'lara fit — yalnız BIR KEZ. Sonraki marker
+  // değişiklikleri (preview / chat update) haritayı yeniden çerçevelemesin;
+  // aksi halde yeni eklenen mekan (varsayılan koordinatlar veya farklı ülke)
+  // tüm haritayı dünya görünümüne zoom-out eder.
+  const initialFitDoneRef = useRef(false);
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || markers.length < 2 || initialFitDoneRef.current) return;
+    const lats = markers.map((m) => m.lat);
+    const lngs = markers.map((m) => m.lng);
+    map.fitBounds(
+      [[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]],
+      { padding: 60, duration: 600 }
+    );
+    initialFitDoneRef.current = true;
   }, [markers]);
 
+  // Gün değişimi VEYA o gün için marker dizisinin değişmesi durumlarında re-fit.
+  // - Day 2 -> Day 1 (kullanıcı tab tıkladı): selectedDay değişti -> fit Day 1
+  // - Preview eklenince: visibleMarkers reference'ı değişti -> yeni marker dahil re-fit
+  // Önceki kod sadece [selectedDay]'e bağlıydı; preview marker eklendiğinde re-fit
+  // tetiklenmediği için kullanıcı yeni mekanı viewport dışında görmüyordu.
   useEffect(() => {
-    if (mapRef.current) {
-      mapRef.current.setOptions({
-        styles: theme === 'dark' ? darkStyle : lightStyle,
-      });
-    }
-  }, [theme]);
+    const map = mapRef.current;
+    if (!map || visibleMarkers.length < 2 || selectedDay < 0) return;
+    const lats = visibleMarkers.map((m) => m.lat);
+    const lngs = visibleMarkers.map((m) => m.lng);
+    map.fitBounds(
+      [[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]],
+      { padding: 60, duration: 600 }
+    );
+  }, [selectedDay, visibleMarkers]);
 
+  // Popup'ı yalnız gün değişince kapat — marker dizisi update'i (preview)
+  // popup'ı kapatmamalı, kullanıcı incelediği yeri kaybetmesin.
   useEffect(() => {
-    if (highlightedPlace && mapRef.current) {
-      const found = findMarkerForPlace(markers, highlightedPlace);
-      if (found) {
-        mapRef.current.panTo({ lat: found.lat, lng: found.lng });
-        mapRef.current.setZoom(16);
-      }
-      // DayCard'dan yeni bir yer seçilince açık InfoWindow yeni odağı gizlememeli
-      setSelectedMarker(null);
-    }
-  }, [highlightedPlace, markers]);
-
-  useEffect(() => {
-    if (mapRef.current && visibleMarkers.length > 1) {
-      const bounds = new window.google.maps.LatLngBounds();
-      visibleMarkers.forEach((m) => bounds.extend({ lat: m.lat, lng: m.lng }));
-      mapRef.current.fitBounds(bounds, { padding: 60 });
-    }
-    // Gün değişince eski seçim bağlamdan düşer
     setSelectedMarker(null);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDay]);
 
-  // İmperatif polyline yönetimi: önce eski objeleri haritadan kaldır, sonra
-  // sadece görünmesi gereken günler için yeni google.maps.Polyline oluştur.
+  // DayCard'dan tıklanan yerle haritayı yakınlaştır
   useEffect(() => {
-    if (!mapReady || !mapRef.current) return;
-
-    polylinesRef.current.forEach((p) => p.setMap(null));
-    polylinesRef.current = [];
-
-    if (!dayMarkers.length) return;
-
-    dayMarkers.forEach((dayPlaces, i) => {
-      if (dayPlaces.length < 2) return;
-      const visible = selectedDay < 0 || selectedDay === i;
-      if (!visible) return;
-
-      const polyline = new window.google.maps.Polyline({
-        path: dayPlaces.map((p) => ({ lat: p.lat, lng: p.lng })),
-        strokeColor: DAY_COLORS[i % DAY_COLORS.length],
-        strokeOpacity: 0.8,
-        strokeWeight: 3,
-        geodesic: true,
-        clickable: false,
-        map: mapRef.current,
-      });
-      polylinesRef.current.push(polyline);
+    if (!highlightedMarker || !mapRef.current) return;
+    mapRef.current.flyTo({
+      center: [highlightedMarker.lng, highlightedMarker.lat],
+      zoom: 16,
+      duration: 800,
     });
+    setSelectedMarker(null);
+  }, [highlightedMarker]);
 
-    return () => {
-      polylinesRef.current.forEach((p) => p.setMap(null));
-      polylinesRef.current = [];
-    };
-  }, [mapReady, dayMarkers, selectedDay]);
-
-  if (!isLoaded) {
+  if (!MAPBOX_TOKEN) {
     return (
       <div className="map-loading">
         <Loader size={24} className="map-spinner" />
         <p>{t('map.loading')}</p>
+        <small style={{ color: 'var(--text-sub, #888)', marginTop: 8 }}>
+          VITE_MAPBOX_TOKEN eksik — frontend/.env'ye ekleyin.
+        </small>
       </div>
     );
   }
 
   return (
-    <GoogleMap
-      mapContainerStyle={containerStyle}
-      center={mapCenter}
-      zoom={13}
-      onLoad={onMapLoad}
-      options={{
-        streetViewControl: false,
-        mapTypeControl: false,
-        fullscreenControl: true,
-        styles: theme === 'dark' ? darkStyle : lightStyle,
-      }}
+    <div className="map-view-wrapper">
+    <Map
+      ref={mapRef}
+      mapboxAccessToken={MAPBOX_TOKEN}
+      initialViewState={initialView}
+      style={{ width: '100%', height: '100%' }}
+      mapStyle={activeMapStyle}
+      attributionControl={false}
     >
+      <NavigationControl position="top-left" showCompass={false} />
+
+      {routeLayers.map((r) => (
+        <Source key={r.id} id={r.id} type="geojson" data={r.geojson}>
+          <Layer
+            id={`${r.id}-line`}
+            type="line"
+            paint={{
+              'line-color': r.color,
+              'line-width': 3,
+              'line-opacity': 0.8,
+            }}
+            layout={{ 'line-cap': 'round', 'line-join': 'round' }}
+          />
+        </Source>
+      ))}
+
       {visibleMarkers.map((marker, index) => {
         let markerNumber = index + 1;
-        let markerColor = marker.markerType === 'restaurant' ? '#EA4335' : '#4285F4';
+        // Tek gün görünümünde gün rengi (rota akışını öne çıkarır), tüm günler
+        // görünümünde kategori rengi (restoran/müze/kafe ayrımı görünür olur).
+        let markerColor = getCategoryColor(marker);
 
         if (selectedDay >= 0 && dayMarkers[selectedDay]) {
           markerNumber = index + 1;
@@ -260,36 +332,40 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
           for (let d = 0; d < dayMarkers.length; d++) {
             const idx = dayMarkers[d].findIndex((m) => m.name === marker.name);
             if (idx !== -1) {
-              markerColor = DAY_COLORS[d % DAY_COLORS.length];
               markerNumber = idx + 1;
               break;
             }
           }
         }
 
+        const isBouncing = highlightedMarker && marker.name === highlightedMarker.name;
+
         return (
           <Marker
             key={`${marker.name}-${index}`}
-            position={{ lat: marker.lat, lng: marker.lng }}
-            title={marker.name}
-            icon={{
-              url: createNumberedIcon(markerNumber, markerColor),
-              scaledSize: new window.google.maps.Size(32, 42),
+            longitude={marker.lng}
+            latitude={marker.lat}
+            anchor="bottom"
+            onClick={(e) => {
+              e.originalEvent.stopPropagation();
+              setSelectedMarker(marker);
             }}
-            animation={
-              highlightedMarker && marker.name === highlightedMarker.name
-                ? window.google.maps.Animation.BOUNCE
-                : undefined
-            }
-            onClick={() => onMarkerClick(marker)}
-          />
+          >
+            <NumberedPin number={markerNumber} color={markerColor} bouncing={isBouncing} />
+          </Marker>
         );
       })}
 
       {selectedMarker && (
-        <InfoWindow
-          position={{ lat: selectedMarker.lat, lng: selectedMarker.lng }}
-          onCloseClick={() => setSelectedMarker(null)}
+        <Popup
+          longitude={selectedMarker.lng}
+          latitude={selectedMarker.lat}
+          offset={[0, -30]}
+          closeOnClick={false}
+          closeButton={true}
+          onClose={() => setSelectedMarker(null)}
+          maxWidth="260px"
+          className="genieroute-popup"
         >
           <div className="info-window">
             {selectedPhotos.length > 0 && (
@@ -333,11 +409,15 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
               <h4>{selectedMarker.name}</h4>
               <p className="info-rating">{'★'.repeat(Math.round(selectedMarker.rating || 0))} {selectedMarker.rating}</p>
               <p>{selectedMarker.address}</p>
-              {selectedMarker.markerType && (
-                <span className={`info-badge ${selectedMarker.markerType}`}>
-                  {t(`map.${selectedMarker.markerType}`)}
-                </span>
-              )}
+              <span
+                className="info-badge"
+                style={{
+                  background: `${getCategoryColor(selectedMarker)}1f`,
+                  color: getCategoryColor(selectedMarker),
+                }}
+              >
+                {getCategoryLabel(selectedMarker, i18n.language === 'en' ? 'en' : 'tr')}
+              </span>
               <a
                 className="info-window-btn"
                 href={buildMapsUrl(selectedMarker)}
@@ -349,8 +429,21 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
               </a>
             </div>
           </div>
-        </InfoWindow>
+        </Popup>
       )}
-    </GoogleMap>
+    </Map>
+    <MapFabGroup
+      mapRef={mapRef}
+      is3D={is3D}
+      onToggle3D={() => setIs3D((v) => !v)}
+      styleKey={styleKey || (theme === 'dark' ? 'dark' : 'light')}
+      onCycleStyle={cycleStyle}
+      routesVisible={routesVisible}
+      onToggleRoutes={() => setRoutesVisible((v) => !v)}
+      categoryFilter={categoryFilter}
+      onToggleCategory={toggleCategoryFilter}
+      hasFilters={!!categoryFilter}
+    />
+    </div>
   );
 }

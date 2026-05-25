@@ -59,6 +59,12 @@ desktop.ini
 # Playwright MCP cache
 .playwright-mcp/
 
+# Playwright E2E test artifact'ları
+frontend/test-results/
+frontend/playwright-report/
+frontend/blob-report/
+**/playwright/.cache/
+
 # Plan kalitesi script çıktıları (her run dinamik üretir; altın liste değil)
 backend/test/golden/results/
 

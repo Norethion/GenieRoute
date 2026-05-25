@@ -12,7 +12,7 @@ Kullanıcının şehir, gün, bütçe ve ilgi alanı girdisiyle Google Places AP
   - OpenAI API (gpt-4o-mini, JSON mode plan üretimi + streaming chat)
   - Open-Meteo (hava durumu, anahtarsız)
   - open.er-api.com (çoklu base para birimi döviz kurları, 1 saat in-memory cache)
-- **Harita:** Google Maps JavaScript API (@react-google-maps/api)
+- **Harita:** Mapbox GL JS + react-map-gl (görselleştirme, rota polyline, 3D pitch); mekan verisi ve fotoğraflar Google Places API ile gelmeye devam eder (hibrit mimari)
 
 ## Proje Yapısı
 
@@ -78,10 +78,11 @@ frontend/
     components/
       Navbar.jsx              # Üst nav (dil + tema toggle)
       TripForm.jsx            # Şehir/gün/tarih/bütçe/ilgi formu
-      MapView.jsx             # Google Maps + marker + InfoWindow
+      MapView.jsx             # Mapbox GL + Marker + Popup + GeoJSON polyline + FAB grubu wrapper
+      MapFabGroup.jsx         # Sag-alt FAB grubu: kategori filtresi, 3D pitch, tema cycle, rota toggle
       DailyPlan.jsx           # Gün sekmeleri + aktif gün kartı
       DayCard.jsx             # Tek gün: morning / lunch / afternoon / dinner
-      ChatPanel.jsx           # Socket.io ile streaming chat + plan güncelleme
+      ChatPanel.jsx           # Socket.io ile streaming chat + plan guncelleme; floating=true ile react-draggable yuzen kart
       BudgetSummary.jsx       # Bütçe tahmini kartı
       CityTips.jsx            # Şehir ipuçları paneli
       FeaturedRoutes.jsx      # Anasayfa kültür rotaları
@@ -92,7 +93,8 @@ frontend/
       chatSocket.js           # socket.io-client + clientUuid yönetimi
     data/
       worldCities.json        # GeoNames türevi top ~5000 dünya şehri (otomatik tamamlama)
-      mapStyles.js            # Google Maps açık/koyu stil JSON
+      mapStyles.js            # Mapbox style URL'leri (light/dark/streets/satellite) + DAY_COLORS
+      markerCategories.js     # Google Places types[] -> kategori -> renk haritasi (restaurant/cafe/museum/landmark/shopping/transit/attraction)
 ```
 
 ## Projeyi Çalıştırma
@@ -166,6 +168,7 @@ OPENAI_API_KEY=...
 ```
 VITE_API_URL=http://localhost:3001/api
 VITE_GOOGLE_MAPS_KEY=...
+VITE_MAPBOX_TOKEN=pk....   # https://account.mapbox.com/access-tokens (ucretsiz, harita gorsellestirme icin)
 ```
 
 Open-Meteo ve döviz kuru API'si anahtarsız çalışır.

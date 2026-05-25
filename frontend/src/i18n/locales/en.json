@@ -101,6 +101,8 @@
     "saveSuccess": "Plan saved successfully!",
     "saveError": "Failed to save plan.",
     "day": "Day",
+    "allDays": "All Days",
+    "allDaysHint": "Pick a day to see its route and itinerary.",
     "places": "Places",
     "restaurants": "Restaurants",
     "tips": "Tips",

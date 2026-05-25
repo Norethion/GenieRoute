@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import { Lightbulb } from 'lucide-react';
+import { Lightbulb, Calendar } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import DayCard from './DayCard';
 
 export default function DailyPlan({ plan, onActivityClick, activeDay: externalDay, onDayChange }) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language === 'tr' ? 'tr' : 'en';
-  const [internalDay, setInternalDay] = useState(0);
-  const activeDay = externalDay !== undefined && externalDay >= 0 ? externalDay : internalDay;
+  // Varsayılan: tüm günler görünümü (-1). Kullanıcı bir gün sekmesine tıklayınca o güne geçer.
+  const [internalDay, setInternalDay] = useState(-1);
+  const activeDay = externalDay !== undefined ? externalDay : internalDay;
   const setActiveDay = (day) => {
     setInternalDay(day);
     onDayChange?.(day);
@@ -18,6 +19,13 @@ export default function DailyPlan({ plan, onActivityClick, activeDay: externalDa
   return (
     <div className="daily-plan">
       <div className="day-tabs">
+        <button
+          className={`day-tab day-tab-all ${activeDay < 0 ? 'active' : ''}`}
+          onClick={() => setActiveDay(-1)}
+        >
+          <Calendar size={12} />
+          {t('result.allDays')}
+        </button>
         {plan.days.map((day, index) => (
           <button
             key={index}
@@ -29,7 +37,14 @@ export default function DailyPlan({ plan, onActivityClick, activeDay: externalDa
         ))}
       </div>
 
-      <DayCard day={plan.days[activeDay]} onActivityClick={onActivityClick} />
+      {activeDay >= 0 ? (
+        <DayCard day={plan.days[activeDay]} onActivityClick={onActivityClick} />
+      ) : (
+        <div className="daily-plan-overview">
+          <Calendar size={20} />
+          <p>{t('result.allDaysHint')}</p>
+        </div>
+      )}
 
       {(() => {
         const tips = plan[`tips_${lang}`] || plan.tips_en || plan.tips || [];

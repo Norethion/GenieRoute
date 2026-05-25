@@ -101,6 +101,8 @@
     "saveSuccess": "Plan başarıyla kaydedildi!",
     "saveError": "Plan kaydedilirken hata oluştu.",
     "day": "Gün",
+    "allDays": "Tüm Günler",
+    "allDaysHint": "Bir gün seçerek o günün rotasını ve planını görebilirsin.",
     "places": "Mekan",
     "restaurants": "Restoran",
     "tips": "İpuçları",
