@@ -1961,15 +1961,17 @@ body {
   margin-top: 2px;
 }
 .budget-range-tooltip-bar-row {
-  display: flex;
+  /* 1fr (bar rayı) + auto (değer) — uzun barlar değer etiketini kutu dışına itemez */
+  display: grid;
+  grid-template-columns: 1fr auto;
   align-items: center;
   gap: 8px;
 }
 .budget-range-tooltip-bar {
   height: 8px;
+  max-width: 100%;
   background: color-mix(in srgb, var(--accent) 45%, transparent);
   border-radius: 4px;
-  flex-shrink: 0;
   transition: width 0.2s;
 }
 .budget-range-tooltip-bar.median {
@@ -1979,12 +1981,6 @@ body {
   font-variant-numeric: tabular-nums;
   color: var(--text-secondary);
   white-space: nowrap;
-}
-.budget-range-tooltip-hint {
-  font-size: 10px;
-  color: var(--text-muted);
-  font-style: italic;
-  margin-top: 2px;
 }
 
 .budget-note {
@@ -2608,3 +2604,150 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .skeleton { animation: none; }
 }
+
+/* === Vacanza-ilhamlı özellikler === */
+
+/* Hava-duyarlı rozet (DayCard) */
+.activity-time-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.activity-weather-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.activity-weather-badge.avoid-outdoor { color: #d9772b; }
+
+/* Saatli program: varış–ayrılış aralığı + duraklar-arası seyahat süresi */
+.activity-clock {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-light);
+  padding: 1px 7px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.2px;
+}
+.activity-travel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin: 2px 0 2px 14px;
+  opacity: 0.85;
+}
+.activity-weather-warn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #d9772b;
+  background: color-mix(in srgb, #d9772b 12%, transparent);
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+}
+
+/* Harita popup beğen butonu (popup sabit açık zemin) */
+.info-rating-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.info-like-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 1px solid #e0e0ea;
+  border-radius: var(--radius-sm);
+  background: #f6f6fb;
+  color: #8a8aa0;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.info-like-btn:hover { border-color: #e0405e; color: #e0405e; }
+.info-like-btn.liked { color: #e0405e; border-color: color-mix(in srgb, #e0405e 40%, transparent); }
+
+/* Bağlama duyarlı sohbet chip'leri */
+.chat-followups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 12px 4px;
+  border-top: 1px solid var(--border);
+}
+.chat-followup-chip {
+  font-size: 12px;
+  font-family: var(--font-body);
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.chat-followup-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Kaydedilen Yerler (favoriler) grid'i */
+.saved-places-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.saved-place-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  transition: all 0.2s;
+}
+.saved-place-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.saved-place-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.saved-place-top h3 { font-family: var(--font-display); font-size: 17px; color: var(--text-primary); min-width: 0; }
+.saved-place-remove {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px;
+  transition: color 0.15s;
+}
+.saved-place-remove:hover { color: #e0405e; }
+.saved-place-card .info-rating { display: flex; align-items: center; gap: 4px; font-size: 13px; margin: 6px 0; }
+.saved-place-city { font-size: 13px; color: var(--text-secondary); margin: 2px 0; }
+.saved-place-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.saved-place-maps {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--accent);
+  text-decoration: none;
+}
+.saved-place-maps:hover { text-decoration: underline; }
+
+/* Tercihler sayfası */
+.preferences-page { max-width: 840px; margin: 0 auto; padding: 24px 16px; }
+.pref-section { margin-bottom: 22px; }
+.pref-section-title { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 10px; }
+.pref-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.pref-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 13px;
+  font-family: var(--font-body);
+  transition: all 0.15s;
+}
+.pref-chip:hover { border-color: var(--accent); color: var(--accent); }
+.pref-chip.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+.pref-save-btn { margin-top: 8px; }

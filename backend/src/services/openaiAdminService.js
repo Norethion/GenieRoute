@@ -9,19 +9,17 @@ const CACHE_TTL = 60 * 1000;
 // günlük bucket'lar finalize olana kadar 0 döndüğü için token bazlı tahmini
 // hesabı paralel tutuyoruz.
 const PRICE_PER_M_TOKENS = {
-  'gpt-4o-mini': { input: 0.15, output: 0.60 },
-  'gpt-4o': { input: 2.50, output: 10.00 },
-  'gpt-4-turbo': { input: 10.00, output: 30.00 },
-  'gpt-4': { input: 30.00, output: 60.00 },
-  'gpt-3.5-turbo': { input: 0.50, output: 1.50 },
-  'o1-mini': { input: 1.10, output: 4.40 },
-  'o1': { input: 15.00, output: 60.00 },
-  'o3-mini': { input: 1.10, output: 4.40 },
+  'gpt-5.5': { input: 5.00, output: 30.00 },
+  'gpt-5.4': { input: 2.50, output: 15.00 },
+  'gpt-5.4-mini': { input: 0.75, output: 4.50 },
+  'gpt-5.4-nano': { input: 0.20, output: 1.25 },
+  'gpt-5-mini': { input: 0.25, output: 2.00 },
+  'gpt-5-nano': { input: 0.05, output: 0.40 },
   'text-embedding-3-small': { input: 0.02, output: 0 },
   'text-embedding-3-large': { input: 0.13, output: 0 },
 };
 
-// Model adındaki tarih ekini sıyır: "gpt-4o-mini-2024-07-18" → "gpt-4o-mini".
+// Model adındaki tarih ekini sıyır: "gpt-5.4-mini-2025-08-07" → "gpt-5.4-mini".
 function priceFor(model) {
   if (PRICE_PER_M_TOKENS[model]) return PRICE_PER_M_TOKENS[model];
   const stripped = model?.replace(/-\d{4}-\d{2}-\d{2}$/, '');

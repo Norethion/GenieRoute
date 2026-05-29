@@ -140,7 +140,6 @@ export default function BudgetSummary({ budget }) {
                     );
                   })}
                 </span>
-                <span className="budget-range-tooltip-hint">{tt('budget.rangeTooltipHint')}</span>
               </span>
             </span>
           )}

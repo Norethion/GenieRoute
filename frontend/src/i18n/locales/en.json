@@ -1,7 +1,9 @@
 {
   "nav": {
     "explore": "Explore",
-    "saved": "Saved"
+    "saved": "Saved",
+    "savedPlaces": "Places",
+    "preferences": "Preferences"
   },
   "hero": {
     "badge": "AI Powered",
@@ -108,7 +110,83 @@
     "tips": "Tips",
     "noResult": "No plan created yet",
     "noResultDesc": "Fill in the form to create a travel plan.",
-    "createPlan": "Create Plan"
+    "createPlan": "Create Plan",
+    "avoidOutdoor": "Indoor recommended",
+    "rainProb": "rain chance",
+    "minShort": "min"
+  },
+  "favorites": {
+    "title": "Saved Places",
+    "like": "Add to favorites",
+    "remove": "Remove from favorites",
+    "empty": "No saved places yet",
+    "emptyDesc": "Tap a place on the map and press the heart to save it.",
+    "onlyFavorites": "Favorites only"
+  },
+  "preferences": {
+    "title": "Preferences",
+    "subtitle": "These help the AI personalize your plans. Saved on this browser.",
+    "save": "Save",
+    "saved": "Preferences saved.",
+    "saveError": "Failed to save preferences.",
+    "travelStyle": {
+      "title": "Travel Style",
+      "relaxed": "Relaxed",
+      "balanced": "Balanced",
+      "adventurous": "Adventurous",
+      "cultural": "Cultural",
+      "luxury": "Luxury"
+    },
+    "favoriteCategories": { "title": "Favorite Categories" },
+    "dailyBudget": { "title": "Daily Budget" },
+    "activityLevel": { "title": "Activity Level" },
+    "cuisines": {
+      "title": "Cuisine Preferences",
+      "turkish": "Turkish",
+      "italian": "Italian",
+      "asian": "Asian",
+      "seafood": "Seafood",
+      "vegetarian": "Vegetarian",
+      "streetfood": "Street Food",
+      "finedining": "Fine Dining"
+    },
+    "dietary": {
+      "title": "Dietary Restrictions",
+      "vegan": "Vegan",
+      "vegetarian": "Vegetarian",
+      "halal": "Halal",
+      "glutenFree": "Gluten-free",
+      "lactoseFree": "Lactose-free",
+      "nutAllergy": "Nut allergy"
+    },
+    "accessibility": {
+      "title": "Accessibility Needs",
+      "wheelchair": "Wheelchair access",
+      "lowMobility": "Low mobility",
+      "visual": "Visual support",
+      "hearing": "Hearing support",
+      "strollerFriendly": "Stroller-friendly"
+    },
+    "tripPace": { "title": "Trip Pace" },
+    "accommodation": {
+      "title": "Accommodation",
+      "hotel": "Hotel",
+      "boutique": "Boutique hotel",
+      "hostel": "Hostel",
+      "apartment": "Apartment",
+      "resort": "Resort"
+    },
+    "transport": { "title": "Transport" },
+    "languages": {
+      "title": "Languages",
+      "tr": "Turkish",
+      "en": "English",
+      "de": "German",
+      "fr": "French",
+      "es": "Spanish",
+      "ar": "Arabic",
+      "ru": "Russian"
+    }
   },
   "savedTrips": {
     "title": "Saved Plans",
@@ -190,7 +268,7 @@
       "modelHeader": "Model",
       "tokensHeader": "In / Out",
       "modelCostHeader": "Estimated USD",
-      "freeTier": "Estimate: token count × model price (e.g. gpt-4o-mini $0.15/M input, $0.60/M output). Official USD comes from /costs endpoint; may show 0 on new accounts until the daily bucket is finalized."
+      "freeTier": "Estimate: token count × model price (e.g. gpt-5.4-mini $0.75/M input, $4.50/M output). Official USD comes from /costs endpoint; may show 0 on new accounts until the daily bucket is finalized."
     },
     "googleCloud": {
       "title": "Google Cloud (Monitoring API)",

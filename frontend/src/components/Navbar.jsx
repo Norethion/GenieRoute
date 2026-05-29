@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Map, Bookmark, Sun, Moon } from 'lucide-react';
+import { Map, Bookmark, Sun, Moon, Heart, Settings } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useTranslation } from 'react-i18next';
 
@@ -32,6 +32,14 @@ export default function Navbar() {
             <Link to="/saved" className={`nav-link ${location.pathname === '/saved' ? 'nav-active' : ''}`}>
               <Bookmark size={16} />
               {t('nav.saved')}
+            </Link>
+            <Link to="/saved-places" className={`nav-link ${location.pathname === '/saved-places' ? 'nav-active' : ''}`}>
+              <Heart size={16} />
+              {t('nav.savedPlaces')}
+            </Link>
+            <Link to="/preferences" className={`nav-link ${location.pathname === '/preferences' ? 'nav-active' : ''}`}>
+              <Settings size={16} />
+              {t('nav.preferences')}
             </Link>
           </div>
           <button className="lang-toggle" onClick={switchLanguage} title="Switch language">

@@ -85,8 +85,13 @@ async function searchPlaces(city, interests = [], language = 'en') {
   return (response.data.results || []).map(normalizePlace);
 }
 
-async function searchRestaurants(city, budget, language = 'en') {
-  const query = `restaurants in ${city}`;
+// foodFocused=true ise (kullanıcı yemek/mutfak ilgi alanı seçmişse) arama yalnız
+// restoranla sınırlı kalmaz; yerel lezzet, sokak yemeği, kafe ve yemek pazarlarını
+// da kapsar — Vacanza'nın "food tour" davranışına yakın daha zengin bir yemek havuzu.
+async function searchRestaurants(city, budget, language = 'en', foodFocused = false) {
+  const query = foodFocused
+    ? `best food restaurants cafes street food and food markets in ${city}`
+    : `restaurants in ${city}`;
 
   const params = {
     query,

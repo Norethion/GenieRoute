@@ -1,5 +1,6 @@
 const OpenAI = require('openai');
 const cityDataModel = require('../models/cityDataModel');
+const { HELPER_MODEL, buildChatParams } = require('../config/models');
 
 // Rolling FIFO cache: aynı (şehir, budget_level) için en fazla bu kadar sample
 // tutulur; yeni sample eklendiğinde en eski FIFO ile düşürülür. Cap'e ulaşıldığında
@@ -125,13 +126,15 @@ ${PRICE_SCHEMA_PROMPT}
 ${PRICE_FIELD_RULES}
 - Be realistic for ${cityName} in 2026 prices.`;
 
-  const response = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
-    messages: [{ role: 'user', content: prompt }],
-    response_format: { type: 'json_object' },
-    temperature: 0.6,
-    max_tokens: 600,
-  });
+  const response = await openai.chat.completions.create(
+    buildChatParams(HELPER_MODEL, {
+      messages: [{ role: 'user', content: prompt }],
+      jsonMode: true,
+      temperature: 0.6,
+      maxTokens: 600,
+      reasoningEffort: 'low',
+    })
+  );
 
   const text = response.choices[0].message.content;
   return JSON.parse(text);
@@ -184,7 +187,7 @@ ${PRICE_FIELD_RULES}
 - Reflect 2026 current prices found on the web.`;
 
   const response = await openai.responses.create({
-    model: 'gpt-4o-mini',
+    model: HELPER_MODEL,
     tools: [{ type: 'web_search' }],
     input: prompt,
   });
@@ -223,13 +226,15 @@ Return ONLY a JSON object with this EXACT structure (Turkish + English versions,
 
 Be concrete: name actual transit cards (e.g. "Suica" for Tokyo, "Oyster" for London), specific dishes, real emergency numbers. Avoid generic advice.`;
 
-  const response = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
-    messages: [{ role: 'user', content: prompt }],
-    response_format: { type: 'json_object' },
-    temperature: 0.6,
-    max_tokens: 1200,
-  });
+  const response = await openai.chat.completions.create(
+    buildChatParams(HELPER_MODEL, {
+      messages: [{ role: 'user', content: prompt }],
+      jsonMode: true,
+      temperature: 0.6,
+      maxTokens: 1200,
+      reasoningEffort: 'low',
+    })
+  );
 
   const text = response.choices[0].message.content;
   return JSON.parse(text);
@@ -260,7 +265,7 @@ Then return ONLY a JSON object (no markdown fences, no extra commentary):
 Each field 2-4 sentences. Cite current 2026 sources.`;
 
   const response = await openai.responses.create({
-    model: 'gpt-4o-mini',
+    model: HELPER_MODEL,
     tools: [{ type: 'web_search' }],
     input: prompt,
   });

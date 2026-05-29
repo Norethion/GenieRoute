@@ -5,13 +5,10 @@ import tr from 'date-fns/locale/tr';
 import 'react-datepicker/dist/react-datepicker.css';
 import {
   MapPin, Calendar, Wallet, Heart, Compass,
-  Landmark, UtensilsCrossed, TreePine, Palette,
-  ShoppingBag, Moon, Drama, BookOpen,
-  Waves, Droplets, Coffee, Mountain,
   ArrowRight, ArrowLeft, Sparkles,
-  Footprints, Bus, Car, Shuffle, Zap, Battery
 } from 'lucide-react';
 import worldCities from '../data/worldCities.json';
+import { INTEREST_OPTIONS, INTENSITY_OPTIONS, TRANSPORT_OPTIONS } from '../data/tripOptions';
 
 registerLocale('tr', tr);
 
@@ -47,23 +44,6 @@ const DateInput = forwardRef(({ value, onClick, placeholder, disabled }, ref) =>
   </button>
 ));
 
-const INTEREST_OPTIONS = [
-  { value: 'history', key: 'history', icon: Landmark },
-  { value: 'food', key: 'food', icon: UtensilsCrossed },
-  { value: 'nature', key: 'nature', icon: TreePine },
-  { value: 'museum', key: 'museum', icon: Palette },
-  { value: 'shopping', key: 'shopping', icon: ShoppingBag },
-  { value: 'nightlife', key: 'nightlife', icon: Moon },
-  { value: 'art', key: 'art', icon: Drama },
-  { value: 'culture', key: 'culture', icon: BookOpen },
-  { value: 'ottoman', key: 'ottoman', icon: Landmark },
-  { value: 'beach', key: 'beach', icon: Waves },
-  { value: 'thermal', key: 'thermal', icon: Droplets },
-  { value: 'cuisine', key: 'cuisine', icon: Coffee },
-  { value: 'bazaar', key: 'bazaar', icon: ShoppingBag },
-  { value: 'hiking', key: 'hiking', icon: Mountain },
-];
-
 const STEPS = [
   { key: 'city', icon: MapPin },
   { key: 'duration', icon: Calendar },
@@ -72,29 +52,21 @@ const STEPS = [
   { key: 'interests', icon: Heart },
 ];
 
-const INTENSITY_OPTIONS = [
-  { value: 'relaxed', icon: Battery },
-  { value: 'normal', icon: Compass },
-  { value: 'intensive', icon: Zap },
-];
-
-const TRANSPORT_OPTIONS = [
-  { value: 'walking', icon: Footprints },
-  { value: 'transit', icon: Bus },
-  { value: 'car', icon: Car },
-  { value: 'mixed', icon: Shuffle },
-];
-
-export default function TripForm({ onSubmit, isLoading }) {
+export default function TripForm({ onSubmit, isLoading, defaults }) {
   const { t, i18n } = useTranslation();
   const [step, setStep] = useState(0);
   const [city, setCity] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [budget, setBudget] = useState('medium');
-  const [intensity, setIntensity] = useState('normal');
-  const [transportMode, setTransportMode] = useState('mixed');
-  const [interests, setInterests] = useState([]);
+  // Kayıtlı tercihler varsa form varsayılanlarını ön-doldur (şehir/tarih hariç).
+  const [budget, setBudget] = useState(defaults?.dailyBudget || 'medium');
+  const [intensity, setIntensity] = useState(defaults?.tripPace || defaults?.activityLevel || 'normal');
+  const [transportMode, setTransportMode] = useState(
+    Array.isArray(defaults?.transport) ? defaults.transport[0] : (defaults?.transport || 'mixed')
+  );
+  const [interests, setInterests] = useState(
+    Array.isArray(defaults?.favoriteCategories) ? defaults.favoriteCategories : []
+  );
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);

@@ -23,14 +23,14 @@ router.post('/search', async (req, res, next) => {
 // POST /api/places/restaurants - Şehre göre restoran ara
 router.post('/restaurants', async (req, res, next) => {
   try {
-    const { city, budget, language } = req.body;
+    const { city, budget, language, foodFocused } = req.body;
 
     if (!city) {
       return res.status(400).json({ error: 'city is required' });
     }
 
     const lang = ['tr', 'en'].includes(language) ? language : 'en';
-    const restaurants = await placesService.searchRestaurants(city, budget, lang);
+    const restaurants = await placesService.searchRestaurants(city, budget, lang, foodFocused === true);
     res.json({ restaurants });
   } catch (err) {
     next(err);

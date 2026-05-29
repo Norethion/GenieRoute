@@ -1,5 +1,6 @@
 const OpenAI = require('openai');
 const { maxPairwiseDistance, suggestTransit } = require('./routeOptimizer');
+const { PLAN_MODEL, buildChatParams } = require('../config/models');
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -13,7 +14,7 @@ function buildDayMeta(dayPlaces, dayRestaurants) {
   return { maxKm: Math.round(km * 10) / 10, transit: suggestTransit(km) };
 }
 
-function buildPrompt({ city, days, budget, interests, places, restaurants, optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm, countryName, intensity = 'normal', transportMode = 'mixed' }) {
+function buildPrompt({ city, days, budget, interests, places, restaurants, optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm, countryName, intensity = 'normal', transportMode = 'mixed', weatherDayParts = null, constraints = null }) {
   let placesText;
   let restaurantsText;
   let itineraryText = '';
@@ -32,10 +33,14 @@ function buildPrompt({ city, days, budget, interests, places, restaurants, optim
         // Yer kategorisi: iconic = dünyaca tanınmış simge, curated = niche kaliteli
         const catTag = it.kind === 'place' && it.category && it.category !== 'regular'
           ? ` [${it.category.toUpperCase()}]` : '';
+        // Hava-duyarlı planlama için açık/kapalı mekan etiketi (yalnız yerlerde)
+        const envTag = it.kind === 'place' && it.environment === 'outdoor'
+          ? ' [OUTDOOR]'
+          : it.kind === 'place' && it.environment === 'indoor' ? ' [INDOOR]' : '';
         const extra = it.kind === 'restaurant'
           ? `Rating: ${it.rating}, Price: ${it.priceLevel ?? 'unknown'}`
           : `Rating: ${it.rating}, Address: ${it.address}`;
-        return `  ${idx + 1}. ${tag}${catTag} ${it.name} (${extra})`;
+        return `  ${idx + 1}. ${tag}${catTag}${envTag} ${it.name} (${extra})`;
       }).join('\n');
       return `${header}\n${lines}`;
     }).join('\n\n');
@@ -87,11 +92,37 @@ function buildPrompt({ city, days, budget, interests, places, restaurants, optim
     : `Places to visit:\n${placesText}\n\nRestaurants:\n${restaurantsText}`;
 
   const orderingRule = itineraryText
-    ? '- IMPORTANT: For each day, follow the ordered itinerary above EXACTLY. Map item 1 → "morning", the first [RESTAURANT] → "lunch", the next [PLACE] → "afternoon", and the second [RESTAURANT] → "dinner". This preserves geographic flow and avoids zig-zag routes.'
+    ? '- IMPORTANT: For each day, follow the ordered itinerary above EXACTLY, keeping every item including ALL [RESTAURANT] stops. Assign each [RESTAURANT] a time slot by its POSITION in the sequence: if there is a single [RESTAURANT], use "lunch" when it falls in the first half of the day or "dinner" when it falls later; if there are two, the earlier one → "lunch" and the later → "dinner"; any further [RESTAURANT] → a snack/coffee slot ("mid-morning" or "late-afternoon", type "snack"). Map [PLACE] items to "morning"/"afternoon"/"evening" by their position. Do not drop any food stop. This preserves geographic flow and avoids zig-zag routes.'
     : '- Include morning, lunch, afternoon, and dinner activities for each day';
 
   const categoryRule = itineraryText
     ? '- Place tags: [ICONIC] = world-famous landmark (give 2-3 sentence rich description, mention historic/cultural significance); [CURATED] = niche local gem (mention what makes it special vs touristy alternatives); no tag = regular pick.'
+    : '';
+
+  // Hava tahmini (gün-parçası) — yağmurlu dilimlerde [AVOID OUTDOOR] işaretlenir.
+  const weatherSection = Array.isArray(weatherDayParts) && weatherDayParts.length
+    ? `\nWeather Forecast (by day-part — weatherCode/precip%):\n` +
+      weatherDayParts.map((w, i) => {
+        const fmt = (label, p) => `${label} ${p.weatherCode}/${p.precipProb}%${p.avoidOutdoor ? ' [AVOID OUTDOOR]' : ''}`;
+        return `Day ${i + 1} (${w.date}): ${fmt('morning', w.morning)}, ${fmt('afternoon', w.afternoon)}, ${fmt('evening', w.evening)}`;
+      }).join('\n')
+    : '';
+
+  const weatherRule = weatherSection
+    ? '\n- WEATHER: For any day-part marked [AVOID OUTDOOR], schedule INDOOR places ([INDOOR]: museum, gallery, mall, covered market, restaurant/cafe) in that slot and move OUTDOOR places ([OUTDOOR]: parks, viewpoints, waterfronts) to a clear day-part. Respect each place\'s [OUTDOOR]/[INDOOR] tag. If a whole day is rainy, add an umbrella / indoor-first tip in that day\'s descriptions. Do NOT invent indoor places not in the data — only re-order / re-slot what is provided.'
+    : '';
+
+  // Diyet + erişilebilirlik kısıtları (tercihlerden) — her öneri için zorunlu.
+  const dietary = Array.isArray(constraints?.dietary) ? constraints.dietary.filter(Boolean) : [];
+  const accessibility = Array.isArray(constraints?.accessibility) ? constraints.accessibility.filter(Boolean) : [];
+  const constraintsSection = (dietary.length || accessibility.length)
+    ? `\nHARD CONSTRAINTS (must respect for every recommendation):\n` +
+      (dietary.length ? `- Dietary: only suggest restaurants/cafes compatible with: ${dietary.join(', ')}. Note suitable dishes in descriptions.\n` : '') +
+      (accessibility.length ? `- Accessibility: prefer step-free / wheelchair-accessible venues and routes; flag any stop that may be difficult for: ${accessibility.join(', ')}.\n` : '')
+    : '';
+
+  const constraintsRule = constraintsSection
+    ? '\n- Honor all HARD CONSTRAINTS above. If a provided place violates a dietary/accessibility constraint, prefer another provided place and explain the swap briefly.'
     : '';
 
   return `You are a professional travel planner. You generate plans for any city worldwide.
@@ -107,11 +138,13 @@ Include culturally relevant tips appropriate for ${destination}: local etiquette
 Create a daily travel plan using ONLY the following REAL place and restaurant data.
 
 ${dataSection}
-
+${weatherSection}
+${constraintsSection}
 RULES:
 - ONLY use places from the data above, do NOT invent new places
+- The "place" field must contain ONLY the exact place name — NEVER include the bracketed tags ([PLACE], [RESTAURANT], [ICONIC], [CURATED], [INDOOR], [OUTDOOR]); those tags are metadata for you, not part of the name.
 ${orderingRule}
-${categoryRule}
+${categoryRule}${weatherRule}${constraintsRule}
 - Places are pre-grouped by geographic proximity per day, maintain this grouping
 - Do NOT swap places between days — the geographic clustering is fixed
 - Reachability: each day's places must be reachable by realistic urban transit (walking, bus, minibus, tram, metro, taxi, or ferry). Use the "suggested transit" hint provided for each day
@@ -163,16 +196,18 @@ JSON format (activities array can have 3-6 entries; time can be: "morning", "mid
 }`;
 }
 
-async function generateDailyPlan({ city, days, budget, interests, places, restaurants, optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm, countryName, intensity, transportMode }) {
-  const prompt = buildPrompt({ city, days, budget, interests, places, restaurants, optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm, countryName, intensity, transportMode });
+async function generateDailyPlan({ city, days, budget, interests, places, restaurants, optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm, countryName, intensity, transportMode, weatherDayParts, constraints }) {
+  const prompt = buildPrompt({ city, days, budget, interests, places, restaurants, optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm, countryName, intensity, transportMode, weatherDayParts, constraints });
 
-  const response = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
-    messages: [{ role: 'user', content: prompt }],
-    response_format: { type: 'json_object' },
-    max_tokens: days * 700 + 1200,
-    temperature: 0.7,
-  });
+  const response = await openai.chat.completions.create(
+    buildChatParams(PLAN_MODEL, {
+      messages: [{ role: 'user', content: prompt }],
+      jsonMode: true,
+      maxTokens: days * 700 + 1200,
+      temperature: 0.7,
+      reasoningEffort: 'low',
+    })
+  );
 
   const content = response.choices[0].message.content;
 
@@ -185,6 +220,17 @@ async function generateDailyPlan({ city, days, budget, interests, places, restau
 
   if (!parsed.days || !Array.isArray(parsed.days)) {
     throw new Error('LLM response missing daily plan. Please try again.');
+  }
+
+  // Bazı modeller (gpt-5 ailesi) itinerary'deki [PLACE]/[ICONIC]/[INDOOR] gibi
+  // köşeli-parantez etiketlerini place adının başına kopyalayabiliyor; temizle.
+  for (const day of parsed.days) {
+    if (!Array.isArray(day.activities)) continue;
+    for (const act of day.activities) {
+      if (typeof act.place === 'string') {
+        act.place = act.place.replace(/^(?:\s*\[[^\]]*\]\s*)+/, '').trim();
+      }
+    }
   }
 
   return parsed;

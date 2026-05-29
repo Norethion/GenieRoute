@@ -1,5 +1,6 @@
-import { Sunrise, Sun, Sunset, UtensilsCrossed, Coffee, Sandwich } from 'lucide-react';
+import { Sunrise, Sun, Sunset, UtensilsCrossed, Coffee, Sandwich, AlertTriangle, Navigation } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { getDayPart, getWeatherIcon } from '../data/weatherIcons';
 
 const TIME_ICONS = {
   morning: Sunrise,
@@ -15,7 +16,7 @@ const TYPE_ICONS = {
   snack: Sandwich,
 };
 
-export default function DayCard({ day, onActivityClick }) {
+export default function DayCard({ day, onActivityClick, dayWeather }) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language === 'tr' ? 'tr' : 'en';
 
@@ -32,19 +33,49 @@ export default function DayCard({ day, onActivityClick }) {
           // type='snack' önceliği — atıştırmalığın sandviç ikonu olur, time'a bakılmaz
           const Icon = TYPE_ICONS[activity.type] || TIME_ICONS[activity.time] || Sun;
           const desc = activity[`description_${lang}`] || activity.description_en || activity.description || '';
+          // Hava rozeti: zaman dilimine karşılık gelen gün-parçası tahmini.
+          const part = dayWeather?.[getDayPart(activity.time)];
+          const WeatherIcon = part ? getWeatherIcon(part.weatherCode) : null;
+          // Kapalı mekan değilse ve dilim yağmurluysa uyarı göster
+          const warnOutdoor = part?.avoidOutdoor && activity.environment !== 'indoor' && activity.type !== 'restaurant';
           return (
-            <div
-              key={index}
-              className={`activity ${activity.type}`}
-              onClick={() => onActivityClick?.(activity)}
-            >
+            <div key={index}>
+              {/* Duraklar-arası seyahat süresi rozeti (ilk durakta yok) */}
+              {activity.travelFromPrevMin != null && (
+                <div className="activity-travel">
+                  <Navigation size={11} /> ~{activity.travelFromPrevMin} {t('result.minShort', 'dk')}
+                </div>
+              )}
+              <div
+                className={`activity ${activity.type}`}
+                onClick={() => onActivityClick?.(activity)}
+              >
               <div className="activity-icon-wrapper">
                 <Icon size={16} />
               </div>
               <div className="activity-content">
-                <span className="activity-time">{t(`time.${activity.time}`, activity.time)}</span>
+                <div className="activity-time-row">
+                  <span className="activity-time">{t(`time.${activity.time}`, activity.time)}</span>
+                  {activity.arrival && activity.departure && (
+                    <span className="activity-clock">{activity.arrival}–{activity.departure}</span>
+                  )}
+                  {part && WeatherIcon && (
+                    <span
+                      className={`activity-weather-badge${warnOutdoor ? ' avoid-outdoor' : ''}`}
+                      title={`${part.precipProb}% ${t('result.rainProb', 'rain')}`}
+                    >
+                      <WeatherIcon size={12} />
+                      {warnOutdoor && (
+                        <span className="activity-weather-warn">
+                          <AlertTriangle size={11} /> {t('result.avoidOutdoor')}
+                        </span>
+                      )}
+                    </span>
+                  )}
+                </div>
                 <span className="activity-place">{activity.place}</span>
                 <span className="activity-desc">{desc}</span>
+              </div>
               </div>
             </div>
           );

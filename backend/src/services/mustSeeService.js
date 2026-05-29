@@ -2,6 +2,7 @@ const OpenAI = require('openai');
 const cityDataModel = require('../models/cityDataModel');
 const cityDataService = require('./cityDataService');
 const placesService = require('./placesService');
+const { HELPER_MODEL, buildChatParams } = require('../config/models');
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -33,13 +34,15 @@ Rules:
 - Names must be REAL places that exist in ${cityName}. Do NOT invent or guess.
 - No restaurants, no shops, no neighborhoods unless they are tourist destinations themselves (e.g. Montmartre OK, "downtown" not OK).`;
 
-  const response = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
-    messages: [{ role: 'user', content: prompt }],
-    response_format: { type: 'json_object' },
-    temperature: 0.3,
-    max_tokens: 700,
-  });
+  const response = await openai.chat.completions.create(
+    buildChatParams(HELPER_MODEL, {
+      messages: [{ role: 'user', content: prompt }],
+      jsonMode: true,
+      temperature: 0.3,
+      maxTokens: 700,
+      reasoningEffort: 'low',
+    })
+  );
 
   const text = response.choices[0].message.content;
   const parsed = JSON.parse(text);

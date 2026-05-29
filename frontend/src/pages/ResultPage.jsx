@@ -24,6 +24,9 @@ export default function ResultPage() {
   const [toast, setToast] = useState(null);
   const [highlightedPlace, setHighlightedPlace] = useState(null);
   const [activeDay, setActiveDay] = useState(-1);
+  // Gün sekmesine her tıklamada (aynı gün olsa bile) artar; MapView'ı yeniden
+  // çerçevelemeye zorlar — aynı gün/Tüm Günler tekrar tıklanınca harita düzelir.
+  const [fitVersion, setFitVersion] = useState(0);
   const highlightTimerRef = useRef(null);
   // Önizleme öncesi snapshot — iptal edilince geri yükle
   const previewSnapshotRef = useRef(null);
@@ -358,7 +361,7 @@ export default function ResultPage() {
     );
   }
 
-  const { trip, dailyPlan, places, restaurants, mapMarkers, budgetEstimate, cityInfo, weather } = result;
+  const { trip, dailyPlan, places, restaurants, mapMarkers, budgetEstimate, cityInfo, weather, weatherDayParts } = result;
 
   const handleSave = async () => {
     setSaving(true);
@@ -392,6 +395,13 @@ export default function ResultPage() {
     if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
     setHighlightedPlace(activity.place);
     highlightTimerRef.current = setTimeout(() => setHighlightedPlace(null), 1400);
+  };
+
+  // Gün sekmesi her tıklandığında haritayı yeniden çerçevele (aynı gün olsa bile).
+  // Düz fonksiyon — erken return'den sonra tanımlandığı için hook kullanılmaz.
+  const handleDayChange = (day) => {
+    setActiveDay(day);
+    setFitVersion((v) => v + 1);
   };
 
   return (
@@ -447,18 +457,18 @@ export default function ResultPage() {
             )}
           </div>
 
-          <DailyPlan plan={dailyPlan} onActivityClick={handleActivityClick} activeDay={activeDay} onDayChange={setActiveDay} />
+          <DailyPlan plan={dailyPlan} onActivityClick={handleActivityClick} activeDay={activeDay} onDayChange={handleDayChange} weatherDayParts={weatherDayParts} tripStartDate={trip.startDate} />
           <BudgetSummary budget={budgetEstimate} />
           <CityTips tips={cityInfo} weather={weather} />
         </div>
       </div>
 
       <div className="result-right">
-        <MapView markers={mapMarkers} highlightedPlace={highlightedPlace} dailyPlan={dailyPlan} activeDay={activeDay} />
+        <MapView markers={mapMarkers} highlightedPlace={highlightedPlace} dailyPlan={dailyPlan} activeDay={activeDay} fitVersion={fitVersion} />
         {/* Draggable floating chat — harita üzerinde, sürüklenebilir kart */}
         <div className="chat-float-container">
           <ChatPanel
-            planData={{ trip, dailyPlan }}
+            planData={{ trip, dailyPlan, weatherDayParts }}
             onPlanUpdate={handlePlanUpdate}
             onPreviewUpdate={handlePreviewUpdate}
             onCancelPreview={handleCancelPreview}

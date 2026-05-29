@@ -249,10 +249,21 @@ function interleaveRestaurants(orderedPlacesByDay, restaurants, restPerDay = 2) 
       return dayPlaces.map((p) => ({ ...p, kind: 'place' }));
     }
 
-    // Pozisyon = kaç yerden sonra restoran enjekte edilecek (1-tabanlı)
-    const positions = restCount === 1
-      ? [Math.max(1, Math.floor(n / 2))]
-      : [Math.max(1, Math.floor(n / 2)), n];
+    // Pozisyon = kaç yerden sonra restoran enjekte edilecek (1-tabanlı).
+    // 1 restoran → ortaya (öğle); 2 → orta + son (öğle + akşam);
+    // 3+ → erken (kahvaltı/kahve), orta (öğle), son (akşam) gibi dağıt.
+    let positions;
+    if (restCount === 1) {
+      positions = [Math.max(1, Math.floor(n / 2))];
+    } else if (restCount === 2) {
+      positions = [Math.max(1, Math.floor(n / 2)), n];
+    } else {
+      // restCount kadar pozisyonu yerler arasına eşit dağıt (1..n)
+      positions = [];
+      for (let k = 1; k <= restCount; k++) {
+        positions.push(Math.min(n, Math.max(1, Math.round((n * k) / (restCount + 1)) || 1)));
+      }
+    }
 
     const insertions = [];
     for (const pos of positions) {
@@ -313,6 +324,65 @@ function assignRestaurants(clusters, restaurants) {
   return assignments;
 }
 
+// Ulaşım moduna göre ortalama hız (km/sa) — seyahat süresi tahmini için.
+const TRANSPORT_SPEED_KMH = {
+  walking: 4.5,
+  transit: 18,
+  car: 30,
+  mixed: 14,
+};
+
+// Aktivite tipine/zaman dilimine göre tahmini durakta-kalma süresi (dakika).
+function dwellMinutes(activity) {
+  if (activity.type === 'restaurant') {
+    return activity.time === 'dinner' ? 75 : 60;
+  }
+  if (activity.type === 'snack') return 30;
+  const hay = `${activity.place || ''} ${activity.description_en || ''} ${activity.description_tr || ''}`.toLowerCase();
+  if (/museum|müze|gallery|galeri|palace|saray|sergi/.test(hay)) return 90;
+  return 75; // varsayılan gezilecek yer
+}
+
+function fmtTime(totalMin) {
+  const h = Math.floor(totalMin / 60) % 24;
+  const m = Math.round(totalMin % 60);
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+}
+
+/**
+ * Sıralı bir günün aktiviteleri için saatli program üretir (deterministik).
+ * Gün başlangıç saatinden itibaren her durağa kalma süresi + bir önceki duraktan
+ * seyahat süresi (haversine ÷ ulaşım hızı) eklenir. Yeni dış servis kullanılmaz.
+ *
+ * @param {Array<{lat,lng,type,time,place,...}>} activities  Haritadaki sırayla aktiviteler
+ * @param {string} transportMode
+ * @param {number} dayStartMin  Gün başlangıcı (dk; varsayılan 09:30 = 570)
+ * @returns {Array<{arrival, departure, travelFromPrevMin, durationMin}>}  activities ile aynı sırada
+ */
+function computeSchedule(activities, transportMode = 'mixed', dayStartMin = 570) {
+  const speed = TRANSPORT_SPEED_KMH[transportMode] || TRANSPORT_SPEED_KMH.mixed;
+  let clock = dayStartMin;
+  let prev = null;
+  return activities.map((a) => {
+    let travel = null;
+    if (prev && Number.isFinite(a.lat) && Number.isFinite(prev.lat)) {
+      const km = haversine(prev.lat, prev.lng, a.lat, a.lng);
+      travel = Math.max(2, Math.round((km / speed) * 60)); // en az 2 dk
+      clock += travel;
+    }
+    const arrival = clock;
+    const duration = dwellMinutes(a);
+    clock += duration;
+    prev = a;
+    return {
+      arrival: fmtTime(arrival),
+      departure: fmtTime(clock),
+      travelFromPrevMin: travel,
+      durationMin: duration,
+    };
+  });
+}
+
 /**
  * Yerleri ve restoranları günlere kümeleyip her gün içinde yakınlığa göre sıralar.
  *
@@ -327,7 +397,7 @@ function assignRestaurants(clusters, restaurants) {
  *   maxDailyDiameterKm: number,
  * }}
  */
-function optimizeRoute(places, restaurants, days, cityRadiusKm = null, transportMode = 'mixed') {
+function optimizeRoute(places, restaurants, days, cityRadiusKm = null, transportMode = 'mixed', restPerDay = 2) {
   const validPlaces = places.filter((p) => p.lat && p.lng);
   const validRestaurants = restaurants.filter((r) => r.lat && r.lng);
   const maxDailyDiameterKm = resolveMaxDailyDiameter(cityRadiusKm, transportMode);
@@ -343,7 +413,7 @@ function optimizeRoute(places, restaurants, days, cityRadiusKm = null, transport
   const { clusters } = clusterByDay(validPlaces, days, maxDailyDiameterKm);
   const optimizedPlaces = clusters.map(orderByNearest);
   const optimizedRestaurants = assignRestaurants(optimizedPlaces, validRestaurants);
-  const optimizedItinerary = interleaveRestaurants(optimizedPlaces, validRestaurants);
+  const optimizedItinerary = interleaveRestaurants(optimizedPlaces, validRestaurants, restPerDay);
 
   return { optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm };
 }
@@ -355,4 +425,5 @@ module.exports = {
   suggestTransit,
   resolveMaxDailyDiameter,
   interleaveRestaurants,
+  computeSchedule,
 };

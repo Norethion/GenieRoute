@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getClientUuid } from './chatSocket';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3001/api',
@@ -18,6 +19,7 @@ export async function generatePlan({ city, days, budget, interests, language, st
     language: language || 'en',
     startDate: startDate || undefined,
     endDate: endDate || undefined,
+    clientUuid: getClientUuid(),
   });
   return response.data;
 }
@@ -30,16 +32,20 @@ export async function generatePlanWithProgress(formData, onStep) {
   const intensity = formData.intensity || 'normal';
   const transportMode = formData.transportMode || 'mixed';
   const daysNum = Number(days);
+  const clientUuid = getClientUuid();
+  // Yemek/mutfak ilgi alanı seçildiyse restoran aramasını genişlet (kafe/pazar/sokak lezzeti)
+  const FOOD_INTERESTS = ['food', 'cuisine', 'yemek', 'mutfak', 'gastronomy', 'gurme', 'lezzet'];
+  const foodFocused = Array.isArray(interests) && interests.some((i) => FOOD_INTERESTS.includes(String(i).toLowerCase()));
   const notify = (step) => { try { onStep && onStep(step); } catch { /* ignore */ } };
 
   // Stage 1: places + restaurants in parallel
   const [placesRes, restaurantsRes] = await Promise.all([
     api.post('/places/search', { city, interests, language: lang }).then((r) => r.data),
-    api.post('/places/restaurants', { city, budget, language: lang }).then((r) => r.data),
+    api.post('/places/restaurants', { city, budget, language: lang, foodFocused }).then((r) => r.data),
   ]);
   notify(1);
 
-  // Stage 2: filter + optimize + budget + tips + weather
+  // Stage 2: filter + optimize + budget + tips + weather (clientUuid → affinity sıralaması)
   const prep = await api.post('/planner/prepare', {
     city, days: daysNum, budget, interests, language: lang,
     intensity, transportMode,
@@ -47,10 +53,12 @@ export async function generatePlanWithProgress(formData, onStep) {
     endDate: endDate || undefined,
     rawPlaces: placesRes.places || [],
     rawRestaurants: restaurantsRes.restaurants || [],
+    clientUuid,
   }).then((r) => r.data);
   notify(2);
 
-  // Stage 3: LLM (countryCode prepare'den geliyor — country-aware prompt için)
+  // Stage 3: LLM (countryCode prepare'den geliyor — country-aware prompt için;
+  // weatherDayParts → hava-duyarlı planlama; clientUuid → diyet/erişilebilirlik kısıtları)
   const { dailyPlan } = await api.post('/planner/llm', {
     city, days: daysNum, budget, interests, language: lang,
     intensity, transportMode,
@@ -61,11 +69,13 @@ export async function generatePlanWithProgress(formData, onStep) {
     optimizedItinerary: prep.optimizedItinerary,
     maxDailyDiameterKm: prep.maxDailyDiameterKm,
     countryCode: prep.countryCode,
+    weatherDayParts: prep.weatherDayParts || undefined,
+    clientUuid,
   }).then((r) => r.data);
   notify(3);
 
   return {
-    trip: { city, days: daysNum, budget, interests, startDate, endDate, countryCode: prep.countryCode, intensity, transportMode },
+    trip: { city, days: daysNum, budget, interests, startDate, endDate, countryCode: prep.countryCode, intensity, transportMode, clientUuid },
     language: lang,
     dailyPlan,
     places: prep.places,
@@ -74,6 +84,7 @@ export async function generatePlanWithProgress(formData, onStep) {
     budgetEstimate: prep.budgetEstimate,
     cityInfo: prep.cityInfo,
     weather: prep.weather,
+    weatherDayParts: prep.weatherDayParts,
   };
 }
 
@@ -84,6 +95,33 @@ export async function searchPlaces(city, interests) {
 
 export async function searchRestaurants(city, budget) {
   const response = await api.post('/places/restaurants', { city, budget });
+  return response.data;
+}
+
+// --- Favoriler (sunucu tarafı, clientUuid ile) ---
+export async function getFavorites(clientUuid) {
+  const response = await api.get('/favorites', { params: { clientUuid } });
+  return response.data;
+}
+
+export async function addFavorite(clientUuid, place) {
+  const response = await api.post('/favorites', { clientUuid, ...place });
+  return response.data;
+}
+
+export async function removeFavorite(clientUuid, placeId) {
+  const response = await api.delete(`/favorites/${encodeURIComponent(placeId)}`, { params: { clientUuid } });
+  return response.data;
+}
+
+// --- Tercihler (sunucu tarafı, clientUuid ile) ---
+export async function getPreferences(clientUuid) {
+  const response = await api.get('/preferences', { params: { clientUuid } });
+  return response.data;
+}
+
+export async function savePreferences(clientUuid, prefs) {
+  const response = await api.put('/preferences', { clientUuid, prefs });
   return response.data;
 }
 

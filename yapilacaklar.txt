@@ -1,3 +1,0 @@
-- bütçe optimizasyonu yapılmalı
-- rota optimizasyonu olabilir. gezgin satıcı olabilir mi? ++
-- konaklacak yer önerisi çıkarabilir miyiz? otel?

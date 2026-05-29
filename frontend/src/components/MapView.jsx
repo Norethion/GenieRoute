@@ -1,28 +1,18 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import Map, { Marker, Popup, Source, Layer, NavigationControl } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { Loader, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Loader, ExternalLink, ChevronLeft, ChevronRight, Heart } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { MAPBOX_STYLES, DAY_COLORS } from '../data/mapStyles';
 import { getCategoryColor, getCategoryLabel, getMarkerCategory, CATEGORY_COLORS } from '../data/markerCategories';
+import { getPhotoSrc, buildMapsUrl } from '../data/photoUrl';
+import { useFavorites } from '../hooks/useFavorites';
 import MapFabGroup, { STYLE_CYCLE } from './MapFabGroup';
 import PhotoWithFallback from './PhotoWithFallback';
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || '';
 const defaultCenter = { latitude: 39.9208, longitude: 32.8541 };
-
-function getPhotoSrc(photoUrl) {
-  if (!photoUrl) return null;
-  if (/^https?:\/\//.test(photoUrl)) return photoUrl;
-  const apiBase = (import.meta.env.VITE_API_URL || 'http://localhost:3001/api').replace(/\/api$/, '');
-  return `${apiBase}${photoUrl}`;
-}
-
-function buildMapsUrl(marker) {
-  const base = `https://www.google.com/maps/search/?api=1&query=${marker.lat},${marker.lng}`;
-  return marker.placeId ? `${base}&query_place_id=${marker.placeId}` : base;
-}
 
 function normalize(str) {
   return (str || '')
@@ -67,12 +57,15 @@ function NumberedPin({ number, color, bouncing }) {
   );
 }
 
-export default function MapView({ markers = [], center, highlightedPlace, dailyPlan, activeDay }) {
+export default function MapView({ markers = [], center, highlightedPlace, dailyPlan, activeDay, fitVersion = 0 }) {
   const { t, i18n } = useTranslation();
   const { theme } = useTheme();
   const mapRef = useRef(null);
+  const { isFavorite, toggle: toggleFavorite } = useFavorites();
 
   const [selectedMarker, setSelectedMarker] = useState(null);
+  // Yalnız favori mekanları göster (FAB toggle)
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
   // FAB grubu state'leri — pitch, harita stili, rota görünürlüğü, kategori filtresi
   const [is3D, setIs3D] = useState(false);
@@ -134,9 +127,10 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
       }
       base = result;
     }
-    if (!categoryFilter) return base;
-    return base.filter((m) => categoryFilter.has(getMarkerCategory(m)));
-  }, [selectedDay, dayMarkers, markers, categoryFilter]);
+    if (categoryFilter) base = base.filter((m) => categoryFilter.has(getMarkerCategory(m)));
+    if (favoritesOnly) base = base.filter((m) => isFavorite(m.placeId || m.name));
+    return base;
+  }, [selectedDay, dayMarkers, markers, categoryFilter, favoritesOnly, isFavorite]);
 
   // Seçili gün için Mapbox Directions API'sinden yol-takipli rota çek
   useEffect(() => {
@@ -180,10 +174,16 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
     const dayPlaces = dayMarkers[selectedDay];
     if (!dayPlaces || dayPlaces.length < 2) return [];
     const cached = directionsCache[selectedDay];
-    const geometry = cached?.geometry || {
-      type: 'LineString',
-      coordinates: dayPlaces.map((p) => [p.lng, p.lat]),
-    };
+    // Directions yüklenirken düz çizgi gösterme (flicker'ı önler); yalnız yanıt
+    // geldiğinde yol-takipli rotayı çiz, hata olursa düz çizgiye düş.
+    let geometry = cached?.geometry;
+    if (!geometry) {
+      if (cached?.error) {
+        geometry = { type: 'LineString', coordinates: dayPlaces.map((p) => [p.lng, p.lat]) };
+      } else {
+        return []; // hâlâ yükleniyor → rota hazır olunca tek seferde görünür
+      }
+    }
     return [{
       id: `route-day-${selectedDay}`,
       color: DAY_COLORS[selectedDay % DAY_COLORS.length],
@@ -230,38 +230,27 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
     zoom: 13,
   }), []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // İlk yüklemede tüm marker'lara fit — yalnız BIR KEZ. Sonraki marker
-  // değişiklikleri (preview / chat update) haritayı yeniden çerçevelemesin;
-  // aksi halde yeni eklenen mekan (varsayılan koordinatlar veya farklı ülke)
-  // tüm haritayı dünya görünümüne zoom-out eder.
-  const initialFitDoneRef = useRef(false);
+  // Tek birleşik fit effect: görünür marker'lara çerçevele.
+  // - Mount + tüm-günler (selectedDay=-1): tüm benzersiz mekanlara fit (uzaklaşır).
+  // - Tek gün: o günün mekanlarına fit.
+  // - Preview/chat update: visibleMarkers değişir -> yeni mekan dahil re-fit.
+  // - Aynı gün/Tüm Günler tekrar tıklanınca: fitVersion artar -> re-fit (marker'a
+  //   yakınlaşıp geri dönüldüğünde de düzelir).
+  // maxZoom: az/yakın marker'da sokak seviyesine aşırı yakınlaşmayı engeller.
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || markers.length < 2 || initialFitDoneRef.current) return;
-    const lats = markers.map((m) => m.lat);
-    const lngs = markers.map((m) => m.lng);
-    map.fitBounds(
-      [[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]],
-      { padding: 60, duration: 600 }
-    );
-    initialFitDoneRef.current = true;
-  }, [markers]);
-
-  // Gün değişimi VEYA o gün için marker dizisinin değişmesi durumlarında re-fit.
-  // - Day 2 -> Day 1 (kullanıcı tab tıkladı): selectedDay değişti -> fit Day 1
-  // - Preview eklenince: visibleMarkers reference'ı değişti -> yeni marker dahil re-fit
-  // Önceki kod sadece [selectedDay]'e bağlıydı; preview marker eklendiğinde re-fit
-  // tetiklenmediği için kullanıcı yeni mekanı viewport dışında görmüyordu.
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!map || visibleMarkers.length < 2 || selectedDay < 0) return;
+    if (!map || visibleMarkers.length === 0) return;
+    if (visibleMarkers.length === 1) {
+      map.flyTo({ center: [visibleMarkers[0].lng, visibleMarkers[0].lat], zoom: 14, duration: 600 });
+      return;
+    }
     const lats = visibleMarkers.map((m) => m.lat);
     const lngs = visibleMarkers.map((m) => m.lng);
     map.fitBounds(
       [[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]],
-      { padding: 60, duration: 600 }
+      { padding: 80, duration: 600, maxZoom: 15 }
     );
-  }, [selectedDay, visibleMarkers]);
+  }, [selectedDay, visibleMarkers, fitVersion]);
 
   // Popup'ı yalnız gün değişince kapat — marker dizisi update'i (preview)
   // popup'ı kapatmamalı, kullanıcı incelediği yeri kaybetmesin.
@@ -321,8 +310,9 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
 
       {visibleMarkers.map((marker, index) => {
         let markerNumber = index + 1;
-        // Tek gün görünümünde gün rengi (rota akışını öne çıkarır), tüm günler
-        // görünümünde kategori rengi (restoran/müze/kafe ayrımı görünür olur).
+        // Hem tek-gün hem tüm-günler görünümünde gün rengi kullanılır; böylece
+        // tüm-günlerde hangi mekanın hangi güne ait olduğu renkten anlaşılır.
+        // (Plan yoksa kategori rengine düşülür.)
         let markerColor = getCategoryColor(marker);
 
         if (selectedDay >= 0 && dayMarkers[selectedDay]) {
@@ -333,6 +323,7 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
             const idx = dayMarkers[d].findIndex((m) => m.name === marker.name);
             if (idx !== -1) {
               markerNumber = idx + 1;
+              markerColor = DAY_COLORS[d % DAY_COLORS.length]; // tüm-günlerde gün rengi
               break;
             }
           }
@@ -407,7 +398,18 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
             )}
             <div className="info-window-body">
               <h4>{selectedMarker.name}</h4>
-              <p className="info-rating">{'★'.repeat(Math.round(selectedMarker.rating || 0))} {selectedMarker.rating}</p>
+              <div className="info-rating-row">
+                <p className="info-rating">{'★'.repeat(Math.round(selectedMarker.rating || 0))} {selectedMarker.rating}</p>
+                <button
+                  type="button"
+                  className={`info-like-btn${isFavorite(selectedMarker.placeId || selectedMarker.name) ? ' liked' : ''}`}
+                  onClick={() => toggleFavorite(selectedMarker)}
+                  aria-label={t('favorites.like')}
+                  title={isFavorite(selectedMarker.placeId || selectedMarker.name) ? t('favorites.remove') : t('favorites.like')}
+                >
+                  <Heart size={14} fill={isFavorite(selectedMarker.placeId || selectedMarker.name) ? 'currentColor' : 'none'} />
+                </button>
+              </div>
               <p>{selectedMarker.address}</p>
               <span
                 className="info-badge"
@@ -443,6 +445,8 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
       categoryFilter={categoryFilter}
       onToggleCategory={toggleCategoryFilter}
       hasFilters={!!categoryFilter}
+      favoritesOnly={favoritesOnly}
+      onToggleFavorites={() => setFavoritesOnly((v) => !v)}
     />
     </div>
   );

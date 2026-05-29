@@ -15,6 +15,8 @@ const routesRouter = require('./routes/routes');
 const chatRouter = require('./routes/chat');
 const adminRouter = require('./routes/admin');
 const usageRouter = require('./routes/usage');
+const favoritesRouter = require('./routes/favorites');
+const preferencesRouter = require('./routes/preferences');
 
 const app = express();
 const server = http.createServer(app);
@@ -47,6 +49,8 @@ app.use('/api/routes', routesRouter);
 app.use('/api/chats', chatRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/usage', usageRouter);
+app.use('/api/favorites', favoritesRouter);
+app.use('/api/preferences', preferencesRouter);
 
 // Error handler
 app.use(errorHandler);

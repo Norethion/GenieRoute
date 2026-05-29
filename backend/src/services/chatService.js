@@ -1,12 +1,24 @@
 const OpenAI = require('openai');
 const chatModel = require('../models/chatModel');
+const preferencesModel = require('../models/preferencesModel');
+const { CHAT_MODEL, buildChatParams } = require('../config/models');
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-function buildSystemPrompt(planContext, language) {
+function buildSystemPrompt(planContext, language, constraints = null) {
   const lang = language === 'tr' ? 'tr' : 'en';
+
+  const dietary = Array.isArray(constraints?.dietary) ? constraints.dietary.filter(Boolean) : [];
+  const accessibility = Array.isArray(constraints?.accessibility) ? constraints.accessibility.filter(Boolean) : [];
+  // Diyet/erişilebilirlik kısıtları varsa dile göre tek satır ekle.
+  const constraintsLineTr = (dietary.length || accessibility.length)
+    ? `\n- Kullanıcı kısıtları (zorunlu): ${dietary.length ? `diyet — ${dietary.join(', ')}` : ''}${dietary.length && accessibility.length ? '; ' : ''}${accessibility.length ? `erişilebilirlik — ${accessibility.join(', ')}` : ''}. Önerilerin bu kısıtlara uysun.`
+    : '';
+  const constraintsLineEn = (dietary.length || accessibility.length)
+    ? `\n- User constraints (mandatory): ${dietary.length ? `dietary — ${dietary.join(', ')}` : ''}${dietary.length && accessibility.length ? '; ' : ''}${accessibility.length ? `accessibility — ${accessibility.join(', ')}` : ''}. Keep suggestions compatible with these.`
+    : '';
 
   const planUpdateInstructions = `
 CRITICAL — PLAN MODIFICATION PROTOCOL:
@@ -51,6 +63,7 @@ Kurallar:
 - Türkçe yanıt ver
 - Mekan önerirken planın oluşturulduğu şehirdeki mekanlardan bahset
 - Bütçe önerilerinde mevcut bütçe seviyesini dikkate al
+- Hava: Yağmurlu bir gün-parçasındaki açık-hava aktivitesini değiştirirken kapalı bir alternatif öner ve nedenini kısaca söyle${constraintsLineTr}
 ${planUpdateInstructions}`;
   }
 
@@ -66,13 +79,14 @@ Rules:
 - Respond in English
 - When suggesting places, reference places in the plan's city
 - Consider the current budget level when making suggestions
+- Weather: When replacing an outdoor activity in a rainy day-part, prefer an indoor alternative and briefly say why${constraintsLineEn}
 ${planUpdateInstructions}`;
 }
 
 function formatPlanContext(tripData) {
   if (!tripData) return 'No plan available.';
 
-  const { trip, dailyPlan } = tripData;
+  const { trip, dailyPlan, weatherDayParts } = tripData;
   let context = `City: ${trip?.city || 'unknown'}\nDays: ${trip?.days || '?'}\nBudget: ${trip?.budget || 'medium'}\n`;
 
   if (dailyPlan?.days) {
@@ -84,6 +98,14 @@ function formatPlanContext(tripData) {
         context += `  - ${act.time}: ${act.place} (${act.type})\n`;
       }
     }
+  }
+
+  if (Array.isArray(weatherDayParts) && weatherDayParts.length) {
+    context += '\nWeather (by day-part — rainy slots marked):\n';
+    weatherDayParts.forEach((w, i) => {
+      const mark = (p) => (p?.avoidOutdoor ? ' [rain]' : '');
+      context += `Day ${i + 1} (${w.date}): morning${mark(w.morning)}, afternoon${mark(w.afternoon)}, evening${mark(w.evening)}\n`;
+    });
   }
 
   return context;
@@ -102,6 +124,10 @@ function parsePlanUpdate(text) {
 function setupChatSocket(io) {
   io.on('connection', (socket) => {
     let activeSession = null;
+    // Tercih kısıtları (diyet/erişilebilirlik) session başına bir kez yüklenip
+    // cache'lenir; her mesajda DB'ye gitmeyiz.
+    let constraintsCache = null;
+    let constraintsLoadedFor = null;
 
     // Client init: trip için session bul/oluştur, geçmişi yolla
     socket.on('chat:init', async (data) => {
@@ -188,8 +214,21 @@ function setupChatSocket(io) {
             .map((m) => ({ role: m.role, content: m.content }));
         }
 
+        // Diyet/erişilebilirlik kısıtlarını clientUuid'den yükle (session başına cache)
+        if (clientUuid && constraintsLoadedFor !== clientUuid) {
+          try {
+            const prefs = await preferencesModel.getPreferences(clientUuid);
+            constraintsCache = prefs
+              ? { dietary: prefs.dietary || [], accessibility: prefs.accessibility || [] }
+              : null;
+          } catch {
+            constraintsCache = null;
+          }
+          constraintsLoadedFor = clientUuid;
+        }
+
         const planContext = formatPlanContext(planData);
-        const systemPrompt = buildSystemPrompt(planContext, language);
+        const systemPrompt = buildSystemPrompt(planContext, language, constraintsCache);
 
         const messages = [
           { role: 'system', content: systemPrompt },
@@ -197,13 +236,15 @@ function setupChatSocket(io) {
           { role: 'user', content: message },
         ];
 
-        const stream = await openai.chat.completions.create({
-          model: 'gpt-4o-mini',
-          messages,
-          stream: true,
-          max_tokens: 1200,
-          temperature: 0.7,
-        });
+        const stream = await openai.chat.completions.create(
+          buildChatParams(CHAT_MODEL, {
+            messages,
+            stream: true,
+            maxTokens: 1200,
+            temperature: 0.7,
+            reasoningEffort: 'low',
+          })
+        );
 
         let fullText = '';
         for await (const chunk of stream) {

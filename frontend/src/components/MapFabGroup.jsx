@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Compass, Filter, Box, Layers, Route, X } from 'lucide-react';
+import { Compass, Filter, Box, Layers, Route, X, Heart } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { CATEGORY_COLORS, CATEGORY_LABELS } from '../data/markerCategories';
 
@@ -11,6 +11,7 @@ export default function MapFabGroup({
   styleKey, onCycleStyle,
   routesVisible, onToggleRoutes,
   categoryFilter, onToggleCategory, hasFilters,
+  favoritesOnly, onToggleFavorites,
 }) {
   const { i18n } = useTranslation();
   const lang = i18n.language === 'en' ? 'en' : 'tr';
@@ -24,6 +25,7 @@ export default function MapFabGroup({
     threeD:    is3D ? (lang === 'tr' ? '3D kapalı' : 'Disable 3D') : (lang === 'tr' ? '3D Açık' : 'Enable 3D'),
     style:     lang === 'tr' ? `Tema: ${styleKey}` : `Theme: ${styleKey}`,
     route:     routesVisible ? (lang === 'tr' ? 'Rotayı Gizle' : 'Hide Route') : (lang === 'tr' ? 'Rotayı Göster' : 'Show Route'),
+    favorites: favoritesOnly ? (lang === 'tr' ? 'Tümünü göster' : 'Show all') : (lang === 'tr' ? 'Sadece favoriler' : 'Favorites only'),
   };
 
   const categoryKeys = Object.keys(CATEGORY_COLORS);
@@ -97,6 +99,14 @@ export default function MapFabGroup({
               onClick={onToggleRoutes}
             >
               <Route size={18} />
+            </button>
+            <button
+              type="button"
+              className={`map-fab-sub${favoritesOnly ? ' active' : ''}`}
+              title={labels.favorites}
+              onClick={onToggleFavorites}
+            >
+              <Heart size={18} />
             </button>
           </>
         )}

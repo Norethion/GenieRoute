@@ -6,9 +6,11 @@ import TripForm from '../components/TripForm';
 import FeaturedRoutes from '../components/FeaturedRoutes';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { generatePlanWithProgress } from '../services/api';
+import { usePreferences } from '../hooks/usePreferences';
 
 export default function HomePage() {
   const { t, i18n } = useTranslation();
+  const { prefs, loading: prefsLoading } = usePreferences();
   const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [error, setError] = useState(null);
@@ -77,7 +79,7 @@ export default function HomePage() {
         <LoadingSpinner currentStep={currentStep} />
       ) : (
         <>
-          <TripForm onSubmit={handleSubmit} isLoading={isLoading} />
+          <TripForm key={prefsLoading ? 'np' : 'p'} onSubmit={handleSubmit} isLoading={isLoading} defaults={prefs} />
           <FeaturedRoutes onRouteSelect={handleRouteSelect} />
           <p className="attribution-note">{t('attribution.cities')}</p>
         </>

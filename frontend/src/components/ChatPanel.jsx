@@ -1,7 +1,8 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Send, MessageCircle, Sparkles, Check, Minus, X, Plus, Eye } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { connectSocket, disconnectSocket, getClientUuid } from '../services/chatSocket';
+import { buildFollowupSuggestions } from '../data/followups';
 
 const SUGGESTIONS = {
   tr: [
@@ -48,6 +49,12 @@ export default function ChatPanel({ planData, onPlanUpdate, onPreviewUpdate, onC
   const streamBufferRef = useRef('');
   const socketRef = useRef(null);
   const clientUuid = getClientUuid();
+
+  // Plana göre bağlama duyarlı takip önerileri (ilk mesajdan sonra, plan varsa).
+  const followups = useMemo(
+    () => buildFollowupSuggestions(planData?.dailyPlan, lang),
+    [planData?.dailyPlan, lang]
+  );
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -256,9 +263,13 @@ export default function ChatPanel({ planData, onPlanUpdate, onPreviewUpdate, onC
                 <Sparkles size={20} />
                 <p>{lang === 'tr' ? 'Planın hakkında soru sor veya önerileri dene:' : 'Ask about your plan or try suggestions:'}</p>
                 <div className="chat-suggestions">
-                  {SUGGESTIONS[lang].map((s, i) => (
-                    <button key={i} className="chat-suggestion-btn" onClick={() => sendMessage(s)}>
-                      {s}
+                  {/* Plan varsa bağlam duyarlı chip'ler; yoksa genel öneriler */}
+                  {(followups.length > 0
+                    ? followups.map((f) => ({ key: f.id, label: f.label, msg: f.message }))
+                    : SUGGESTIONS[lang].map((s, i) => ({ key: `s-${i}`, label: s, msg: s }))
+                  ).map((s) => (
+                    <button key={s.key} className="chat-suggestion-btn" onClick={() => sendMessage(s.msg)}>
+                      {s.label}
                     </button>
                   ))}
                 </div>
@@ -311,6 +322,21 @@ export default function ChatPanel({ planData, onPlanUpdate, onPreviewUpdate, onC
             ))}
             <div ref={messagesEndRef} />
           </div>
+
+          {messages.length > 0 && !isStreaming && followups.length > 0 && (
+            <div className="chat-followups">
+              {followups.map((f) => (
+                <button
+                  key={f.id}
+                  type="button"
+                  className="chat-followup-chip"
+                  onClick={() => sendMessage(f.message)}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+          )}
 
           <div className="chat-input-area">
             <input

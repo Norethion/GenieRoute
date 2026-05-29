@@ -1,7 +1,9 @@
 {
   "nav": {
     "explore": "Keşfet",
-    "saved": "Kayıtlı"
+    "saved": "Kayıtlı",
+    "savedPlaces": "Yerlerim",
+    "preferences": "Tercihler"
   },
   "hero": {
     "badge": "Yapay Zeka Destekli",
@@ -108,7 +110,83 @@
     "tips": "İpuçları",
     "noResult": "Henüz bir plan oluşturulmadı",
     "noResultDesc": "Seyahat planı oluşturmak için formu doldur.",
-    "createPlan": "Plan Oluştur"
+    "createPlan": "Plan Oluştur",
+    "avoidOutdoor": "Kapalı alan önerilir",
+    "rainProb": "yağış ihtimali",
+    "minShort": "dk"
+  },
+  "favorites": {
+    "title": "Kaydedilen Yerler",
+    "like": "Favorilere ekle",
+    "remove": "Favorilerden çıkar",
+    "empty": "Henüz kayıtlı yer yok",
+    "emptyDesc": "Haritada bir yere tıklayıp kalp simgesine basarak kaydet.",
+    "onlyFavorites": "Sadece favoriler"
+  },
+  "preferences": {
+    "title": "Tercihler",
+    "subtitle": "Bu bilgiler yapay zekanın planlarını kişiselleştirmesine yardımcı olur. Bu tarayıcıda saklanır.",
+    "save": "Kaydet",
+    "saved": "Tercihler kaydedildi.",
+    "saveError": "Tercihler kaydedilemedi.",
+    "travelStyle": {
+      "title": "Seyahat Tarzı",
+      "relaxed": "Rahat",
+      "balanced": "Dengeli",
+      "adventurous": "Maceracı",
+      "cultural": "Kültürel",
+      "luxury": "Lüks"
+    },
+    "favoriteCategories": { "title": "Favori Kategoriler" },
+    "dailyBudget": { "title": "Günlük Bütçe" },
+    "activityLevel": { "title": "Aktivite Düzeyi" },
+    "cuisines": {
+      "title": "Mutfak Tercihleri",
+      "turkish": "Türk",
+      "italian": "İtalyan",
+      "asian": "Asya",
+      "seafood": "Deniz Ürünleri",
+      "vegetarian": "Vejetaryen",
+      "streetfood": "Sokak Lezzetleri",
+      "finedining": "Fine Dining"
+    },
+    "dietary": {
+      "title": "Diyet Kısıtları",
+      "vegan": "Vegan",
+      "vegetarian": "Vejetaryen",
+      "halal": "Helal",
+      "glutenFree": "Glutensiz",
+      "lactoseFree": "Laktozsuz",
+      "nutAllergy": "Fındık/fıstık alerjisi"
+    },
+    "accessibility": {
+      "title": "Erişilebilirlik İhtiyaçları",
+      "wheelchair": "Tekerlekli sandalye erişimi",
+      "lowMobility": "Sınırlı hareket",
+      "visual": "Görme desteği",
+      "hearing": "İşitme desteği",
+      "strollerFriendly": "Bebek arabası uygun"
+    },
+    "tripPace": { "title": "Gezi Temposu" },
+    "accommodation": {
+      "title": "Konaklama",
+      "hotel": "Otel",
+      "boutique": "Butik otel",
+      "hostel": "Hostel",
+      "apartment": "Apart",
+      "resort": "Tatil köyü"
+    },
+    "transport": { "title": "Ulaşım" },
+    "languages": {
+      "title": "Diller",
+      "tr": "Türkçe",
+      "en": "İngilizce",
+      "de": "Almanca",
+      "fr": "Fransızca",
+      "es": "İspanyolca",
+      "ar": "Arapça",
+      "ru": "Rusça"
+    }
   },
   "savedTrips": {
     "title": "Kayıtlı Planlar",
@@ -190,7 +268,7 @@
       "modelHeader": "Model",
       "tokensHeader": "Girdi / Çıktı",
       "modelCostHeader": "Tahmini USD",
-      "freeTier": "Tahmin: token sayısı × model fiyatı (örn. gpt-4o-mini $0.15/M girdi, $0.60/M çıktı). Resmi USD verisi /costs endpoint'inden gelir; yeni hesaplarda bucket finalize olana kadar 0 görünebilir."
+      "freeTier": "Tahmin: token sayısı × model fiyatı (örn. gpt-5.4-mini $0.75/M girdi, $4.50/M çıktı). Resmi USD verisi /costs endpoint'inden gelir; yeni hesaplarda bucket finalize olana kadar 0 görünebilir."
     },
     "googleCloud": {
       "title": "Google Cloud (Monitoring API)",
