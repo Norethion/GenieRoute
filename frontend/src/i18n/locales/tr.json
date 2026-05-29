@@ -224,8 +224,7 @@
     "rangeTooltipTitle": "Örnek Dağılımı",
     "rangeTooltipMedian": "Medyan",
     "rangeTooltipLowest": "En düşük",
-    "rangeTooltipHighest": "En yüksek",
-    "rangeTooltipHint": "LLM ensemble örneklerinin günlük tahmini"
+    "rangeTooltipHighest": "En yüksek"
   },
   "error": {
     "generic": "Plan oluşturulurken bir hata oluştu. Lütfen tekrar deneyin."

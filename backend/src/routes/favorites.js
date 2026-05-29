@@ -52,7 +52,7 @@ router.delete('/:placeId', async (req, res, next) => {
     if (!validClientUuid(clientUuid)) {
       return res.status(400).json({ error: 'Invalid clientUuid' });
     }
-    if (!placeId) {
+    if (!placeId || placeId.length > 200) {
       return res.status(400).json({ error: 'Invalid placeId' });
     }
     const removed = await favoritesModel.removeFavorite({ clientUuid, placeId });

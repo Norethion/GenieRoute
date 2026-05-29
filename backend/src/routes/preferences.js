@@ -25,6 +25,9 @@ function sanitizePrefs(prefs) {
     if (Array.isArray(v)) {
       out[field] = v
         .filter((x) => typeof x === 'string' && x.length <= 60)
+        // Newline/CR sıyır: bu değerler LLM prompt'una düz birleştirildiği için
+        // (llmService + chatService) prompt yapısını bozacak satır-kırma enjeksiyonunu engeller.
+        .map((x) => x.replace(/[\n\r]/g, ' ').trim())
         .slice(0, 20);
     }
   }

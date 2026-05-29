@@ -3,7 +3,7 @@ import { Lightbulb, Calendar } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import DayCard from './DayCard';
 
-export default function DailyPlan({ plan, onActivityClick, activeDay: externalDay, onDayChange, weatherDayParts, tripStartDate }) {
+export default function DailyPlan({ plan, onActivityClick, activeDay: externalDay, onDayChange, weatherDayParts }) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language === 'tr' ? 'tr' : 'en';
   // Varsayılan: tüm günler görünümü (-1). Kullanıcı bir gün sekmesine tıklayınca o güne geçer.
@@ -42,8 +42,6 @@ export default function DailyPlan({ plan, onActivityClick, activeDay: externalDa
           day={plan.days[activeDay]}
           onActivityClick={onActivityClick}
           dayWeather={Array.isArray(weatherDayParts) ? weatherDayParts[activeDay] : null}
-          tripStartDate={tripStartDate}
-          dayIndex={activeDay}
         />
       ) : (
         <div className="daily-plan-overview">

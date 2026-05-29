@@ -19,15 +19,3 @@ export function getWeatherIcon(code) {
   if (code >= 95) return CloudLightning;
   return CloudSun;
 }
-
-// trip.startDate (YYYY-MM-DD) + gün indeksi -> o günün tarihi (YYYY-MM-DD).
-export function getDayDate(startDate, dayIndex) {
-  if (!startDate) return null;
-  const d = new Date(startDate + 'T00:00:00');
-  if (Number.isNaN(d.getTime())) return null;
-  d.setDate(d.getDate() + dayIndex);
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${y}-${m}-${day}`;
-}

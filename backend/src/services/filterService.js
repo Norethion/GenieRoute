@@ -171,7 +171,6 @@ module.exports = {
   filterPlaces,
   filterRestaurants,
   annotateCategories,
-  classifyEnvironment,
   buildAffinity,
   PLACES_PER_DAY_BY_INTENSITY,
 };

@@ -224,8 +224,7 @@
     "rangeTooltipTitle": "Sample Distribution",
     "rangeTooltipMedian": "Median",
     "rangeTooltipLowest": "Lowest",
-    "rangeTooltipHighest": "Highest",
-    "rangeTooltipHint": "Daily estimates from LLM ensemble samples"
+    "rangeTooltipHighest": "Highest"
   },
   "error": {
     "generic": "Something went wrong while creating the plan. Please try again."

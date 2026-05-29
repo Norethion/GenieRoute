@@ -47,6 +47,11 @@ function validatePlanInput(body) {
   if (!Array.isArray(interests) || interests.length === 0 || interests.length > 8) {
     return 'interests must be an array with 1-8 items';
   }
+  // İlgi alanı değerleri LLM prompt'una birleştirilir; tür + uzunluk sınırı koy
+  // (karakter kısıtı yok — Türkçe değerlere izin ver: "yemek", "gurme" vb.).
+  if (interests.some((i) => typeof i !== 'string' || i.length < 1 || i.length > 50)) {
+    return 'each interest must be a non-empty string up to 50 chars';
+  }
   if (intensity != null && !VALID_INTENSITY.includes(intensity)) {
     return `intensity must be one of: ${VALID_INTENSITY.join(', ')}`;
   }

@@ -457,7 +457,7 @@ export default function ResultPage() {
             )}
           </div>
 
-          <DailyPlan plan={dailyPlan} onActivityClick={handleActivityClick} activeDay={activeDay} onDayChange={handleDayChange} weatherDayParts={weatherDayParts} tripStartDate={trip.startDate} />
+          <DailyPlan plan={dailyPlan} onActivityClick={handleActivityClick} activeDay={activeDay} onDayChange={handleDayChange} weatherDayParts={weatherDayParts} />
           <BudgetSummary budget={budgetEstimate} />
           <CityTips tips={cityInfo} weather={weather} />
         </div>
