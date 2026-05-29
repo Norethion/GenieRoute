@@ -229,7 +229,8 @@ body {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-lg);
-  overflow: hidden;
+  /* overflow:hidden YOK — şehir öneri dropdown'ı wizard sınırının dışına taşabilsin.
+     Üst/alt arka planlı şeritlerin köşeleri ayrıca yuvarlanır (aşağıda). */
 }
 
 /* Progress */
@@ -239,6 +240,7 @@ body {
   padding: 20px 28px;
   border-bottom: 1px solid var(--border);
   background: var(--bg-tertiary);
+  border-radius: var(--radius) var(--radius) 0 0;
 }
 .wizard-step {
   display: flex;
@@ -386,7 +388,12 @@ body {
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-lg);
   z-index: 50;
+  max-height: 260px;
+  overflow-y: auto;
 }
+.city-suggestions::-webkit-scrollbar { width: 4px; }
+.city-suggestions::-webkit-scrollbar-track { background: transparent; }
+.city-suggestions::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 .city-suggestion {
   display: flex;
   align-items: center;
@@ -651,6 +658,7 @@ body {
   padding: 16px 32px;
   border-top: 1px solid var(--border);
   background: var(--bg-tertiary);
+  border-radius: 0 0 var(--radius) var(--radius);
 }
 .wizard-nav-spacer { flex: 1; }
 
@@ -787,6 +795,29 @@ body {
   background: var(--bg-primary);
   border-right: 1px solid var(--border);
 }
+.result-left.collapsed { display: none; }
+/* Sol panel gizliyken sol kenarın ortasında yeniden-açma sekmesi
+   (üstteki Mapbox zoom kontrolleriyle çakışmasın diye dikey ortada). */
+.result-left-reopen {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  z-index: 40;
+  width: 28px;
+  height: 56px;
+  border: 1px solid var(--border);
+  border-left: none;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  transition: background 0.15s, width 0.15s;
+}
+.result-left-reopen:hover { background: var(--bg-tertiary); width: 32px; }
 .result-left-header {
   display: flex;
   align-items: center;
@@ -1183,6 +1214,11 @@ body {
 }
 .map-fab-sub { position: relative; }
 .map-fab-group:not(.expanded) .map-fab-sub { display: none; }
+.map-fab-sub:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.map-fab-sub:disabled:hover { transform: none; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15); }
 
 /* Kategori filtre paneli — FAB'ın solunda popover (sağ üstte) */
 .map-filter-panel {
@@ -1300,6 +1336,34 @@ body {
 [data-theme="dark"] .genieroute-popup .mapboxgl-popup-tip { border-top-color: #1a1d22; }
 [data-theme="dark"] .genieroute-popup .info-window h4 { color: #fff; }
 [data-theme="dark"] .genieroute-popup .info-window p { color: #b4bac3; }
+
+/* Özel zoom kontrolü (sol üst) — tema değişkenlerini kullanır, dark modda da uyumlu.
+   Mapbox'un varsayılan NavigationControl'u yerine: easeTo + essential ile animasyonlu. */
+.map-zoom-control {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--bg-secondary);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+.map-zoom-control button {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.map-zoom-control button:hover { background: var(--bg-tertiary); }
+.map-zoom-control button + button { border-top: 1px solid var(--border); }
 
 /* ===== Chat Panel ===== */
 .chat-panel {
@@ -1682,7 +1746,8 @@ body {
   padding: 64px 20px;
   color: var(--text-muted);
 }
-.no-result svg { margin-bottom: 12px; }
+/* Yalnız tepedeki dekoratif ikona boşluk ver; buton içindeki ikonu (örn. Plus) etkileme */
+.no-result > svg { margin-bottom: 12px; }
 .no-result h3 { font-family: var(--font-display); font-size: 22px; color: var(--text-primary); margin-bottom: 6px; }
 .no-result p { margin-bottom: 24px; font-size: 15px; }
 
@@ -2672,6 +2737,7 @@ body {
   margin: 2px 0 2px 14px;
   opacity: 0.85;
 }
+.activity-travel-mode { font-weight: 500; text-transform: lowercase; }
 .activity-weather-warn {
   display: inline-flex;
   align-items: center;

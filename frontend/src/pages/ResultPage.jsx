@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useState, useCallback, useEffect, useRef } from 'react';
-import { Plus, Save, MapPin, UtensilsCrossed, CalendarDays, Map, ArrowLeft, Sun, Moon, Info } from 'lucide-react';
+import { useState, useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+import { Plus, Save, MapPin, UtensilsCrossed, CalendarDays, Map, ArrowLeft, Sun, Moon, Info, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import DailyPlan from '../components/DailyPlan';
@@ -9,7 +9,7 @@ import Toast from '../components/Toast';
 import BudgetSummary from '../components/BudgetSummary';
 import CityTips from '../components/CityTips';
 import ChatPanel from '../components/ChatPanel';
-import { saveTrip, lookupPlace, updateTripPlan } from '../services/api';
+import { saveTrip, lookupPlace, updateTripPlan, getWeather } from '../services/api';
 
 const STORAGE_KEY = 'genieroute-last-result';
 const STORAGE_KEY_TRIP_ID = 'genieroute-last-trip-id';
@@ -24,6 +24,7 @@ export default function ResultPage() {
   const [toast, setToast] = useState(null);
   const [highlightedPlace, setHighlightedPlace] = useState(null);
   const [activeDay, setActiveDay] = useState(-1);
+  const [leftCollapsed, setLeftCollapsed] = useState(false);
   // Gün sekmesine her tıklamada (aynı gün olsa bile) artar; MapView'ı yeniden
   // çerçevelemeye zorlar — aynı gün/Tüm Günler tekrar tıklanınca harita düzelir.
   const [fitVersion, setFitVersion] = useState(0);
@@ -62,6 +63,46 @@ export default function ResultPage() {
       window.history.replaceState({}, '');
     }
   }, [navResult]);
+
+  // Sol panel açılıp kapanınca harita konteyneri genişler/daralır. useLayoutEffect
+  // ile boyamadan ÖNCE pencere resize'ı gönderiyoruz; Mapbox bunu dinleyip canvas'ı
+  // senkron olarak yeni boyuta çeker. Böylece eski genişlikte takılı bir kare ve
+  // sağda boş şerit görünmez. İlk mount'ta gereksiz; yalnız toggle sonrası çalışsın.
+  const didMountRef = useRef(false);
+  useLayoutEffect(() => {
+    if (!didMountRef.current) { didMountRef.current = true; return; }
+    window.dispatchEvent(new Event('resize'));
+  }, [leftCollapsed]);
+
+  // Kayıtlı gezi açıldığında hava durumu yoktur (snapshot saklanmaz). Tarihler varsa
+  // mekanların ağırlık merkeziyle Open-Meteo'dan CANLI çek; tahmin penceresi dışındaysa
+  // (servis null döner) sessizce atla. Taze planlarda weatherDayParts zaten dolu → çalışmaz.
+  const weatherReqRef = useRef(null);
+  useEffect(() => {
+    const sd = result?.trip?.startDate;
+    const ed = result?.trip?.endDate;
+    if (!sd || !ed || result?.weatherDayParts) return;
+    const pts = (result?.mapMarkers || []).filter((m) => Number.isFinite(m.lat) && Number.isFinite(m.lng));
+    if (!pts.length) return;
+    const reqKey = `${result.trip.city}|${sd}|${ed}`;
+    if (weatherReqRef.current === reqKey) return; // tekrarlı isteği önle
+    weatherReqRef.current = reqKey;
+    const lat = pts.reduce((s, m) => s + m.lat, 0) / pts.length;
+    const lng = pts.reduce((s, m) => s + m.lng, 0) / pts.length;
+    // NOT: per-effect "active" bayrağı kullanmıyoruz; StrictMode'un çift-çalıştırması
+    // (mount→cleanup→mount) bayrağı false'a çekip ilk isteğin merge'ini engelliyordu.
+    // Tekrarı reqKey ref'i önler; merge koşulsuz yapılır (gerçek unmount'ta no-op).
+    getWeather({ lat, lng, startDate: sd, endDate: ed })
+      .then((data) => {
+        if (!data?.weatherDayParts) return;
+        setResult((prev) => {
+          const merged = { ...prev, weather: data.weather, weatherDayParts: data.weatherDayParts };
+          sessionStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+          return merged;
+        });
+      })
+      .catch(() => { weatherReqRef.current = null; }); // hata → sonraki result değişiminde tekrar denensin
+  }, [result]);
 
   const clearToast = useCallback(() => setToast(null), []);
 
@@ -376,6 +417,8 @@ export default function ResultPage() {
         restaurantsJson: restaurants,
         budgetEstimate,
         cityInfo,
+        startDate: trip.startDate,
+        endDate: trip.endDate,
       });
       const newTripId = data?.trip?.id;
       if (newTripId) {
@@ -408,7 +451,7 @@ export default function ResultPage() {
     <div className="result-page-immersive">
       {toast && <Toast message={toast.message} type={toast.type} onClose={clearToast} />}
 
-      <div className="result-left">
+      <div className={`result-left${leftCollapsed ? ' collapsed' : ''}`}>
         <div className="result-left-header">
           <button className="result-back-btn" onClick={() => navigate('/')}>
             <ArrowLeft size={18} />
@@ -423,6 +466,14 @@ export default function ResultPage() {
             </button>
             <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
               {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+            </button>
+            <button
+              className="theme-toggle"
+              onClick={() => setLeftCollapsed(true)}
+              aria-label={t('result.collapsePanel')}
+              title={t('result.collapsePanel')}
+            >
+              <PanelLeftClose size={16} />
             </button>
           </div>
         </div>
@@ -463,6 +514,12 @@ export default function ResultPage() {
               <span>{t('result.fewPlacesNotice', { found: result.notice.found, days: result.notice.days })}</span>
             </div>
           )}
+          {result.notice?.type === 'reduced_days' && (
+            <div className="few-places-notice">
+              <Info size={16} />
+              <span>{t('result.reducedDaysNotice', { requested: result.notice.requested, effective: result.notice.effective, found: result.notice.found })}</span>
+            </div>
+          )}
 
           <DailyPlan plan={dailyPlan} onActivityClick={handleActivityClick} activeDay={activeDay} onDayChange={handleDayChange} weatherDayParts={weatherDayParts} />
           <BudgetSummary budget={budgetEstimate} />
@@ -471,6 +528,16 @@ export default function ResultPage() {
       </div>
 
       <div className="result-right">
+        {leftCollapsed && (
+          <button
+            className="result-left-reopen"
+            onClick={() => setLeftCollapsed(false)}
+            aria-label={t('result.expandPanel')}
+            title={t('result.expandPanel')}
+          >
+            <PanelLeftOpen size={18} />
+          </button>
+        )}
         <MapView markers={mapMarkers} highlightedPlace={highlightedPlace} dailyPlan={dailyPlan} activeDay={activeDay} fitVersion={fitVersion} />
         {/* Draggable floating chat — harita üzerinde, sürüklenebilir kart */}
         <div className="chat-float-container">

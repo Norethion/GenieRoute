@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import Map, { Marker, Popup, Source, Layer, NavigationControl } from 'react-map-gl/mapbox';
+import Map, { Marker, Popup, Source, Layer } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { ExternalLink, ChevronLeft, ChevronRight, Heart, MapPinOff } from 'lucide-react';
+import { ExternalLink, ChevronLeft, ChevronRight, Heart, MapPinOff, Plus, Minus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { MAPBOX_STYLES, DAY_COLORS } from '../data/mapStyles';
@@ -46,6 +46,16 @@ function findMarkerForPlace(markers, placeName) {
     Math.abs(normalize(m.name).length - norm.length) <
     Math.abs(normalize(best.name).length - norm.length) ? m : best
   );
+}
+
+// Günün baskın bacak moduna göre Mapbox Directions profili seç. Yürüme bacakları
+// çoğunluktaysa 'walking', motorlu (car/transit/motor) çoğunluktaysa 'driving'.
+// Mapbox'ta toplu taşıma profili yok; motorlu modların hepsi 'driving' ile temsil edilir.
+function dayDirectionsProfile(day) {
+  const modes = (day?.activities || []).map((a) => a.travelMode).filter(Boolean);
+  if (!modes.length) return 'walking';
+  const walk = modes.filter((m) => m === 'walking').length;
+  return walk >= modes.length - walk ? 'walking' : 'driving';
 }
 
 function NumberedPin({ number, color, bouncing }) {
@@ -148,8 +158,12 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
       }
       base = result;
     }
-    if (categoryFilter) base = base.filter((m) => categoryFilter.has(getMarkerCategory(m)));
-    if (favoritesOnly) base = base.filter((m) => isFavorite(m.placeId || m.name));
+    // Favori/kategori filtresi yalnız "Tüm Günler" görünümünde anlamlı; tek gün
+    // seçiliyken o günün tüm mekanları görünsün (filtre etkisi devre dışı).
+    if (selectedDay < 0) {
+      if (categoryFilter) base = base.filter((m) => categoryFilter.has(getMarkerCategory(m)));
+      if (favoritesOnly) base = base.filter((m) => isFavorite(m.placeId || m.name));
+    }
     return base;
   }, [selectedDay, dayMarkers, markers, categoryFilter, favoritesOnly, isFavorite]);
 
@@ -158,12 +172,14 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
     if (selectedDay < 0 || !dayMarkers[selectedDay]) return;
     const dayPlaces = dayMarkers[selectedDay];
     if (dayPlaces.length < 2) return;
-    // Bu gün için cache'de varsa tekrar çekme
-    const cacheKey = dayPlaces.map((p) => `${p.lat},${p.lng}`).join('|');
+    // Profil seçilen günün baskın ulaşım moduna göre (yürüyüş/sürüş)
+    const profile = dayDirectionsProfile(dailyPlan?.days?.[selectedDay]);
+    // Bu gün için cache'de varsa tekrar çekme (profil de anahtara dahil)
+    const cacheKey = profile + '|' + dayPlaces.map((p) => `${p.lat},${p.lng}`).join('|');
     if (directionsCache[selectedDay]?.cacheKey === cacheKey) return;
 
     const coords = dayPlaces.map((p) => `${p.lng},${p.lat}`).join(';');
-    const url = `https://api.mapbox.com/directions/v5/mapbox/walking/${coords}?geometries=geojson&overview=full&access_token=${MAPBOX_TOKEN}`;
+    const url = `https://api.mapbox.com/directions/v5/mapbox/${profile}/${coords}?geometries=geojson&overview=full&access_token=${MAPBOX_TOKEN}`;
 
     const controller = new AbortController();
     fetch(url, { signal: controller.signal })
@@ -223,6 +239,14 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
   const activeMapStyle = styleKey
     ? MAPBOX_STYLES[styleKey]
     : (theme === 'dark' ? MAPBOX_STYLES.dark : MAPBOX_STYLES.light);
+
+  // Zoom +/- — easeTo ile animasyonlu. essential: true sayesinde OS "hareketi azalt"
+  // açık olsa bile yakınlaşma/uzaklaşma yumuşak oynar (uygulamanın diğer kameralarıyla tutarlı).
+  const zoomBy = (delta) => {
+    const map = mapRef.current;
+    if (!map) return;
+    map.easeTo({ zoom: map.getZoom() + delta, duration: 300, essential: true });
+  };
 
   const cycleStyle = () => {
     setStyleKey((prev) => {
@@ -321,8 +345,6 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
       mapStyle={activeMapStyle}
       attributionControl={false}
     >
-      <NavigationControl position="top-left" showCompass={false} />
-
       {routeLayers.map((r) => (
         <Source key={r.id} id={r.id} type="geojson" data={r.geojson}>
           <Layer
@@ -487,6 +509,14 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
         </Popup>
       )}
     </Map>
+    <div className="map-zoom-control">
+      <button type="button" onClick={() => zoomBy(1)} aria-label="zoom in">
+        <Plus size={18} />
+      </button>
+      <button type="button" onClick={() => zoomBy(-1)} aria-label="zoom out">
+        <Minus size={18} />
+      </button>
+    </div>
     <MapFabGroup
       is3D={is3D}
       onToggle3D={() => setIs3D((v) => !v)}
@@ -499,6 +529,7 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
       hasFilters={!!categoryFilter}
       favoritesOnly={favoritesOnly}
       onToggleFavorites={() => setFavoritesOnly((v) => !v)}
+      allDays={selectedDay < 0}
     />
     </div>
   );

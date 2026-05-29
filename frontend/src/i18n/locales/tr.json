@@ -115,10 +115,17 @@
     "noResult": "Henüz bir plan oluşturulmadı",
     "noResultDesc": "Seyahat planı oluşturmak için formu doldur.",
     "createPlan": "Plan Oluştur",
+    "collapsePanel": "Paneli gizle",
+    "expandPanel": "Paneli göster",
     "avoidOutdoor": "Kapalı alan önerilir",
     "rainProb": "yağış ihtimali",
     "minShort": "dk",
-    "fewPlacesNotice": "Bu şehir için yalnızca {{found}} mekan bulundu, {{days}} günlük plan için sınırlı olabilir. Plan bulunan mekanlara göre oluşturuldu."
+    "travelWalk": "yürüme",
+    "travelTransit": "toplu taşıma",
+    "travelCar": "araç",
+    "travelMotor": "araç/taşıt",
+    "fewPlacesNotice": "Bu şehir için yalnızca {{found}} mekan bulundu, {{days}} günlük plan için sınırlı olabilir. Plan bulunan mekanlara göre oluşturuldu.",
+    "reducedDaysNotice": "Bu şehirde {{found}} kaliteli gezi noktası bulundu; {{requested}} günlük plan yerine daha dolu bir {{effective}} günlük plan oluşturuldu."
   },
   "favorites": {
     "title": "Kaydedilen Yerler",
@@ -232,7 +239,8 @@
     "showRoute": "Rotayı Göster",
     "hideRoute": "Rotayı Gizle",
     "favoritesOnly": "Sadece favoriler",
-    "showAll": "Tümünü göster"
+    "showAll": "Tümünü göster",
+    "allDaysOnly": "Yalnızca Tüm Günler görünümünde kullanılabilir"
   },
   "budget": {
     "low": "Ekonomik",

@@ -25,6 +25,28 @@ function computeCityRadiusKm(cityGeo) {
   return (diagKm / 2) * 0.7;
 }
 
+// Kaliteli mekan sayısı gün sayısının çok altındaysa (ör. küçük şehir) plan günlerini
+// gerçekçi seviyeye indir — gün başına en az ~2 atraksiyon hedeflenir. Yeterliyse
+// kullanıcının seçtiği gün korunur; hiç yer yoksa dokunma (LLM/notice devreye girer).
+const MIN_PLACES_PER_DAY = 2;
+function computeEffectiveDays(requestedDays, placeCount) {
+  if (placeCount <= 0) return requestedDays;
+  const maxByPlaces = Math.max(1, Math.ceil(placeCount / MIN_PLACES_PER_DAY));
+  return Math.min(requestedDays, maxByPlaces);
+}
+
+// Kullanıcı bilgilendirmesi: gün kısıldıysa 'reduced_days', yine de gün başına 1'den
+// az yer kaldıysa 'few_places', aksi halde uyarı yok.
+function buildNotice(requestedDays, effectiveDays, placeCount) {
+  if (effectiveDays < requestedDays) {
+    return { type: 'reduced_days', requested: requestedDays, effective: effectiveDays, found: placeCount };
+  }
+  if (placeCount < effectiveDays) {
+    return { type: 'few_places', found: placeCount, days: effectiveDays };
+  }
+  return undefined;
+}
+
 const VALID_INTENSITY = ['relaxed', 'normal', 'intensive'];
 const VALID_TRANSPORT = ['walking', 'transit', 'car', 'mixed'];
 
@@ -198,7 +220,7 @@ function reconcilePlanWithItinerary(dailyPlan, optimizedItinerary, places, resta
 // LLM çıktısındaki her aktiviteye saatli program ekler. Aktivitenin koordinatı,
 // adı havuzda (reconcile ile AYNI matchInPool) eşlenerek bulunur; eşleşmeyen
 // aktivite seyahat süresine katılmaz (yalnız kalma süresi sayılır).
-function enrichWithSchedule(dailyPlan, places, restaurants, transportMode) {
+function enrichWithSchedule(dailyPlan, places, restaurants, transportMode, hasTransit = true) {
   if (!dailyPlan?.days?.length) return dailyPlan;
   const matchPool = buildMatchPool([...(places || []), ...(restaurants || [])]);
   const findCoord = (name) => {
@@ -211,12 +233,13 @@ function enrichWithSchedule(dailyPlan, places, restaurants, transportMode) {
       const c = findCoord(a.place) || {};
       return { ...a, lat: c.lat, lng: c.lng };
     });
-    const sched = routeOptimizer.computeSchedule(withCoords, transportMode);
+    const sched = routeOptimizer.computeSchedule(withCoords, transportMode, 570, hasTransit);
     day.activities = day.activities.map((a, i) => ({
       ...a,
       arrival: sched[i].arrival,
       departure: sched[i].departure,
       travelFromPrevMin: sched[i].travelFromPrevMin,
+      travelMode: sched[i].travelMode,
       durationMin: sched[i].durationMin,
     }));
   }
@@ -299,7 +322,7 @@ router.post('/generate', async (req, res, next) => {
     // ile koordinatlandırılmış yerler. rawPlaces (Google search çıktısı)
     // mega-popüler yerleri her zaman ilk sıralara getirmediği için iconic
     // havuzunu burada zenginleştiriyoruz; placeId ile dedup.
-    const [mustSee, mustSeeEnriched] = await Promise.all([
+    const [mustSee, mustSeeEnriched, hasTransit] = await Promise.all([
       mustSeeService.getMustSeeForCity({ cityName: city, countryCode, countryName }).catch((err) => {
         console.error('[planner] mustSee list failed:', err.message);
         return { iconic: [], curated: [] };
@@ -308,6 +331,7 @@ router.post('/generate', async (req, res, next) => {
         console.error('[planner] mustSee enrich failed:', err.message);
         return [];
       }),
+      llmService.assessCityHasTransit({ city, countryName }).catch(() => true),
     ]);
 
     const seenIds = new Set(rawPlaces.map((p) => p.placeId).filter(Boolean));
@@ -323,13 +347,24 @@ router.post('/generate', async (req, res, next) => {
     // ulaşım modundan türetilir. Yemek odaklıysa gün başına 3 yemek durağı enjekte edilir.
     const cityRadiusKm = computeCityRadiusKm(cityGeo);
     const cityCenter = cityGeo ? { lat: cityGeo.lat, lng: cityGeo.lng } : null;
-    // Şehir merkezine mesafe eşiği: yarıçapın 4 katı, en az 60 km — yanlış-şehir/uzak eşleşmeleri eler
-    const maxPlaceRadiusKm = Math.max(60, (cityRadiusKm || 20) * 4);
+    // Şehir merkezine mesafe eşiği: yarıçapın 2 katı, en az 18 km. Plan TEK şehir
+    // merkezi içindir; bunun ötesi gün-gezisidir (ör. Aydın'da 30 km'deki Nysa).
+    // Büyük metropollerde viewport yarıçapı büyük olduğundan eşik de büyür (yayılma korunur);
+    // küçük şehirlerde 18 km taban il-dışı uzak ilçeleri dışarıda bırakır.
+    const maxPlaceRadiusKm = Math.max(18, (cityRadiusKm || 9) * 2);
 
-    const places = filterService.filterPlaces(annotatedRaw, { days: daysNum, intensity, affinity, center: cityCenter, maxRadiusKm: maxPlaceRadiusKm });
-    const restaurants = filterService.filterRestaurants(rawRestaurants, { budget, days: daysNum, restPerDay, center: cityCenter, maxRadiusKm: maxPlaceRadiusKm });
+    const candidatePlaces = filterService.filterPlaces(annotatedRaw, { days: daysNum, intensity, affinity, center: cityCenter, maxRadiusKm: maxPlaceRadiusKm });
+    // Kaliteli mekan azsa gün sayısını gerçekçi seviyeye indir (gün başına ~2 atraksiyon).
+    const effectiveDays = computeEffectiveDays(daysNum, candidatePlaces.length);
+    // Restoran yarıçapı daha dar (en çok 15 km): restoranlar merkezde yoğundur, uzak
+    // sahil/ilçe restoranı bir güne atanınca (özellikle yürüyüş modunda) saçma uzun bacak yaratır.
+    const restaurants = filterService.filterRestaurants(rawRestaurants, { budget, days: effectiveDays, restPerDay, center: cityCenter, maxRadiusKm: Math.min(maxPlaceRadiusKm, 15) });
     const { optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm } =
-      routeOptimizer.optimizeRoute(places, restaurants, daysNum, cityRadiusKm, transportMode, restPerDay);
+      routeOptimizer.optimizeRoute(candidatePlaces, restaurants, effectiveDays, cityRadiusKm, transportMode, restPerDay);
+    // Optimizer gün-içi çapı aşan uzak outlier'ları düşürebilir; harita pinleri ve "X Mekan"
+    // sayacı plana birebir uysun diye places'i yalnız plana giren (kümelenmiş) mekanlara indir.
+    const keptPlaceNames = new Set(optimizedPlaces.flat().map((p) => p.name));
+    const places = candidatePlaces.filter((p) => keptPlaceNames.has(p.name));
 
     // Hava (gün-parçası) — LLM'e enjekte edilebilmesi için plan üretiminden ÖNCE çek.
     let weather = null;
@@ -343,15 +378,15 @@ router.post('/generate', async (req, res, next) => {
     // LLM plan + bütçe + ipuçları paralel (her biri bağımsız, toplam süreyi düşürür)
     const [dailyPlan, budgetEstimate, cityInfo] = await Promise.all([
       llmService.generateDailyPlan({
-        city, days: daysNum, budget, interests,
+        city, days: effectiveDays, budget, interests,
         places, restaurants, language: lang,
         optimizedPlaces, optimizedRestaurants, optimizedItinerary,
         maxDailyDiameterKm,
         countryName,
         intensity, transportMode,
-        weatherDayParts, constraints,
+        weatherDayParts, constraints, hasTransit,
       }),
-      budgetService.calculateBudget({ city, days: daysNum, budget, countryCode }),
+      budgetService.calculateBudget({ city, days: effectiveDays, budget, countryCode }),
       resolveCityTips({ city, countryCode }),
     ]);
 
@@ -361,20 +396,17 @@ router.post('/generate', async (req, res, next) => {
       hasWeather: Array.isArray(weatherDayParts) && weatherDayParts.length > 0,
     });
     if (recon.dropped) console.warn(`[planner/generate] ${recon.dropped} havuz-dışı aktivite düşürüldü (${city})`);
-    enrichWithSchedule(dailyPlan, places, restaurants, transportMode);
+    enrichWithSchedule(dailyPlan, places, restaurants, transportMode, hasTransit);
 
     const mapMarkers = [
       ...places.map((p) => ({ ...p, markerType: 'attraction' })),
       ...restaurants.map((r) => ({ ...r, markerType: 'restaurant' })),
     ];
 
-    // Yetersiz mekan (gün başına 1'den az yer) bulunduysa kullanıcıya bilgilendir.
-    const notice = places.length < daysNum
-      ? { type: 'few_places', found: places.length, days: daysNum }
-      : undefined;
+    const notice = buildNotice(daysNum, effectiveDays, places.length);
 
     res.json({
-      trip: { city, days, budget, interests, startDate, endDate, countryCode, intensity, transportMode },
+      trip: { city, days: effectiveDays, requestedDays: daysNum, budget, interests, startDate, endDate, countryCode, intensity, transportMode },
       language: lang,
       dailyPlan,
       places, restaurants, mapMarkers,
@@ -412,7 +444,7 @@ router.post('/prepare', async (req, res, next) => {
     const countryCode = cityGeo?.countryCode || null;
     const countryName = resolveCountryName(countryCode);
 
-    const [mustSee, mustSeeEnriched] = await Promise.all([
+    const [mustSee, mustSeeEnriched, hasTransit] = await Promise.all([
       mustSeeService.getMustSeeForCity({ cityName: city, countryCode, countryName }).catch((err) => {
         console.error('[planner] mustSee list failed:', err.message);
         return { iconic: [], curated: [] };
@@ -421,6 +453,7 @@ router.post('/prepare', async (req, res, next) => {
         console.error('[planner] mustSee enrich failed:', err.message);
         return [];
       }),
+      llmService.assessCityHasTransit({ city, countryName }).catch(() => true),
     ]);
 
     const seenIds = new Set(rawPlaces.map((p) => p.placeId).filter(Boolean));
@@ -434,13 +467,24 @@ router.post('/prepare', async (req, res, next) => {
 
     const cityRadiusKm = computeCityRadiusKm(cityGeo);
     const cityCenter = cityGeo ? { lat: cityGeo.lat, lng: cityGeo.lng } : null;
-    // Şehir merkezine mesafe eşiği: yarıçapın 4 katı, en az 60 km — yanlış-şehir/uzak eşleşmeleri eler
-    const maxPlaceRadiusKm = Math.max(60, (cityRadiusKm || 20) * 4);
+    // Şehir merkezine mesafe eşiği: yarıçapın 2 katı, en az 18 km. Plan TEK şehir
+    // merkezi içindir; bunun ötesi gün-gezisidir (ör. Aydın'da 30 km'deki Nysa).
+    // Büyük metropollerde viewport yarıçapı büyük olduğundan eşik de büyür (yayılma korunur);
+    // küçük şehirlerde 18 km taban il-dışı uzak ilçeleri dışarıda bırakır.
+    const maxPlaceRadiusKm = Math.max(18, (cityRadiusKm || 9) * 2);
 
-    const places = filterService.filterPlaces(annotatedRaw, { days: daysNum, intensity, affinity, center: cityCenter, maxRadiusKm: maxPlaceRadiusKm });
-    const restaurants = filterService.filterRestaurants(rawRestaurants, { budget, days: daysNum, restPerDay, center: cityCenter, maxRadiusKm: maxPlaceRadiusKm });
+    const candidatePlaces = filterService.filterPlaces(annotatedRaw, { days: daysNum, intensity, affinity, center: cityCenter, maxRadiusKm: maxPlaceRadiusKm });
+    // Kaliteli mekan azsa gün sayısını gerçekçi seviyeye indir (gün başına ~2 atraksiyon).
+    const effectiveDays = computeEffectiveDays(daysNum, candidatePlaces.length);
+    // Restoran yarıçapı daha dar (en çok 15 km): restoranlar merkezde yoğundur, uzak
+    // sahil/ilçe restoranı bir güne atanınca (özellikle yürüyüş modunda) saçma uzun bacak yaratır.
+    const restaurants = filterService.filterRestaurants(rawRestaurants, { budget, days: effectiveDays, restPerDay, center: cityCenter, maxRadiusKm: Math.min(maxPlaceRadiusKm, 15) });
     const { optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm } =
-      routeOptimizer.optimizeRoute(places, restaurants, daysNum, cityRadiusKm, transportMode, restPerDay);
+      routeOptimizer.optimizeRoute(candidatePlaces, restaurants, effectiveDays, cityRadiusKm, transportMode, restPerDay);
+    // Optimizer gün-içi çapı aşan uzak outlier'ları düşürebilir; harita pinleri ve "X Mekan"
+    // sayacı plana birebir uysun diye places'i yalnız plana giren (kümelenmiş) mekanlara indir.
+    const keptPlaceNames = new Set(optimizedPlaces.flat().map((p) => p.name));
+    const places = candidatePlaces.filter((p) => keptPlaceNames.has(p.name));
 
     const mapMarkers = [
       ...places.map((p) => ({ ...p, markerType: 'attraction' })),
@@ -449,7 +493,7 @@ router.post('/prepare', async (req, res, next) => {
 
     // Bütçe ve ipuçları paralel — LLM yolu için 2-3 sn tasarruf
     const [budgetEstimate, cityInfo] = await Promise.all([
-      budgetService.calculateBudget({ city, days: daysNum, budget, countryCode }),
+      budgetService.calculateBudget({ city, days: effectiveDays, budget, countryCode }),
       resolveCityTips({ city, countryCode }),
     ]);
 
@@ -461,15 +505,14 @@ router.post('/prepare', async (req, res, next) => {
       weatherDayParts = w?.weatherDayParts ?? null;
     }
 
-    // Yetersiz mekan (gün başına 1'den az yer) bulunduysa kullanıcıya bilgilendir.
-    const notice = places.length < daysNum
-      ? { type: 'few_places', found: places.length, days: daysNum }
-      : undefined;
+    const notice = buildNotice(daysNum, effectiveDays, places.length);
 
     res.json({
       language: lang,
       countryCode,
       intensity, transportMode,
+      // effectiveDays: az mekanlı şehirde indirilmiş gün sayısı; hasTransit: /llm enrich için.
+      effectiveDays, hasTransit,
       places, restaurants,
       optimizedPlaces, optimizedRestaurants, optimizedItinerary,
       maxDailyDiameterKm,
@@ -487,7 +530,7 @@ router.post('/llm', async (req, res, next) => {
     const err = validatePlanInput(req.body);
     if (err) return res.status(400).json({ error: err });
 
-    const { city, days, budget, interests, language, places, restaurants, optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm, countryCode, weatherDayParts, clientUuid } = req.body;
+    const { city, days, budget, interests, language, places, restaurants, optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm, countryCode, weatherDayParts, clientUuid, hasTransit } = req.body;
     const { intensity, transportMode } = resolvePreferences(req.body);
 
     if (!Array.isArray(places) || !Array.isArray(restaurants)) {
@@ -512,7 +555,7 @@ router.post('/llm', async (req, res, next) => {
       countryName,
       intensity, transportMode,
       weatherDayParts: weatherDayParts || null,
-      constraints,
+      constraints, hasTransit: hasTransit !== false,
     });
 
     // Uzlaştır (uydurma mekanı düşür + hava yoksa coğrafi sıra), sonra saatli program ekle.
@@ -520,7 +563,7 @@ router.post('/llm', async (req, res, next) => {
       hasWeather: Array.isArray(weatherDayParts) && weatherDayParts.length > 0,
     });
     if (recon.dropped) console.warn(`[planner/llm] ${recon.dropped} havuz-dışı aktivite düşürüldü (${city})`);
-    enrichWithSchedule(dailyPlan, places, restaurants, transportMode);
+    enrichWithSchedule(dailyPlan, places, restaurants, transportMode, hasTransit !== false);
 
     res.json({ dailyPlan });
   } catch (err) {

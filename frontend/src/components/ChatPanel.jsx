@@ -21,6 +21,27 @@ function stripPlanUpdate(text) {
   return clean.trim();
 }
 
+// BDM yanıtları **kalın** / *italik* markdown üretir; pre-wrap satır sonlarını zaten
+// koruyor, burada yalnız satır-içi vurguyu React düğümlerine çeviriyoruz.
+// Streaming sırasında kapanmamış `**` eşleşmez, kapanınca biçimlenir.
+function renderInlineMarkdown(text) {
+  const nodes = [];
+  // İtalik içeriği satır sonu içeremez: aksi halde `* madde1\n* madde2` gibi madde
+  // imleri tek bir italik bloğa yutulup listeyi bozuyordu (bkz. code review).
+  const regex = /\*\*([^*]+)\*\*|\*([^*\n]+)\*/g;
+  let last = 0;
+  let key = 0;
+  let m;
+  while ((m = regex.exec(text)) !== null) {
+    if (m.index > last) nodes.push(text.slice(last, m.index));
+    if (m[1] !== undefined) nodes.push(<strong key={key++}>{m[1]}</strong>);
+    else nodes.push(<em key={key++}>{m[2]}</em>);
+    last = regex.lastIndex;
+  }
+  if (last < text.length) nodes.push(text.slice(last));
+  return nodes;
+}
+
 export default function ChatPanel({ planData, onPlanUpdate, onPreviewUpdate, onCancelPreview, tripId, floating = false }) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language === 'tr' ? 'tr' : 'en';
@@ -266,7 +287,7 @@ export default function ChatPanel({ planData, onPlanUpdate, onPreviewUpdate, onC
             {messages.map((msg, i) => (
               <div key={i} className={`chat-message ${msg.role}`}>
                 <div className="chat-bubble">
-                  {stripPlanUpdate(msg.content)}
+                  {renderInlineMarkdown(stripPlanUpdate(msg.content))}
                   {msg.streaming && <span className="chat-cursor">|</span>}
                 </div>
                 {msg.planUpdate && !msg.streaming && !msg.planApplied && previewIdx !== i && (

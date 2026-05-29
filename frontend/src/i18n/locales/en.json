@@ -115,10 +115,17 @@
     "noResult": "No plan created yet",
     "noResultDesc": "Fill in the form to create a travel plan.",
     "createPlan": "Create Plan",
+    "collapsePanel": "Hide panel",
+    "expandPanel": "Show panel",
     "avoidOutdoor": "Indoor recommended",
     "rainProb": "rain chance",
     "minShort": "min",
-    "fewPlacesNotice": "Only {{found}} places were found for this city, which may be limited for a {{days}}-day plan. The plan was built from the places found."
+    "travelWalk": "walk",
+    "travelTransit": "transit",
+    "travelCar": "car",
+    "travelMotor": "transport",
+    "fewPlacesNotice": "Only {{found}} places were found for this city, which may be limited for a {{days}}-day plan. The plan was built from the places found.",
+    "reducedDaysNotice": "Found {{found}} quality attractions in this city; built a fuller {{effective}}-day plan instead of {{requested}} days."
   },
   "favorites": {
     "title": "Saved Places",
@@ -232,7 +239,8 @@
     "showRoute": "Show Route",
     "hideRoute": "Hide Route",
     "favoritesOnly": "Favorites only",
-    "showAll": "Show all"
+    "showAll": "Show all",
+    "allDaysOnly": "Available only in All Days view"
   },
   "budget": {
     "low": "Budget",

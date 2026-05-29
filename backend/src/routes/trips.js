@@ -5,7 +5,7 @@ const tripModel = require('../models/tripModel');
 // POST /api/trips - Yeni trip kaydet
 router.post('/', async (req, res, next) => {
   try {
-    const { city, days, budget, interests, planText, placesJson, restaurantsJson, budgetEstimate, cityInfo } = req.body;
+    const { city, days, budget, interests, planText, placesJson, restaurantsJson, budgetEstimate, cityInfo, startDate, endDate } = req.body;
 
     // Sınır validasyonu — geçersiz girdi ham Postgres hatası olarak client'a sızmasın.
     if (typeof city !== 'string' || city.length < 1 || city.length > 100) {
@@ -21,8 +21,13 @@ router.post('/', async (req, res, next) => {
     if (!Array.isArray(interests)) {
       return res.status(400).json({ error: 'interests must be an array' });
     }
+    // Tarihler opsiyonel; verildiyse YYYY-MM-DD formatında olmalı (ham Postgres hatası sızmasın).
+    const isValidDate = (d) => d == null || /^\d{4}-\d{2}-\d{2}$/.test(d);
+    if (!isValidDate(startDate) || !isValidDate(endDate)) {
+      return res.status(400).json({ error: 'startDate/endDate must be YYYY-MM-DD' });
+    }
 
-    const trip = await tripModel.createTrip({ city, days: daysNum, budget, interests });
+    const trip = await tripModel.createTrip({ city, days: daysNum, budget, interests, startDate, endDate });
     await tripModel.savePlan({
       tripId: trip.id,
       planText,

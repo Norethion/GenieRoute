@@ -45,6 +45,43 @@ function classifyEnvironment(place) {
   return 'mixed';
 }
 
+// Turistik "çapa" tipleri: bunlardan biri varsa mekan her hâlükârda turistiktir.
+const TOURISTIC_ANCHOR_TYPES = new Set([
+  'tourist_attraction', 'museum', 'art_gallery', 'park', 'natural_feature',
+  'place_of_worship', 'church', 'mosque', 'hindu_temple', 'synagogue',
+  'zoo', 'aquarium', 'amusement_park', 'botanical_garden', 'monument',
+  'historical_landmark', 'landmark', 'hiking_area', 'beach', 'campground',
+  'shopping_mall', 'market', 'performing_arts_theater', 'movie_theater', 'library',
+]);
+// Turistik olmayan tipler: çapa yoksa ve bunlardan biri varsa mekan elenir
+// (hastane, mağaza, banka, benzinlik vb. — Aydın planındaki LC Waikiki/hastane gibi).
+const NON_TOURISTIC_TYPES = new Set([
+  // sağlık
+  'hospital', 'doctor', 'dentist', 'pharmacy', 'drugstore', 'physiotherapist', 'veterinary_care', 'health',
+  // finans / resmi
+  'bank', 'atm', 'accounting', 'finance', 'insurance_agency', 'local_government_office',
+  'courthouse', 'police', 'fire_station', 'post_office', 'embassy',
+  // otomotiv
+  'gas_station', 'car_repair', 'car_dealer', 'car_rental', 'car_wash',
+  // hizmet
+  'lawyer', 'real_estate_agency', 'moving_company', 'storage', 'plumber', 'electrician', 'laundry', 'funeral_home',
+  // genel perakende (mağaza)
+  'clothing_store', 'shoe_store', 'electronics_store', 'furniture_store', 'home_goods_store',
+  'hardware_store', 'convenience_store', 'supermarket', 'grocery_or_supermarket', 'liquor_store',
+  'cell_phone_store', 'pet_store', 'florist', 'bicycle_store', 'store',
+  // diğer
+  'gym', 'school', 'primary_school', 'secondary_school', 'lodging', 'parking',
+]);
+
+// Mekan turistik mi? Çapa tipi varsa evet; yoksa turistik-olmayan tip içeriyorsa hayır;
+// hiçbiri yoksa (yalnız point_of_interest/establishment) şüpheden faydalanıp tutulur.
+function isTouristicPlace(place) {
+  const types = Array.isArray(place?.types) ? place.types : [];
+  if (types.some((t) => TOURISTIC_ANCHOR_TYPES.has(t))) return true;
+  if (types.some((t) => NON_TOURISTIC_TYPES.has(t))) return false;
+  return true;
+}
+
 /**
  * Her yerin adını iconic/curated listelerine göre eşleştir ve `category` +
  * `environment` (indoor/outdoor/mixed) alanları ekle. Hiçbiriyle eşleşmeyen
@@ -138,6 +175,26 @@ function pruneByDistance(list, center, maxRadiusKm) {
   });
 }
 
+// Şehir merkezine uzaklığa göre "kopuk uzak nokta" (ör. Aydın'da 30 km'deki Nysa)
+// elemesi. Sabit yarıçap yerine ADAPTİF: mekan kütlesinin medyan uzaklığının
+// `factor` katını aşan ve `floorKm`'den uzak olanlar düşer. Böylece mekanların
+// çoğu merkeze yakınsa uzak tek-tük noktalar atılır; gerçekten yayılmış şehirlerde
+// (büyük metropol) medyan da büyük olacağından bir şey atılmaz. Az veriyle (<6)
+// outlier tespiti güvenilmez olduğundan dokunulmaz.
+function pruneCenterOutliers(list, center, { floorKm = 8, factor = 3 } = {}) {
+  if (!center) return list;
+  const withD = list.map((p) => ({
+    p,
+    d: (Number.isFinite(p.lat) && Number.isFinite(p.lng))
+      ? haversineKm(center.lat, center.lng, p.lat, p.lng) : null,
+  }));
+  const dists = withD.map((x) => x.d).filter((d) => d != null).sort((a, b) => a - b);
+  if (dists.length < 6) return list;
+  const median = dists[Math.floor(dists.length / 2)];
+  const threshold = Math.max(floorKm, median * factor);
+  return withD.filter((x) => x.d == null || x.d <= threshold).map((x) => x.p);
+}
+
 /**
  * Mekanları ilgi alanı, bütçe ve puana göre filtrele ve gün sayısına böl.
  *
@@ -150,6 +207,10 @@ function pruneByDistance(list, center, maxRadiusKm) {
  */
 function filterPlaces(places, { days, intensity = 'normal', affinity = null, center = null, maxRadiusKm = null }) {
   let filtered = pruneByDistance([...places], center, maxRadiusKm);
+  // Turistik olmayan POI'leri (hastane, mağaza, banka, benzinlik…) ele.
+  filtered = filtered.filter(isTouristicPlace);
+  // Kopuk uzak noktaları (mekan kütlesinden ayrık) adaptif olarak ele.
+  filtered = pruneCenterOutliers(filtered, center);
 
   filtered.sort((a, b) => {
     const baseA = a.rating * Math.log10(a.userRatingsTotal + 1);
@@ -174,6 +235,9 @@ function filterPlaces(places, { days, intensity = 'normal', affinity = null, cen
  */
 function filterRestaurants(restaurants, { budget, days, restPerDay = 2, center = null, maxRadiusKm = null }) {
   let filtered = pruneByDistance([...restaurants], center, maxRadiusKm);
+  // Kopuk uzak restoranları ele — aksi halde yürüyüş modunda 35 km'lik (463 dk!)
+  // saçma bacaklar oluşuyordu (uzak sahil restoranı bir güne atanınca).
+  filtered = pruneCenterOutliers(filtered, center);
 
   // Bütçeye göre filtrele
   if (budget === 'low') {

@@ -1,6 +1,14 @@
-import { Sunrise, Sun, Sunset, UtensilsCrossed, Coffee, Sandwich, AlertTriangle, Navigation } from 'lucide-react';
+import { Sunrise, Sun, Sunset, UtensilsCrossed, Coffee, Sandwich, AlertTriangle, Navigation, Footprints, Car, Bus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { getDayPart, getWeatherIcon } from '../data/weatherIcons';
+
+// Bacak ulaşım modu → ikon + etiket anahtarı. 'motor' = mixed modun uzun (araç/taşıt) bacağı.
+const TRAVEL_MODE_META = {
+  walking: { Icon: Footprints, key: 'result.travelWalk' },
+  transit: { Icon: Bus, key: 'result.travelTransit' },
+  car: { Icon: Car, key: 'result.travelCar' },
+  motor: { Icon: Car, key: 'result.travelMotor' },
+};
 
 const TIME_ICONS = {
   morning: Sunrise,
@@ -40,12 +48,17 @@ export default function DayCard({ day, onActivityClick, dayWeather }) {
           const warnOutdoor = part?.avoidOutdoor && activity.environment !== 'indoor' && activity.type !== 'restaurant';
           return (
             <div key={index}>
-              {/* Duraklar-arası seyahat süresi rozeti (ilk durakta yok) */}
-              {activity.travelFromPrevMin != null && (
-                <div className="activity-travel">
-                  <Navigation size={11} /> ~{activity.travelFromPrevMin} {t('result.minShort', 'dk')}
-                </div>
-              )}
+              {/* Duraklar-arası seyahat süresi rozeti (ilk durakta yok) — modu da gösterir */}
+              {activity.travelFromPrevMin != null && (() => {
+                const meta = TRAVEL_MODE_META[activity.travelMode];
+                const TravelIcon = meta?.Icon || Navigation;
+                return (
+                  <div className="activity-travel">
+                    <TravelIcon size={11} /> ~{activity.travelFromPrevMin} {t('result.minShort', 'dk')}
+                    {meta && <span className="activity-travel-mode">· {t(meta.key)}</span>}
+                  </div>
+                );
+              })()}
               <div
                 className={`activity ${activity.type}`}
                 onClick={() => onActivityClick?.(activity)}

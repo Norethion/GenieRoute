@@ -76,7 +76,7 @@
     "city": "Antalya",
     "days": 3,
     "budget": "medium",
-    "interests": ["beach", "history", "nature", "food"],
+    "interests": ["beach", "history", "nature", "cuisine"],
     "image": "/images/routes/antalya.jpg",
     "tr": {
       "title": "Antalya Rivierası",

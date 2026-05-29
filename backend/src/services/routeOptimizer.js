@@ -136,15 +136,17 @@ function clusterByDay(places, days, maxDiameterKm) {
     clusters.push(cluster);
   }
 
-  // Kalanları (remaining + outliers) en yakın gün centroid'ine zorla yerleştir.
-  // Burada çap sınırı bilinçli olarak gevşetilir, hiçbir yer düşürülmesin diye.
-  // Denge: en yakın güne %25 mesafe toleransı içindeki günler arasında EN AZ dolu
-  // olanı seç — böylece tek güne yığılıp 6/2 gibi dengesiz dağılım oluşmaz.
+  // Kalanları (remaining + outliers) yerleştir. Boş gün varsa her zaman doldur.
+  // Aksi halde: en yakın gün centroid'i izin verilen gün-içi çaptan UZAKSA, o yeri
+  // plana hiç katma (düşür) — kullanıcı kopuk/uzak bağımsız noktalar istemiyor.
+  // Çapa sığan kalanlar ise dengeli şekilde en yakın güne eklenir (%25 toleransla
+  // en az dolu gün seçilir; tek güne yığılma önlenir).
   const leftover = [...remaining, ...outliers];
   const BALANCE_TOL = 1.25;
+  let dropped = 0;
   while (leftover.length > 0) {
     const p = leftover.shift();
-    // Boş gün varsa önce onu doldur (mesafe kıyaslamasını atla)
+    // Boş gün varsa önce onu doldur (mesafe kıyaslamasını ve düşürmeyi atla)
     const emptyIdx = clusters.findIndex((c) => c.length === 0);
     if (emptyIdx !== -1) {
       clusters[emptyIdx].push(p);
@@ -155,6 +157,11 @@ function clusterByDay(places, days, maxDiameterKm) {
       return haversine(center.lat, center.lng, p.lat, p.lng);
     });
     const minDist = Math.min(...dists);
+    // En yakın gün bile çap sınırından uzaksa: zorlamak uzun sıçrama yaratır → düş.
+    if (minDist > maxDiameterKm) {
+      dropped++;
+      continue;
+    }
     let bestCluster = 0;
     let bestLen = Infinity;
     for (let c = 0; c < clusters.length; c++) {
@@ -166,7 +173,7 @@ function clusterByDay(places, days, maxDiameterKm) {
     clusters[bestCluster].push(p);
   }
 
-  return { clusters, outliers };
+  return { clusters, outliers, dropped };
 }
 
 // Nearest-neighbor TSP to order places within a day
@@ -336,8 +343,41 @@ const TRANSPORT_SPEED_KMH = {
   walking: 4.5,
   transit: 18,
   car: 30,
-  mixed: 14,
 };
+// Bacak mesafesine göre mod eşikleri (km). Mod hiyerarşisi: walking < transit < car.
+// Seçilen mod, KISA bacaklarda alt modlara düşebilir (kullanıcı isteği):
+//   walking → her bacak yürüme
+//   transit → kısa bacak yürüme, üstü toplu taşıma
+//   car / mixed → kısa yürüme, orta toplu taşıma, uzun araç (üçü de olabilir)
+const WALK_MAX_KM = 1.2;
+const TRANSIT_MAX_KM = 5;
+// Toplu taşıma olmayan şehirde 'transit' bacağı için: bu mesafeye kadar yürünür,
+// üstü araç (taksi). WALK_MAX_KM'den büyük çünkü transit-bacaklar zaten >WALK_MAX_KM.
+const NO_TRANSIT_WALK_MAX_KM = 2;
+
+// Bir bacak (önceki duraktan bu durağa) için mod + ortalama hız döndürür.
+// Dönen mode: 'walking' | 'transit' | 'car'. (Eski 'motor' kaldırıldı; kayıtlı
+// planlardaki 'motor' frontend'de araç ikonuyla geriye-uyumlu gösterilir.)
+// hasTransit=false ise (şehirde anlamlı toplu taşıma yok) 'transit' bacaklar
+// gerçekçi alternatife düşer: kısa-orta yürüme, uzun araç.
+function legModeAndSpeed(transportMode, km, hasTransit = true) {
+  const W = TRANSPORT_SPEED_KMH.walking;
+  // Toplu taşıma yoksa transit yerine kullanılacak gerçekçi mod.
+  const transitFallback = () =>
+    km <= NO_TRANSIT_WALK_MAX_KM ? { mode: 'walking', speed: W } : { mode: 'car', speed: TRANSPORT_SPEED_KMH.car };
+  const transitLeg = () =>
+    hasTransit ? { mode: 'transit', speed: TRANSPORT_SPEED_KMH.transit } : transitFallback();
+
+  // Yürüyüş modu: mesafeden bağımsız her bacak yürüme.
+  if (transportMode === 'walking') return { mode: 'walking', speed: W };
+  // Diğer tüm modlarda çok kısa bacaklar yürünür.
+  if (km <= WALK_MAX_KM) return { mode: 'walking', speed: W };
+  // Toplu taşıma modu araca yükselmez; kalan her bacak toplu taşıma (yoksa fallback).
+  if (transportMode === 'transit') return transitLeg();
+  // car / mixed: orta mesafe toplu taşıma (varsa), uzun mesafe araç.
+  if (km <= TRANSIT_MAX_KM) return transitLeg();
+  return { mode: 'car', speed: TRANSPORT_SPEED_KMH.car };
+}
 
 // Aktivite tipine/zaman dilimine göre tahmini durakta-kalma süresi (dakika).
 function dwellMinutes(activity) {
@@ -366,15 +406,17 @@ function fmtTime(totalMin) {
  * @param {number} dayStartMin  Gün başlangıcı (dk; varsayılan 09:30 = 570)
  * @returns {Array<{arrival, departure, travelFromPrevMin, durationMin}>}  activities ile aynı sırada
  */
-function computeSchedule(activities, transportMode = 'mixed', dayStartMin = 570) {
-  const speed = TRANSPORT_SPEED_KMH[transportMode] || TRANSPORT_SPEED_KMH.mixed;
+function computeSchedule(activities, transportMode = 'mixed', dayStartMin = 570, hasTransit = true) {
   let clock = dayStartMin;
   let prev = null;
   return activities.map((a) => {
     let travel = null;
+    let travelMode = null;
     if (prev && Number.isFinite(a.lat) && Number.isFinite(prev.lat)) {
       const km = haversine(prev.lat, prev.lng, a.lat, a.lng);
+      const { mode, speed } = legModeAndSpeed(transportMode, km, hasTransit);
       travel = Math.max(2, Math.round((km / speed) * 60)); // en az 2 dk
+      travelMode = mode;
       clock += travel;
     }
     const arrival = clock;
@@ -385,6 +427,7 @@ function computeSchedule(activities, transportMode = 'mixed', dayStartMin = 570)
       arrival: fmtTime(arrival),
       departure: fmtTime(clock),
       travelFromPrevMin: travel,
+      travelMode,
       durationMin: duration,
     };
   });
@@ -419,7 +462,8 @@ function optimizeRoute(places, restaurants, days, cityRadiusKm = null, transport
     };
   }
 
-  const { clusters } = clusterByDay(validPlaces, days, maxDailyDiameterKm);
+  const { clusters, dropped } = clusterByDay(validPlaces, days, maxDailyDiameterKm);
+  if (dropped) console.warn(`[routeOptimizer] ${dropped} uzak outlier düşürüldü (gün-içi çap ${maxDailyDiameterKm.toFixed(1)} km)`);
   const optimizedPlaces = clusters.map(orderByNearest);
   const optimizedRestaurants = assignRestaurants(optimizedPlaces, validRestaurants);
   const optimizedItinerary = interleaveRestaurants(optimizedPlaces, validRestaurants, restPerDay);

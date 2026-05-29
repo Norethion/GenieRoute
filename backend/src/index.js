@@ -17,6 +17,7 @@ const adminRouter = require('./routes/admin');
 const usageRouter = require('./routes/usage');
 const favoritesRouter = require('./routes/favorites');
 const preferencesRouter = require('./routes/preferences');
+const weatherRouter = require('./routes/weather');
 
 const app = express();
 const server = http.createServer(app);
@@ -51,6 +52,7 @@ app.use('/api/admin', adminRouter);
 app.use('/api/usage', usageRouter);
 app.use('/api/favorites', favoritesRouter);
 app.use('/api/preferences', preferencesRouter);
+app.use('/api/weather', weatherRouter);
 
 // Error handler
 app.use(errorHandler);

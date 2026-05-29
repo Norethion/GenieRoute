@@ -11,6 +11,7 @@ export default function MapFabGroup({
   routesVisible, onToggleRoutes,
   categoryFilter, onToggleCategory, hasFilters,
   favoritesOnly, onToggleFavorites,
+  allDays = true,
 }) {
   const { t, i18n } = useTranslation();
   const lang = i18n.language === 'en' ? 'en' : 'tr';
@@ -31,7 +32,7 @@ export default function MapFabGroup({
 
   return (
     <>
-      {showFilters && (
+      {showFilters && allDays && (
         <div className="map-filter-panel">
           <div className="map-filter-header">
             <span>{labels.filters}</span>
@@ -70,8 +71,9 @@ export default function MapFabGroup({
             <button
               type="button"
               className={`map-fab-sub${hasFilters ? ' has-filters' : ''}`}
-              title={labels.filters}
+              title={allDays ? labels.filters : t('map.allDaysOnly')}
               onClick={() => setShowFilters((v) => !v)}
+              disabled={!allDays}
             >
               <Filter size={18} />
             </button>
@@ -102,8 +104,9 @@ export default function MapFabGroup({
             <button
               type="button"
               className={`map-fab-sub${favoritesOnly ? ' active' : ''}`}
-              title={labels.favorites}
+              title={allDays ? labels.favorites : t('map.allDaysOnly')}
               onClick={onToggleFavorites}
+              disabled={!allDays}
             >
               <Heart size={18} />
             </button>

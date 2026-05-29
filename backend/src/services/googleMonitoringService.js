@@ -1,6 +1,8 @@
 // Cloud Monitoring API → request_count metric. Service account
 // GOOGLE_APPLICATION_CREDENTIALS ile sağlanır (Monitoring Viewer rolü).
 
+const fs = require('fs');
+
 let MetricServiceClient = null;
 try {
   // Lazy require — paket yoksa /usage dışındaki kod yine kalksın.
@@ -22,6 +24,14 @@ function getClient() {
   if (!process.env.GCP_PROJECT_ID) {
     const err = new Error('GCP_PROJECT_ID not configured');
     err.code = 'NO_PROJECT';
+    throw err;
+  }
+  // Geçersiz/eksik kimlik dosyasını önceden yakala: aksi halde auth kütüphanesi
+  // bağımsız (detached) bir promise içinde ENOENT fırlatıp tüm backend'i çökertir.
+  const credPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+  if (credPath && !fs.existsSync(credPath)) {
+    const err = new Error(`GOOGLE_APPLICATION_CREDENTIALS file not found: ${credPath}`);
+    err.code = 'NO_CREDENTIALS';
     throw err;
   }
   if (!clientInstance) clientInstance = new MetricServiceClient();

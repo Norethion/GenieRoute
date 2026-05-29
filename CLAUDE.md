@@ -60,6 +60,7 @@ database/
     003_world_data_cache.sql  # city_prices_cache + city_tips_cache (LLM ensemble cache)
     004_saved_plan_snapshots.sql  # saved_plans.budget_estimate + city_info JSONB
     005_budget_level_cache.sql    # city_prices_cache UNIQUE → (city_key, budget_level)
+    006_trip_dates.sql            # trips.start_date + end_date (hava durumu açılışta canlı çekme)
 
 frontend/
   src/
@@ -124,6 +125,7 @@ cd frontend && npm run dev          # Web: http://localhost:5173
 | POST   | `/api/places/search` | `{ city, interests, language }` | Mekan arama (Text Search + Geocoding bias) |
 | POST   | `/api/places/restaurants` | `{ city, budget, language }` | Restoran arama |
 | POST   | `/api/places/lookup` | `{ name, city, language }` | Tek mekan adı → koordinat/detay |
+| POST   | `/api/weather` | `{ lat, lng, startDate, endDate }` | Canlı hava tahmini (kayıtlı gezi açılışında) |
 | GET    | `/api/places/photo/:ref` | — | Photo proxy (API anahtarını gizler, 24 saat cache) |
 | POST   | `/api/planner/generate` | `{ city, days, budget, interests, language?, startDate?, endDate? }` | Tam pipeline tek atışta |
 | POST   | `/api/planner/prepare` | `{ ..., rawPlaces, rawRestaurants }` | Adım 2: filter + optimize + budget + tips + weather |
@@ -177,7 +179,7 @@ Open-Meteo ve döviz kuru API'si anahtarsız çalışır.
 
 Migration dosyaları `database/migrations/` altında, isimleri sıralıdır (`001_*.sql`, `002_*.sql`...). Backend her kalkışta `runMigrations()` ile uygular; manuel müdahaleye gerek yok. Tablolar:
 
-- **trips** — `(id, city, days, budget, interests JSONB, created_at)`
+- **trips** — `(id, city, days, budget, interests JSONB, start_date, end_date, created_at)`
 - **saved_plans** — `(id, trip_id FK→trips ON DELETE CASCADE, plan_text JSONB, places_json, restaurants_json, created_at)`
 - **chat_sessions** — `(id, trip_id FK, client_uuid, language, created_at, last_activity)`
 - **chat_messages** — `(id BIGSERIAL, session_id FK ON DELETE CASCADE, role 'user'|'assistant', content, tokens_used, created_at)`
@@ -208,8 +210,10 @@ Migration dosyaları `database/migrations/` altında, isimleri sıralıdır (`00
 - LLM prompt'u GPT'ye **YALNIZCA** API'den gelen mekanları kullanmasını söyler — uydurma (hallucinated) lokasyon kabul edilmez. Bu kural `llmService` ve `chatService` system prompt'larında korunmalıdır.
 - Places API yanlış şehir sonuçlarını engellemek için **Geocoding bias** ile çağrılır.
 - Sonuçlar şu şemaya normalize edilir: `{ name, address, rating, lat, lng, photoUrl, priceLevel, types, placeId }`.
-- `filterService` `rating * log10(userRatingsTotal)` ağırlıklı skoru ile sıralar ve gün başına sınır koyar.
-- `routeOptimizer` haversine + nearest-neighbor ile günleri kümeler; gün-içi maksimum çap dinamik olarak şehir geocode viewport'undan hesaplanır (`computeCityRadiusKm`). Outlier yerler en sona, en yakın gün centroid'ine zorla atanır.
+- `filterService` `rating * log10(userRatingsTotal)` ağırlıklı skoru ile sıralar ve gün başına sınır koyar. Ayrıca **turistik olmayan POI'leri eler** (`isTouristicPlace`): hastane, mağaza, banka, benzinlik gibi tipler turistik bir "çapa" tipi yoksa havuzdan çıkarılır.
+- **Gün dengeleme:** Kaliteli mekan sayısı gün sayısının çok altındaysa (`planner.computeEffectiveDays`, gün başına ~2 atraksiyon), plan günleri gerçekçi seviyeye indirilir; yanıt `trip.days = effectiveDays` döner ve `reduced_days` bildirimi gösterilir. Atraksiyon havuzu zaten `mustSeeService` (LLM-curated + Places lookup) ile zenginleştirilir.
+- **Toplu taşıma gerçekliği:** `llmService.assessCityHasTransit` ile şehirde anlamlı toplu taşıma olup olmadığı (tek hafif LLM çağrısı) belirlenir; yoksa `routeOptimizer.legModeAndSpeed` 'transit' bacaklarını yürüyüş (kısa) / araç (uzun) olarak gösterir. Mod hiyerarşisi: `walking` sadece yürüme; `transit` kısa bacak yürüme + üstü toplu taşıma; `car`/`mixed` kısa yürüme + orta toplu taşıma + uzun araç.
+- `routeOptimizer` haversine + nearest-neighbor ile günleri kümeler; gün-içi maksimum çap dinamik olarak şehir geocode viewport'undan hesaplanır (`computeCityRadiusKm`). Gün çapına sığmayan outlier yerler: boş gün varsa oraya yerleştirilir, aksi halde en yakın gün centroid'i bile çapı aşıyorsa **plandan düşürülür** (kopuk/uzak bağımsız noktaları engellemek için). Aday havuzu da şehir merkezine `max(35 km, yarıçap×3)` eşiğiyle sınırlanır (`planner` → `filterService.pruneByDistance`).
 - Photo URL'leri `/api/places/photo/:ref` proxy'si üzerinden gelir — Google API anahtarı browser'a sızmaz.
 - **Kullanıcı hesabı yok** — tripler anonim. Chat session'ları `localStorage`'daki `genieroute-client-uuid` ile aynı tarayıcıya bağlanır.
 - Google Places API faturalama gerektirir (aylık 200$ ücretsiz kredi vardır).

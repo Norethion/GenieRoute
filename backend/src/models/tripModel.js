@@ -1,9 +1,9 @@
 const pool = require('../config/db');
 
-async function createTrip({ city, days, budget, interests }) {
+async function createTrip({ city, days, budget, interests, startDate, endDate }) {
   const result = await pool.query(
-    'INSERT INTO trips (city, days, budget, interests) VALUES ($1, $2, $3, $4) RETURNING *',
-    [city, days, budget, JSON.stringify(interests)]
+    'INSERT INTO trips (city, days, budget, interests, start_date, end_date) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+    [city, days, budget, JSON.stringify(interests), startDate || null, endDate || null]
   );
   return result.rows[0];
 }
@@ -25,8 +25,13 @@ async function savePlan({ tripId, planText, placesJson, restaurantsJson, budgetE
 }
 
 async function getAllTrips() {
+  // Tarihler to_char ile string olarak döner — pg'nin DATE→JS Date dönüşümündeki
+  // saat dilimi kaymasını (toISOString) önler.
   const result = await pool.query(
-    `SELECT t.*, sp.plan_text, sp.places_json, sp.restaurants_json,
+    `SELECT t.*,
+            to_char(t.start_date, 'YYYY-MM-DD') AS start_date_str,
+            to_char(t.end_date, 'YYYY-MM-DD') AS end_date_str,
+            sp.plan_text, sp.places_json, sp.restaurants_json,
             sp.budget_estimate, sp.city_info
      FROM trips t
      LEFT JOIN saved_plans sp ON sp.trip_id = t.id
@@ -37,7 +42,10 @@ async function getAllTrips() {
 
 async function getTripById(id) {
   const result = await pool.query(
-    `SELECT t.*, sp.plan_text, sp.places_json, sp.restaurants_json,
+    `SELECT t.*,
+            to_char(t.start_date, 'YYYY-MM-DD') AS start_date_str,
+            to_char(t.end_date, 'YYYY-MM-DD') AS end_date_str,
+            sp.plan_text, sp.places_json, sp.restaurants_json,
             sp.budget_estimate, sp.city_info
      FROM trips t
      LEFT JOIN saved_plans sp ON sp.trip_id = t.id

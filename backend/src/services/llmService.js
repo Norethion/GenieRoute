@@ -1,6 +1,6 @@
 const OpenAI = require('openai');
 const { maxPairwiseDistance, suggestTransit } = require('./routeOptimizer');
-const { PLAN_MODEL, buildChatParams } = require('../config/models');
+const { PLAN_MODEL, HELPER_MODEL, buildChatParams } = require('../config/models');
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -14,7 +14,7 @@ function buildDayMeta(dayPlaces, dayRestaurants) {
   return { maxKm: Math.round(km * 10) / 10, transit: suggestTransit(km) };
 }
 
-function buildPrompt({ city, days, budget, interests, places, restaurants, optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm, countryName, intensity = 'normal', transportMode = 'mixed', weatherDayParts = null, constraints = null }) {
+function buildPrompt({ city, days, budget, interests, places, restaurants, optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm, countryName, intensity = 'normal', transportMode = 'mixed', weatherDayParts = null, constraints = null, hasTransit = true }) {
   let placesText;
   let restaurantsText;
   let itineraryText = '';
@@ -86,6 +86,11 @@ function buildPrompt({ city, days, budget, interests, places, restaurants, optim
     mixed: 'Transport: mixed — choose the realistic option per leg (walking for short hops, transit/taxi for longer ones).',
   }[transportMode] || '';
 
+  // Toplu taşıma gerçeği: şehirde anlamlı bir ağ yoksa metro/tramvay/otobüs önerme.
+  const transitRealityHint = hasTransit
+    ? ''
+    : `\nTRANSIT REALITY: ${destination} has NO usable metro/tram/light-rail or extensive bus network. For longer legs suggest walking or taxi/car only — do NOT mention metro, tram, or specific bus/ferry lines.`;
+
   // İtinerary varsa onu vurgula; yoksa eski places+restaurants ayrı listelere düş
   const dataSection = itineraryText
     ? `Each day below lists items in their geographic visiting order — places and restaurants are already interleaved so lunch/dinner positions match the walking sequence. Use this order verbatim.\n\n${itineraryText}\n\nFor reference (full pools, do NOT add extras):\nPlaces:\n${placesText}\n\nRestaurants:\n${restaurantsText}`
@@ -131,7 +136,7 @@ Budget level: ${budgetLabelEn} (${budgetLabelTr})
 Interests: ${interests.join(', ')}
 
 ${intensityHint}
-${transportHint}
+${transportHint}${transitRealityHint}
 
 Include culturally relevant tips appropriate for ${destination}: local etiquette, dress codes for religious sites if applicable, local cuisine highlights, and any market or bargaining customs that apply in this destination.${capLine}
 
@@ -196,8 +201,8 @@ JSON format (activities array can have 3-6 entries; time can be: "morning", "mid
 }`;
 }
 
-async function generateDailyPlan({ city, days, budget, interests, places, restaurants, optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm, countryName, intensity, transportMode, weatherDayParts, constraints }) {
-  const prompt = buildPrompt({ city, days, budget, interests, places, restaurants, optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm, countryName, intensity, transportMode, weatherDayParts, constraints });
+async function generateDailyPlan({ city, days, budget, interests, places, restaurants, optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm, countryName, intensity, transportMode, weatherDayParts, constraints, hasTransit = true }) {
+  const prompt = buildPrompt({ city, days, budget, interests, places, restaurants, optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm, countryName, intensity, transportMode, weatherDayParts, constraints, hasTransit });
 
   const response = await openai.chat.completions.create(
     buildChatParams(PLAN_MODEL, {
@@ -236,6 +241,36 @@ async function generateDailyPlan({ city, days, budget, interests, places, restau
   return parsed;
 }
 
+// Şehirde turistin gerçekten kullanabileceği anlamlı bir toplu taşıma ağı
+// (metro/tramvay/yoğun otobüs-minibüs) var mı? Tek hafif çağrı. Belirsiz/başarısızsa
+// true döner (mevcut davranışı koru). Küçük şehirlerde 'toplu taşıma' etiketi
+// gösterilmeden önce gerçeklik kontrolü için kullanılır.
+// Toplu taşıma gerçeği şehir başına stabildir → süreç-içi memo (tekrarlı LLM çağrısını önler).
+const _transitCache = new Map();
+async function assessCityHasTransit({ city, countryName = '' }) {
+  const where = countryName ? `${city}, ${countryName}` : city;
+  const cacheKey = where.toLowerCase();
+  if (_transitCache.has(cacheKey)) return _transitCache.get(cacheKey);
+  const prompt = `Does "${where}" have a meaningful public transportation network (metro, tram, light rail, or an extensive and usable city bus/minibus system) that a tourist would realistically use to travel between attractions? Consider the city's size. Respond ONLY as JSON: {"hasTransit": true} or {"hasTransit": false}.`;
+  try {
+    const response = await openai.chat.completions.create(
+      buildChatParams(HELPER_MODEL, {
+        messages: [{ role: 'user', content: prompt }],
+        jsonMode: true,
+        maxTokens: 40,
+        reasoningEffort: 'minimal',
+      })
+    );
+    const parsed = JSON.parse(response.choices[0].message.content);
+    const result = parsed.hasTransit !== false;
+    _transitCache.set(cacheKey, result);
+    return result;
+  } catch {
+    return true;
+  }
+}
+
 module.exports = {
   generateDailyPlan,
+  assessCityHasTransit,
 };

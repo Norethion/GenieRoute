@@ -57,10 +57,14 @@ export async function generatePlanWithProgress(formData, onStep) {
   }).then((r) => r.data);
   notify(2);
 
+  // Az mekanlı şehirde prepare gün sayısını indirebilir; plan bu effectiveDays ile üretilir.
+  const effectiveDays = prep.effectiveDays || daysNum;
+
   // Stage 3: LLM (countryCode prepare'den geliyor — country-aware prompt için;
-  // weatherDayParts → hava-duyarlı planlama; clientUuid → diyet/erişilebilirlik kısıtları)
+  // weatherDayParts → hava-duyarlı planlama; clientUuid → diyet/erişilebilirlik kısıtları;
+  // hasTransit → 'toplu taşıma' etiketi yalnız gerçekten varsa kullanılsın)
   const { dailyPlan } = await api.post('/planner/llm', {
-    city, days: daysNum, budget, interests, language: lang,
+    city, days: effectiveDays, budget, interests, language: lang,
     intensity, transportMode,
     places: prep.places,
     restaurants: prep.restaurants,
@@ -70,12 +74,13 @@ export async function generatePlanWithProgress(formData, onStep) {
     maxDailyDiameterKm: prep.maxDailyDiameterKm,
     countryCode: prep.countryCode,
     weatherDayParts: prep.weatherDayParts || undefined,
+    hasTransit: prep.hasTransit,
     clientUuid,
   }).then((r) => r.data);
   notify(3);
 
   return {
-    trip: { city, days: daysNum, budget, interests, startDate, endDate, countryCode: prep.countryCode, intensity, transportMode, clientUuid },
+    trip: { city, days: effectiveDays, requestedDays: daysNum, budget, interests, startDate, endDate, countryCode: prep.countryCode, intensity, transportMode, clientUuid },
     language: lang,
     dailyPlan,
     places: prep.places,
@@ -154,6 +159,11 @@ export async function getFeaturedRoutes() {
 
 export async function lookupPlace({ name, city, language }) {
   const response = await api.post('/places/lookup', { name, city, language });
+  return response.data;
+}
+
+export async function getWeather({ lat, lng, startDate, endDate }) {
+  const response = await api.post('/weather', { lat, lng, startDate, endDate });
   return response.data;
 }
 

@@ -62,7 +62,12 @@ export default function SavedTripsPage() {
         state: {
           tripId: trip.id,
           result: {
-            trip: { city: trip.city, days: trip.days, budget: trip.budget, interests },
+            trip: {
+              city: trip.city, days: trip.days, budget: trip.budget, interests,
+              // Hava durumu ResultPage'de bu tarihlerle canlı yeniden çekilir (snapshot değil).
+              startDate: trip.start_date_str || null,
+              endDate: trip.end_date_str || null,
+            },
             dailyPlan, places, restaurants, mapMarkers,
             budgetEstimate, cityInfo,
           },
