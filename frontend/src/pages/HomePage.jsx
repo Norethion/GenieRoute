@@ -79,7 +79,12 @@ export default function HomePage() {
         <LoadingSpinner currentStep={currentStep} />
       ) : (
         <>
-          <TripForm key={prefsLoading ? 'np' : 'p'} onSubmit={handleSubmit} isLoading={isLoading} defaults={prefs} />
+          {/* Tercihler yüklenene kadar formu mount etme: TripForm varsayılanları yalnız
+              ilk mount'ta okur; geç gelen tercihlerle remount/sıfırlama olmasın diye
+              defaults hazır olduğunda tek seferde render edilir. */}
+          {!prefsLoading && (
+            <TripForm onSubmit={handleSubmit} isLoading={isLoading} defaults={prefs} />
+          )}
           <FeaturedRoutes onRouteSelect={handleRouteSelect} />
           <p className="attribution-note">{t('attribution.cities')}</p>
         </>

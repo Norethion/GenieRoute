@@ -52,6 +52,10 @@ const STEPS = [
   { key: 'interests', icon: Heart },
 ];
 
+// Backend en fazla 8 ilgi alanı kabul eder (planner.validatePlanInput); form da
+// aynı üst sınırı uygulamalı, aksi halde 9+ seçimde plan üretimi reddediliyor.
+const MAX_INTERESTS = 8;
+
 export default function TripForm({ onSubmit, isLoading, defaults }) {
   const { t, i18n } = useTranslation();
   const [step, setStep] = useState(0);
@@ -65,7 +69,7 @@ export default function TripForm({ onSubmit, isLoading, defaults }) {
     Array.isArray(defaults?.transport) ? defaults.transport[0] : (defaults?.transport || 'mixed')
   );
   const [interests, setInterests] = useState(
-    Array.isArray(defaults?.favoriteCategories) ? defaults.favoriteCategories : []
+    Array.isArray(defaults?.favoriteCategories) ? defaults.favoriteCategories.slice(0, MAX_INTERESTS) : []
   );
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef(null);
@@ -140,9 +144,11 @@ export default function TripForm({ onSubmit, isLoading, defaults }) {
   };
 
   const toggleInterest = (value) => {
-    setInterests((prev) =>
-      prev.includes(value) ? prev.filter((i) => i !== value) : [...prev, value]
-    );
+    setInterests((prev) => {
+      if (prev.includes(value)) return prev.filter((i) => i !== value);
+      if (prev.length >= MAX_INTERESTS) return prev; // üst sınıra ulaşıldı, ekleme
+      return [...prev, value];
+    });
   };
 
   const canGoNext = () => {
@@ -387,12 +393,13 @@ export default function TripForm({ onSubmit, isLoading, defaults }) {
             <div className="interest-grid">
               {INTEREST_OPTIONS.map((opt) => {
                 const Icon = opt.icon;
+                const selected = interests.includes(opt.value);
                 return (
                   <button
                     key={opt.value}
-                    className={`interest-card ${interests.includes(opt.value) ? 'active' : ''}`}
+                    className={`interest-card ${selected ? 'active' : ''}`}
                     onClick={() => toggleInterest(opt.value)}
-                    disabled={isLoading}
+                    disabled={isLoading || (interests.length >= MAX_INTERESTS && !selected)}
                   >
                     <Icon size={22} />
                     <span>{t(`wizard.interests.${opt.key}`)}</span>
@@ -400,6 +407,9 @@ export default function TripForm({ onSubmit, isLoading, defaults }) {
                 );
               })}
             </div>
+            {interests.length >= MAX_INTERESTS && (
+              <p className="wizard-desc">{t('wizard.interests.max', { count: MAX_INTERESTS })}</p>
+            )}
           </div>
         )}
       </div>

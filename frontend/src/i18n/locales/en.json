@@ -72,6 +72,7 @@
     "interests": {
       "title": "What do you enjoy?",
       "desc": "Select at least one interest. We'll build your route around it.",
+      "max": "You can select up to {{count}} interests.",
       "history": "History",
       "food": "Food",
       "nature": "Nature",

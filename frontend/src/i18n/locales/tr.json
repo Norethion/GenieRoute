@@ -72,6 +72,7 @@
     "interests": {
       "title": "Neleri seviyorsun?",
       "desc": "En az bir ilgi alanı seç. Rotanı buna göre oluşturacağız.",
+      "max": "En fazla {{count}} ilgi alanı seçebilirsin.",
       "history": "Tarih",
       "food": "Yemek",
       "nature": "Doğa",

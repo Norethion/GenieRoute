@@ -216,7 +216,7 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
-    map.easeTo({ pitch: is3D ? 60 : 0, duration: 600 });
+    map.easeTo({ pitch: is3D ? 60 : 0, duration: 600, essential: true });
   }, [is3D]);
 
   // FAB stil seçimi geçerliyse onu kullan, aksi halde tema bazlı varsayılan
@@ -262,14 +262,16 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
     const map = mapRef.current;
     if (!map || visibleMarkers.length === 0) return;
     if (visibleMarkers.length === 1) {
-      map.flyTo({ center: [visibleMarkers[0].lng, visibleMarkers[0].lat], zoom: 14, duration: 600 });
+      map.flyTo({ center: [visibleMarkers[0].lng, visibleMarkers[0].lat], zoom: 14, duration: 600, essential: true });
       return;
     }
     const lats = visibleMarkers.map((m) => m.lat);
     const lngs = visibleMarkers.map((m) => m.lng);
     map.fitBounds(
       [[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]],
-      { padding: 80, duration: 600, maxZoom: 15 }
+      // essential: OS "hareketi azalt" (prefers-reduced-motion) açık olsa da kamera
+      // animasyonu (gün değişiminde uzaklaş/yakınlaş) oynamaya devam etsin
+      { padding: 80, duration: 600, maxZoom: 15, essential: true }
     );
   }, [selectedDay, visibleMarkers, fitVersion]);
 
@@ -288,6 +290,7 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
       center: [highlightedMarker.lng, highlightedMarker.lat],
       zoom: 16,
       duration: 800,
+      essential: true,
     });
     // İmperatif harita uçuşuyla birlikte popup'ı kapat (efekt zaten harita sync için).
     // eslint-disable-next-line react-hooks/set-state-in-effect
