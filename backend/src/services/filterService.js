@@ -116,6 +116,28 @@ function affinityMultiplier(place, affinity) {
   return m;
 }
 
+// Haversine (km) — şehir-merkezi mesafe eşiği için.
+function haversineKm(lat1, lng1, lat2, lng2) {
+  const R = 6371, toRad = (x) => (x * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1), dLng = toRad(lng2 - lng1);
+  const s = Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(s));
+}
+
+// Şehir merkezinden maxRadiusKm'den uzak (koordinatlı) yerleri ele. Google Text
+// Search'ün konum biası hard sınır olmadığı için, veri-fakiri yerlerde başka
+// ülkelerden alakasız eşleşmeler dönebiliyor (ör. "Tristan da Cunha" → Fransız
+// Guyanası'ndaki "La Trinité", 6.000+ km); bu eşik onları temizler. Koordinatsız
+// kayıtlara dokunmaz (optimizer zaten onları düşürür).
+function pruneByDistance(list, center, maxRadiusKm) {
+  if (!center || !Number.isFinite(maxRadiusKm)) return list;
+  return list.filter((p) => {
+    if (!Number.isFinite(p.lat) || !Number.isFinite(p.lng)) return true;
+    return haversineKm(center.lat, center.lng, p.lat, p.lng) <= maxRadiusKm;
+  });
+}
+
 /**
  * Mekanları ilgi alanı, bütçe ve puana göre filtrele ve gün sayısına böl.
  *
@@ -123,9 +145,11 @@ function affinityMultiplier(place, affinity) {
  * @param {number} opts.days
  * @param {'relaxed'|'normal'|'intensive'} [opts.intensity='normal']
  * @param {{topCategories:Set,topCities:Set}|null} [opts.affinity=null] - kullanıcı favorilerinden türetilen sıralama sinyali
+ * @param {{lat:number,lng:number}|null} [opts.center=null] - şehir merkezi (mesafe eşiği için)
+ * @param {number|null} [opts.maxRadiusKm=null] - merkezden bu km'den uzak yerler elenir
  */
-function filterPlaces(places, { days, intensity = 'normal', affinity = null }) {
-  let filtered = [...places];
+function filterPlaces(places, { days, intensity = 'normal', affinity = null, center = null, maxRadiusKm = null }) {
+  let filtered = pruneByDistance([...places], center, maxRadiusKm);
 
   filtered.sort((a, b) => {
     const baseA = a.rating * Math.log10(a.userRatingsTotal + 1);
@@ -145,9 +169,11 @@ function filterPlaces(places, { days, intensity = 'normal', affinity = null }) {
 /**
  * Restoranları bütçe ve puana göre filtrele.
  * @param {number} [opts.restPerDay=2] - gün başına yemek durağı (yemek odaklı planda 3).
+ * @param {{lat:number,lng:number}|null} [opts.center=null] - şehir merkezi (mesafe eşiği için)
+ * @param {number|null} [opts.maxRadiusKm=null] - merkezden bu km'den uzak yerler elenir
  */
-function filterRestaurants(restaurants, { budget, days, restPerDay = 2 }) {
-  let filtered = [...restaurants];
+function filterRestaurants(restaurants, { budget, days, restPerDay = 2, center = null, maxRadiusKm = null }) {
+  let filtered = pruneByDistance([...restaurants], center, maxRadiusKm);
 
   // Bütçeye göre filtrele
   if (budget === 'low') {
@@ -172,5 +198,6 @@ module.exports = {
   filterRestaurants,
   annotateCategories,
   buildAffinity,
+  normalizeName,
   PLACES_PER_DAY_BY_INTENSITY,
 };

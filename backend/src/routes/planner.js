@@ -204,12 +204,15 @@ router.post('/generate', async (req, res, next) => {
       curatedNames: mustSee.curated,
     });
 
-    const places = filterService.filterPlaces(annotatedRaw, { days: daysNum, intensity, affinity });
-    const restaurants = filterService.filterRestaurants(rawRestaurants, { budget, days: daysNum, restPerDay });
-
     // Rota optimizasyonu — gün-içi çap sınırı şehir geocode viewport'undan +
     // ulaşım modundan türetilir. Yemek odaklıysa gün başına 3 yemek durağı enjekte edilir.
     const cityRadiusKm = computeCityRadiusKm(cityGeo);
+    const cityCenter = cityGeo ? { lat: cityGeo.lat, lng: cityGeo.lng } : null;
+    // Şehir merkezine mesafe eşiği: yarıçapın 4 katı, en az 60 km — yanlış-şehir/uzak eşleşmeleri eler
+    const maxPlaceRadiusKm = Math.max(60, (cityRadiusKm || 20) * 4);
+
+    const places = filterService.filterPlaces(annotatedRaw, { days: daysNum, intensity, affinity, center: cityCenter, maxRadiusKm: maxPlaceRadiusKm });
+    const restaurants = filterService.filterRestaurants(rawRestaurants, { budget, days: daysNum, restPerDay, center: cityCenter, maxRadiusKm: maxPlaceRadiusKm });
     const { optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm } =
       routeOptimizer.optimizeRoute(places, restaurants, daysNum, cityRadiusKm, transportMode, restPerDay);
 
@@ -303,10 +306,13 @@ router.post('/prepare', async (req, res, next) => {
       curatedNames: mustSee.curated,
     });
 
-    const places = filterService.filterPlaces(annotatedRaw, { days: daysNum, intensity, affinity });
-    const restaurants = filterService.filterRestaurants(rawRestaurants, { budget, days: daysNum, restPerDay });
-
     const cityRadiusKm = computeCityRadiusKm(cityGeo);
+    const cityCenter = cityGeo ? { lat: cityGeo.lat, lng: cityGeo.lng } : null;
+    // Şehir merkezine mesafe eşiği: yarıçapın 4 katı, en az 60 km — yanlış-şehir/uzak eşleşmeleri eler
+    const maxPlaceRadiusKm = Math.max(60, (cityRadiusKm || 20) * 4);
+
+    const places = filterService.filterPlaces(annotatedRaw, { days: daysNum, intensity, affinity, center: cityCenter, maxRadiusKm: maxPlaceRadiusKm });
+    const restaurants = filterService.filterRestaurants(rawRestaurants, { budget, days: daysNum, restPerDay, center: cityCenter, maxRadiusKm: maxPlaceRadiusKm });
     const { optimizedPlaces, optimizedRestaurants, optimizedItinerary, maxDailyDiameterKm } =
       routeOptimizer.optimizeRoute(places, restaurants, daysNum, cityRadiusKm, transportMode, restPerDay);
 

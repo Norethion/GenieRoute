@@ -98,6 +98,12 @@ export async function searchRestaurants(city, budget) {
   return response.data;
 }
 
+// Mekan açıklaması (Wikipedia/Wikivoyage, tembel) — bulunamazsa 404 (çağıran yutar).
+export async function getPlaceContent(name, language) {
+  const response = await api.get('/places/content', { params: { name, language } });
+  return response.data; // { content: { extract, thumbUrl, source, sourceUrl } }
+}
+
 // --- Favoriler (sunucu tarafı, clientUuid ile) ---
 export async function getFavorites(clientUuid) {
   const response = await api.get('/favorites', { params: { clientUuid } });

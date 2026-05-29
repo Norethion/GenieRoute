@@ -215,7 +215,8 @@
     "loading": "Loading map...",
     "restaurant": "Restaurant",
     "attraction": "Attraction",
-    "openInGoogleMaps": "Open in Google Maps"
+    "openInGoogleMaps": "Open in Google Maps",
+    "aboutLoading": "Loading info..."
   },
   "budget": {
     "low": "Budget",

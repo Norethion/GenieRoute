@@ -2668,6 +2668,29 @@ body {
 .info-like-btn:hover { border-color: #e0405e; color: #e0405e; }
 .info-like-btn.liked { color: #e0405e; border-color: color-mix(in srgb, #e0405e 40%, transparent); }
 
+/* Mekan açıklaması (Wikipedia/Wikivoyage) — popup içi */
+.info-about {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin: 6px 0 2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.info-about-loading { color: var(--text-muted); font-style: italic; -webkit-line-clamp: 1; }
+.info-about-source {
+  display: inline-block;
+  margin-top: 4px;
+  margin-left: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+.info-about-source:hover { text-decoration: underline; }
+
 /* Bağlama duyarlı sohbet chip'leri */
 .chat-followups {
   display: flex;

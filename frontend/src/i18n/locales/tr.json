@@ -215,7 +215,8 @@
     "loading": "Harita yükleniyor...",
     "restaurant": "Restoran",
     "attraction": "Gezilecek Yer",
-    "openInGoogleMaps": "Google Haritalar'da Aç"
+    "openInGoogleMaps": "Google Haritalar'da Aç",
+    "aboutLoading": "Bilgi yükleniyor..."
   },
   "budget": {
     "low": "Ekonomik",

@@ -7,6 +7,7 @@ import { useTheme } from '../context/ThemeContext';
 import { MAPBOX_STYLES, DAY_COLORS } from '../data/mapStyles';
 import { getCategoryColor, getCategoryLabel, getMarkerCategory, CATEGORY_COLORS } from '../data/markerCategories';
 import { getPhotoSrc, buildMapsUrl } from '../data/photoUrl';
+import { getPlaceContent } from '../services/api';
 import { useFavorites } from '../hooks/useFavorites';
 import MapFabGroup, { STYLE_CYCLE } from './MapFabGroup';
 import PhotoWithFallback from './PhotoWithFallback';
@@ -64,6 +65,10 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
   const { isFavorite, toggle: toggleFavorite } = useFavorites();
 
   const [selectedMarker, setSelectedMarker] = useState(null);
+  // Seçili mekanın Wikipedia/Wikivoyage açıklaması — { key, lang, content }.
+  // key/lang ile eşleştirilir; eşleşmeyen sonuç "yükleniyor" sayılır (senkron
+  // setState'ten kaçınmak için — react-hooks/set-state-in-effect temiz kalır).
+  const [placeAbout, setPlaceAbout] = useState(null);
   // Yalnız favori mekanları göster (FAB toggle)
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
@@ -88,6 +93,20 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
   useEffect(() => {
     setPhotoIndex(0);
   }, [selectedMarker?.placeId, selectedMarker?.name]);
+
+  // Mekan seçilince açıklamayı tembel yükle (Wikipedia/Wikivoyage). Sonuç key+lang
+  // ile etiketlenir; senkron reset yok (yalnız async callback'te setState).
+  useEffect(() => {
+    const name = selectedMarker?.name;
+    if (!name) return;
+    const key = selectedMarker.placeId || name;
+    const lang = i18n.language === 'tr' ? 'tr' : 'en';
+    let active = true;
+    getPlaceContent(name, lang)
+      .then((data) => { if (active) setPlaceAbout({ key, lang, content: data?.content || null }); })
+      .catch(() => { if (active) setPlaceAbout({ key, lang, content: null }); });
+    return () => { active = false; };
+  }, [selectedMarker?.placeId, selectedMarker?.name, i18n.language]);
 
   const dayMarkers = useMemo(() => {
     if (!dailyPlan?.days || !markers.length) return [];
@@ -399,7 +418,9 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
             <div className="info-window-body">
               <h4>{selectedMarker.name}</h4>
               <div className="info-rating-row">
-                <p className="info-rating">{'★'.repeat(Math.round(selectedMarker.rating || 0))} {selectedMarker.rating}</p>
+                {selectedMarker.rating > 0 && (
+                  <p className="info-rating">{'★'.repeat(Math.round(selectedMarker.rating))} {selectedMarker.rating}</p>
+                )}
                 <button
                   type="button"
                   className={`info-like-btn${isFavorite(selectedMarker.placeId || selectedMarker.name) ? ' liked' : ''}`}
@@ -411,6 +432,27 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
                 </button>
               </div>
               <p>{selectedMarker.address}</p>
+              {(() => {
+                const aboutKey = selectedMarker.placeId || selectedMarker.name;
+                const aboutLang = i18n.language === 'tr' ? 'tr' : 'en';
+                const ready = placeAbout && placeAbout.key === aboutKey && placeAbout.lang === aboutLang;
+                const about = ready ? placeAbout.content : null;
+                if (!ready) return <p className="info-about info-about-loading">{t('map.aboutLoading')}</p>;
+                if (!about?.extract) return null;
+                const srcLabel = about.source === 'wikivoyage'
+                  ? 'Wikivoyage'
+                  : (aboutLang === 'tr' ? 'Vikipedi' : 'Wikipedia');
+                return (
+                  <p className="info-about">
+                    {about.extract}
+                    {about.sourceUrl && (
+                      <a className="info-about-source" href={about.sourceUrl} target="_blank" rel="noopener noreferrer">
+                        {srcLabel} (CC BY-SA) ↗
+                      </a>
+                    )}
+                  </p>
+                );
+              })()}
               <span
                 className="info-badge"
                 style={{

@@ -2,6 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const router = express.Router();
 const placesService = require('../services/placesService');
+const wikiService = require('../services/wikiService');
 
 // POST /api/places/search - Şehre göre mekan ara
 router.post('/search', async (req, res, next) => {
@@ -61,6 +62,22 @@ router.get('/photo/:ref', async (req, res, next) => {
     res.set('Content-Type', response.headers['content-type']);
     res.set('Cache-Control', 'public, max-age=86400');
     response.data.pipe(res);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET /api/places/content?name=&language= - Mekan açıklaması (Wikipedia/Wikivoyage, tembel + cache)
+router.get('/content', async (req, res, next) => {
+  try {
+    const { name, language } = req.query;
+    if (!name || typeof name !== 'string' || name.length > 200) {
+      return res.status(400).json({ error: 'name is required' });
+    }
+    const lang = ['tr', 'en'].includes(language) ? language : 'en';
+    const content = await wikiService.getPlaceContent(name, lang);
+    if (!content) return res.status(404).json({ error: 'not found' });
+    res.json({ content });
   } catch (err) {
     next(err);
   }
