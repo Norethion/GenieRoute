@@ -57,7 +57,9 @@ router.post('/lookup', async (req, res, next) => {
 router.get('/photo/:ref', async (req, res, next) => {
   try {
     const photoRef = req.params.ref;
-    const url = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photoRef}&key=${process.env.GOOGLE_PLACES_API_KEY}`;
+    // photoRef'i encode et — '&' vb. ile query-param enjeksiyonunu kapatır, ama katı
+    // whitelist gibi '=' içeren meşru token'ı reddetmez (Google sunucusu decode eder).
+    const url = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${encodeURIComponent(photoRef)}&key=${process.env.GOOGLE_PLACES_API_KEY}`;
     const response = await axios.get(url, { responseType: 'stream' });
     res.set('Content-Type', response.headers['content-type']);
     res.set('Cache-Control', 'public, max-age=86400');

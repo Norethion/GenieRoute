@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import Map, { Marker, Popup, Source, Layer, NavigationControl } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { Loader, ExternalLink, ChevronLeft, ChevronRight, Heart } from 'lucide-react';
+import { ExternalLink, ChevronLeft, ChevronRight, Heart, MapPinOff } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import { MAPBOX_STYLES, DAY_COLORS } from '../data/mapStyles';
@@ -91,6 +91,8 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
   }, [selectedMarker]);
 
   useEffect(() => {
+    // Yeni mekan seçilince foto karuselini başa sar — ayrık kullanıcı eylemi, sıcak render yolu değil.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPhotoIndex(0);
   }, [selectedMarker?.placeId, selectedMarker?.name]);
 
@@ -112,7 +114,7 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
     if (!dailyPlan?.days || !markers.length) return [];
     return dailyPlan.days.map((day) => {
       const dayPlaces = [];
-      for (const activity of day.activities) {
+      for (const activity of day.activities || []) {
         const found = findMarkerForPlace(markers, activity.place);
         if (found && !dayPlaces.some((p) => p.name === found.name)) {
           dayPlaces.push(found);
@@ -274,6 +276,8 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
   // Popup'ı yalnız gün değişince kapat — marker dizisi update'i (preview)
   // popup'ı kapatmamalı, kullanıcı incelediği yeri kaybetmesin.
   useEffect(() => {
+    // Gün değişince açık popup'ı kapat — ayrık sekme tıklaması, sıcak render yolu değil.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedMarker(null);
   }, [selectedDay]);
 
@@ -285,17 +289,21 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
       zoom: 16,
       duration: 800,
     });
+    // İmperatif harita uçuşuyla birlikte popup'ı kapat (efekt zaten harita sync için).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedMarker(null);
   }, [highlightedMarker]);
 
   if (!MAPBOX_TOKEN) {
     return (
       <div className="map-loading">
-        <Loader size={24} className="map-spinner" />
-        <p>{t('map.loading')}</p>
-        <small style={{ color: 'var(--text-sub, #888)', marginTop: 8 }}>
-          VITE_MAPBOX_TOKEN eksik — frontend/.env'ye ekleyin.
-        </small>
+        <MapPinOff size={28} />
+        <p>{t('map.unavailable')}</p>
+        {import.meta.env.DEV && (
+          <small style={{ color: 'var(--text-sub, #888)', marginTop: 8 }}>
+            VITE_MAPBOX_TOKEN eksik — frontend/.env'ye ekleyin.
+          </small>
+        )}
       </div>
     );
   }
@@ -477,7 +485,6 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
       )}
     </Map>
     <MapFabGroup
-      mapRef={mapRef}
       is3D={is3D}
       onToggle3D={() => setIs3D((v) => !v)}
       styleKey={styleKey || (theme === 'dark' ? 'dark' : 'light')}

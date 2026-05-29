@@ -10,10 +10,12 @@ const cacheByBase = new Map();
 // Base TRY/USD/EUR için API erişilemediğinde minimum garanti.
 // Diğer para birimlerinde fallback yok — null oran döner ve caller
 // kendi conversion'unu skip edebilir.
+// Oranlar "1 TARGET = ? BASE" anlamında (totalLocal / rate = totalTarget).
+// Örn. USD base'te eur = "1 EUR kaç USD" = ~1.08; EUR base'te usd = "1 USD kaç EUR" = ~0.92.
 const FALLBACK_RATES = {
   TRY: { usd: 38.5, eur: 42.0, try: 1.0 },
-  USD: { usd: 1.0, eur: 0.92, try: 0.026 },
-  EUR: { usd: 1.08, eur: 1.0, try: 0.024 },
+  USD: { usd: 1.0, eur: 1.08, try: 0.026 },
+  EUR: { usd: 0.92, eur: 1.0, try: 0.024 },
 };
 
 async function getExchangeRates(baseCurrency = 'TRY') {

@@ -9,42 +9,14 @@ const TIP_CONFIG = [
   { key: 'food', icon: UtensilsCrossed },
 ];
 
-const LABELS = {
-  tr: {
-    title: 'Pratik Bilgiler',
-    emergency: 'Acil Durum',
-    currency: 'Para & Ödeme',
-    transport: 'Ulaşım',
-    culture: 'Kültür & Görgü',
-    food: 'Yeme & İçme',
-    weather: 'Hava Durumu',
-    tempMax: 'En yüksek',
-    tempMin: 'En düşük',
-    rain: 'Yağış',
-  },
-  en: {
-    title: 'Practical Info',
-    emergency: 'Emergency',
-    currency: 'Money & Payment',
-    transport: 'Transportation',
-    culture: 'Culture & Etiquette',
-    food: 'Food & Drink',
-    weather: 'Weather Forecast',
-    tempMax: 'High',
-    tempMin: 'Low',
-    rain: 'Rain',
-  },
-};
-
 function formatDate(dateStr, lang) {
   const d = new Date(dateStr + 'T00:00:00');
   return d.toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
 export default function CityTips({ tips, weather }) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const lang = i18n.language === 'tr' ? 'tr' : 'en';
-  const labels = LABELS[lang];
 
   const localizedTips = tips ? (tips[lang] || tips.en || tips) : null;
 
@@ -54,14 +26,14 @@ export default function CityTips({ tips, weather }) {
     <div className="city-tips">
       <div className="city-tips-header">
         <Landmark size={18} />
-        <h3>{labels.title}</h3>
+        <h3>{t('tips.title')}</h3>
       </div>
 
       {weather && weather.length > 0 && (
         <div className="weather-section">
           <div className="weather-header">
             <CloudSun size={16} />
-            <span>{labels.weather}</span>
+            <span>{t('tips.weather')}</span>
           </div>
           <div className="weather-grid">
             {weather.map((day) => (
@@ -97,7 +69,7 @@ export default function CityTips({ tips, weather }) {
                   <TipIcon size={16} />
                 </div>
                 <div className="city-tip-content">
-                  <span className="city-tip-label">{labels[tipItem.key]}</span>
+                  <span className="city-tip-label">{t(`tips.${tipItem.key}`)}</span>
                   <p className="city-tip-text">{localizedTips[tipItem.key]}</p>
                 </div>
               </div>

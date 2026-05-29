@@ -209,7 +209,7 @@ export default function TripForm({ onSubmit, isLoading, defaults }) {
 
             <div className="popular-cities">
               <div className="popular-cities-label">
-                {isEn ? 'Popular Destinations' : 'Popüler Şehirler'}
+                {t('wizard.city.popular')}
               </div>
               <div className="popular-cities-grid">
                 {popularCities.map((c) => (
@@ -277,7 +277,7 @@ export default function TripForm({ onSubmit, isLoading, defaults }) {
                   minDate={today}
                   dateFormat={isEn ? 'MMM d, yyyy' : 'd MMMM yyyy'}
                   locale={isEn ? 'en' : 'tr'}
-                  placeholderText={isEn ? 'Select start date' : 'Başlangıç tarihi seç'}
+                  placeholderText={t('wizard.days.selectStartDate')}
                   customInput={<DateInput />}
                   disabled={isLoading}
                   popperPlacement="bottom-start"
@@ -292,7 +292,7 @@ export default function TripForm({ onSubmit, isLoading, defaults }) {
                   maxDate={maxEndDate}
                   dateFormat={isEn ? 'MMM d, yyyy' : 'd MMMM yyyy'}
                   locale={isEn ? 'en' : 'tr'}
-                  placeholderText={isEn ? 'Select end date' : 'Bitiş tarihi seç'}
+                  placeholderText={t('wizard.days.selectEndDate')}
                   customInput={<DateInput />}
                   disabled={isLoading || !startDate}
                   popperPlacement="bottom-start"

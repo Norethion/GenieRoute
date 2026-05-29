@@ -7,7 +7,22 @@ router.post('/', async (req, res, next) => {
   try {
     const { city, days, budget, interests, planText, placesJson, restaurantsJson, budgetEstimate, cityInfo } = req.body;
 
-    const trip = await tripModel.createTrip({ city, days, budget, interests });
+    // Sınır validasyonu — geçersiz girdi ham Postgres hatası olarak client'a sızmasın.
+    if (typeof city !== 'string' || city.length < 1 || city.length > 100) {
+      return res.status(400).json({ error: 'Invalid city' });
+    }
+    const daysNum = Number(days);
+    if (!Number.isInteger(daysNum) || daysNum < 1 || daysNum > 14) {
+      return res.status(400).json({ error: 'days must be between 1 and 14' });
+    }
+    if (!['low', 'medium', 'high'].includes(budget)) {
+      return res.status(400).json({ error: 'budget must be low, medium, or high' });
+    }
+    if (!Array.isArray(interests)) {
+      return res.status(400).json({ error: 'interests must be an array' });
+    }
+
+    const trip = await tripModel.createTrip({ city, days: daysNum, budget, interests });
     await tripModel.savePlan({
       tripId: trip.id,
       planText,

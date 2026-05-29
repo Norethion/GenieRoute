@@ -37,12 +37,18 @@ async function saveMessage({ sessionId, role, content, tokensUsed }) {
 }
 
 async function getRecentMessages(sessionId, limit = 50) {
+  // En YENİ N mesajı al (DESC LIMIT), sonra kronolojik sıraya çevir (ASC).
+  // Düz "ORDER BY ASC LIMIT N" en ESKİ N'i döndürür; uzun sohbette son
+  // mesajlar context'e hiç girmez. id, created_at eşitliğinde tie-breaker.
   const result = await pool.query(
-    `SELECT id, role, content, created_at
-     FROM chat_messages
-     WHERE session_id = $1
-     ORDER BY created_at ASC
-     LIMIT $2`,
+    `SELECT id, role, content, created_at FROM (
+       SELECT id, role, content, created_at
+       FROM chat_messages
+       WHERE session_id = $1
+       ORDER BY created_at DESC, id DESC
+       LIMIT $2
+     ) recent
+     ORDER BY created_at ASC, id ASC`,
     [sessionId, limit]
   );
   return result.rows;

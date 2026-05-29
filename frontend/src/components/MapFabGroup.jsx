@@ -6,26 +6,25 @@ import { CATEGORY_COLORS, CATEGORY_LABELS } from '../data/markerCategories';
 const STYLE_CYCLE = ['light', 'dark', 'streets', 'satellite'];
 
 export default function MapFabGroup({
-  mapRef,
   is3D, onToggle3D,
   styleKey, onCycleStyle,
   routesVisible, onToggleRoutes,
   categoryFilter, onToggleCategory, hasFilters,
   favoritesOnly, onToggleFavorites,
 }) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const lang = i18n.language === 'en' ? 'en' : 'tr';
   const [expanded, setExpanded] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
 
   const labels = {
-    main:      lang === 'tr' ? 'Harita Araçları' : 'Map Tools',
-    close:     lang === 'tr' ? 'Kapat' : 'Close',
-    filters:   lang === 'tr' ? 'Kategori Filtresi' : 'Category Filter',
-    threeD:    is3D ? (lang === 'tr' ? '3D kapalı' : 'Disable 3D') : (lang === 'tr' ? '3D Açık' : 'Enable 3D'),
-    style:     lang === 'tr' ? `Tema: ${styleKey}` : `Theme: ${styleKey}`,
-    route:     routesVisible ? (lang === 'tr' ? 'Rotayı Gizle' : 'Hide Route') : (lang === 'tr' ? 'Rotayı Göster' : 'Show Route'),
-    favorites: favoritesOnly ? (lang === 'tr' ? 'Tümünü göster' : 'Show all') : (lang === 'tr' ? 'Sadece favoriler' : 'Favorites only'),
+    main:      t('map.tools'),
+    close:     t('map.close'),
+    filters:   t('map.categoryFilter'),
+    threeD:    is3D ? t('map.disable3D') : t('map.enable3D'),
+    style:     t('map.theme', { style: styleKey }),
+    route:     routesVisible ? t('map.hideRoute') : t('map.showRoute'),
+    favorites: favoritesOnly ? t('map.showAll') : t('map.favoritesOnly'),
   };
 
   const categoryKeys = Object.keys(CATEGORY_COLORS);

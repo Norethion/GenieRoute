@@ -76,18 +76,133 @@ function isFoodFocused(interests) {
   return interests.some((i) => FOOD_INTERESTS.includes(String(i).toLowerCase()));
 }
 
+// Mekan adı normalizasyonu — frontend MapView.normalize ile AYNI: Türkçe diakritiği
+// katla + noktalamayı at. İki katman aynı eşleşmeyi yapsın ki backend, frontend'in
+// haritada pinleyeceği geçerli bir mekanı asla düşürmesin (düşürdüğü = frontend'in
+// de eşleyemeyeceği gerçek bir havuz-dışı ad).
+function normalizePlaceName(s) {
+  return (s || '')
+    .toLowerCase()
+    .trim()
+    .replace(/[ıİ]/g, 'i')
+    .replace(/[şŞ]/g, 's')
+    .replace(/[çÇ]/g, 'c')
+    .replace(/[öÖ]/g, 'o')
+    .replace(/[üÜ]/g, 'u')
+    .replace(/[ğĞ]/g, 'g')
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// Havuzu bir kez normalize et — her aktivite için pool adlarını yeniden normalize etme.
+function buildMatchPool(items) {
+  return (items || []).map((it) => ({
+    it,
+    lower: (it.name || '').toLowerCase(),
+    norm: normalizePlaceName(it.name),
+  }));
+}
+
+// frontend MapView.findMarkerForPlace ile AYNI algoritma: tam ad → normalize-tam →
+// iki yönlü substring adaylarından uzunlukça en yakın olanı seç. Eşleşme yoksa null.
+function matchInPool(mpool, placeName) {
+  if (!placeName) return null;
+  const lower = placeName.toLowerCase();
+  const exact = mpool.find((e) => e.lower === lower);
+  if (exact) return exact.it;
+  const norm = normalizePlaceName(placeName);
+  if (!norm) return null;
+  const normExact = mpool.find((e) => e.norm === norm);
+  if (normExact) return normExact.it;
+  const cands = mpool.filter((e) => e.norm && (e.norm.includes(norm) || norm.includes(e.norm)));
+  if (cands.length === 0) return null;
+  return cands.reduce((best, e) =>
+    Math.abs(e.norm.length - norm.length) < Math.abs(best.norm.length - norm.length) ? e : best
+  ).it;
+}
+
+// Coğrafi sıraya dizilmiş aktivitelere kanonik zaman dilimi atar: restoranlar
+// sıradaki konumuna göre öğle/akşam, gezilecek yerler sabah→akşam dilimlerine
+// dağıtılır. Yeniden sıralamadan sonra etiketlerin monoton kalmasını sağlar.
+const PLACE_SLOTS = ['morning', 'mid-morning', 'afternoon', 'late-afternoon', 'evening'];
+function assignTimeSlots(activities) {
+  let placeIdx = 0;
+  let mealCount = 0;
+  return activities.map((a) => {
+    if (a.type === 'restaurant') {
+      mealCount += 1;
+      const time = mealCount === 1 ? 'lunch' : mealCount === 2 ? 'dinner' : 'late-afternoon';
+      return { ...a, time };
+    }
+    if (a.type === 'snack') {
+      return { ...a, time: a.time === 'late-afternoon' ? 'late-afternoon' : 'mid-morning' };
+    }
+    const time = PLACE_SLOTS[Math.min(placeIdx, PLACE_SLOTS.length - 1)];
+    placeIdx += 1;
+    return { ...a, time };
+  });
+}
+
+// LLM çıktısını yer havuzu + optimizer çıktısıyla uzlaştırır:
+//  (C1) Havuzda (places+restaurants) eşleşmeyen "uydurma" aktiviteleri düşürür —
+//       aksi halde gün kartında görünür ama haritada pin'i olmazdı (sessiz tutarsızlık).
+//       Eşleşme frontend ile AYNI algoritma (matchInPool) olduğundan yalnızca
+//       frontend'in de pinleyemeyeceği adlar düşer; geçerli mekan kaybolmaz.
+//  (C2) Hava-duyarlı plan YOKKEN her günün aktivitelerini optimizer'ın coğrafi
+//       sırasına (optimizedItinerary) göre yeniden dizer ve dilimleri pozisyondan
+//       türetir; böylece harita/gün-kartı sırası LLM'in keyfine değil deterministik
+//       optimizer'a dayanır. Hava verisi varsa LLM'in hava-duyarlı dilim atamasını
+//       (yağmurlu dilime kapalı mekan) bozmamak için yeniden sıralama yapılmaz.
+function reconcilePlanWithItinerary(dailyPlan, optimizedItinerary, places, restaurants, { hasWeather = false } = {}) {
+  if (!dailyPlan?.days?.length) return { dropped: 0 };
+  const matchPool = buildMatchPool([...(places || []), ...(restaurants || [])]);
+  const inPool = (name) => matchInPool(matchPool, name) !== null;
+
+  let dropped = 0;
+  for (let di = 0; di < dailyPlan.days.length; di++) {
+    const day = dailyPlan.days[di];
+    if (!Array.isArray(day.activities)) continue;
+
+    const before = day.activities.length;
+    const filtered = day.activities.filter((a) => inPool(a.place));
+    // Bir günün TÜM aktiviteleri elenmesin: hepsi havuz-dışı çıkarsa (LLM çeviri/
+    // sapma yapmış olabilir) orijinali koru — boş gün kartı, pinsiz karttan kötüdür.
+    const acts0 = filtered.length ? filtered : day.activities;
+    dropped += before - acts0.length;
+    let acts = acts0;
+
+    // optimizedItinerary optimizer'ın gün sırasıyla indekslidir; LLM günleri farklı
+    // sırada/eksik dönebileceği için day.day (1-indeksli) ile hizala, yoksa di'ye düş.
+    const dayIdx = Number.isInteger(day.day) && day.day >= 1 && day.day <= (optimizedItinerary?.length || 0)
+      ? day.day - 1 : di;
+    const itin = Array.isArray(optimizedItinerary) ? optimizedItinerary[dayIdx] : null;
+    if (!hasWeather && Array.isArray(itin) && itin.length) {
+      const itinPool = buildMatchPool(itin.map((x, idx) => ({ name: x.name, idx })));
+      const orderOf = (name) => {
+        const hit = matchInPool(itinPool, name);
+        return hit ? hit.idx : Number.MAX_SAFE_INTEGER;
+      };
+      acts = acts
+        .map((a, i) => ({ a, i, ord: orderOf(a.place) }))
+        .sort((x, y) => x.ord - y.ord || x.i - y.i)
+        .map((x) => x.a);
+      acts = assignTimeSlots(acts);
+    }
+
+    day.activities = acts;
+  }
+  return { dropped };
+}
+
 // LLM çıktısındaki her aktiviteye saatli program ekler. Aktivitenin koordinatı,
-// adı places+restaurants havuzunda eşlenerek bulunur; eşleşmeyen aktivite seyahat
-// süresine katılmaz (yalnız kalma süresi sayılır). Saatler harita sırasıyla uyumlu.
+// adı havuzda (reconcile ile AYNI matchInPool) eşlenerek bulunur; eşleşmeyen
+// aktivite seyahat süresine katılmaz (yalnız kalma süresi sayılır).
 function enrichWithSchedule(dailyPlan, places, restaurants, transportMode) {
   if (!dailyPlan?.days?.length) return dailyPlan;
-  const pool = [...(places || []), ...(restaurants || [])];
-  const norm = (s) => (s || '').toLowerCase().replace(/\s+/g, ' ').trim();
+  const matchPool = buildMatchPool([...(places || []), ...(restaurants || [])]);
   const findCoord = (name) => {
-    const n = norm(name);
-    if (!n) return null;
-    let hit = pool.find((p) => norm(p.name) === n);
-    if (!hit) hit = pool.find((p) => norm(p.name).includes(n) || n.includes(norm(p.name)));
+    const hit = matchInPool(matchPool, name);
     return hit ? { lat: hit.lat, lng: hit.lng } : {};
   };
   for (const day of dailyPlan.days) {
@@ -240,7 +355,12 @@ router.post('/generate', async (req, res, next) => {
       resolveCityTips({ city, countryCode }),
     ]);
 
-    // LLM çıktısına deterministik saatli program ekle (arrival/departure/seyahat süresi)
+    // LLM çıktısını yer havuzu + optimizer sırasıyla uzlaştır (uydurma mekanı düşür,
+    // hava yoksa coğrafi sıraya diz), sonra deterministik saatli program ekle.
+    const recon = reconcilePlanWithItinerary(dailyPlan, optimizedItinerary, places, restaurants, {
+      hasWeather: Array.isArray(weatherDayParts) && weatherDayParts.length > 0,
+    });
+    if (recon.dropped) console.warn(`[planner/generate] ${recon.dropped} havuz-dışı aktivite düşürüldü (${city})`);
     enrichWithSchedule(dailyPlan, places, restaurants, transportMode);
 
     const mapMarkers = [
@@ -248,12 +368,18 @@ router.post('/generate', async (req, res, next) => {
       ...restaurants.map((r) => ({ ...r, markerType: 'restaurant' })),
     ];
 
+    // Yetersiz mekan (gün başına 1'den az yer) bulunduysa kullanıcıya bilgilendir.
+    const notice = places.length < daysNum
+      ? { type: 'few_places', found: places.length, days: daysNum }
+      : undefined;
+
     res.json({
       trip: { city, days, budget, interests, startDate, endDate, countryCode, intensity, transportMode },
       language: lang,
       dailyPlan,
       places, restaurants, mapMarkers,
       budgetEstimate, cityInfo, weather, weatherDayParts,
+      notice,
     });
   } catch (err) {
     next(err);
@@ -335,6 +461,11 @@ router.post('/prepare', async (req, res, next) => {
       weatherDayParts = w?.weatherDayParts ?? null;
     }
 
+    // Yetersiz mekan (gün başına 1'den az yer) bulunduysa kullanıcıya bilgilendir.
+    const notice = places.length < daysNum
+      ? { type: 'few_places', found: places.length, days: daysNum }
+      : undefined;
+
     res.json({
       language: lang,
       countryCode,
@@ -343,6 +474,7 @@ router.post('/prepare', async (req, res, next) => {
       optimizedPlaces, optimizedRestaurants, optimizedItinerary,
       maxDailyDiameterKm,
       mapMarkers, budgetEstimate, cityInfo, weather, weatherDayParts,
+      notice,
     });
   } catch (err) {
     next(err);
@@ -383,7 +515,11 @@ router.post('/llm', async (req, res, next) => {
       constraints,
     });
 
-    // LLM çıktısına deterministik saatli program ekle (arrival/departure/seyahat süresi)
+    // Uzlaştır (uydurma mekanı düşür + hava yoksa coğrafi sıra), sonra saatli program ekle.
+    const recon = reconcilePlanWithItinerary(dailyPlan, optimizedItinerary, places, restaurants, {
+      hasWeather: Array.isArray(weatherDayParts) && weatherDayParts.length > 0,
+    });
+    if (recon.dropped) console.warn(`[planner/llm] ${recon.dropped} havuz-dışı aktivite düşürüldü (${city})`);
     enrichWithSchedule(dailyPlan, places, restaurants, transportMode);
 
     res.json({ dailyPlan });

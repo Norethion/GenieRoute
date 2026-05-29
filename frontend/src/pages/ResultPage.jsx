@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { Plus, Save, MapPin, UtensilsCrossed, CalendarDays, Map, ArrowLeft, Sun, Moon } from 'lucide-react';
+import { Plus, Save, MapPin, UtensilsCrossed, CalendarDays, Map, ArrowLeft, Sun, Moon, Info } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 import DailyPlan from '../components/DailyPlan';
@@ -456,6 +456,13 @@ export default function ResultPage() {
               </button>
             )}
           </div>
+
+          {result.notice?.type === 'few_places' && (
+            <div className="few-places-notice">
+              <Info size={16} />
+              <span>{t('result.fewPlacesNotice', { found: result.notice.found, days: result.notice.days })}</span>
+            </div>
+          )}
 
           <DailyPlan plan={dailyPlan} onActivityClick={handleActivityClick} activeDay={activeDay} onDayChange={handleDayChange} weatherDayParts={weatherDayParts} />
           <BudgetSummary budget={budgetEstimate} />

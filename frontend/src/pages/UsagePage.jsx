@@ -99,6 +99,8 @@ function useUsageData(cacheKey, fetcher, range, force) {
     prevForce.current = force;
 
     if (cached?.data && !force) {
+      // Önbellekteki veriyi anında göster (veri-fetch efekti, harici sync — perf riski yok).
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setState({
         loading: false,
         data: cached.data,

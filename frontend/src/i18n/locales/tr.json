@@ -22,7 +22,8 @@
     "city": {
       "title": "Nereyi keşfetmek istiyorsun?",
       "desc": "Hayalindeki şehri yaz, gerisini bize bırak.",
-      "placeholder": "Istanbul, Paris, Tokyo, Bangkok..."
+      "placeholder": "Istanbul, Paris, Tokyo, Bangkok...",
+      "popular": "Popüler Şehirler"
     },
     "days": {
       "title": "Ne zaman gideceksin?",
@@ -30,7 +31,9 @@
       "unit": "gün",
       "startDate": "Başlangıç Tarihi",
       "endDate": "Bitiş Tarihi",
-      "duration": "{{count}} gün"
+      "duration": "{{count}} gün",
+      "selectStartDate": "Başlangıç tarihi seç",
+      "selectEndDate": "Bitiş tarihi seç"
     },
     "budget": {
       "title": "Bütçe tercihin nedir?",
@@ -113,7 +116,8 @@
     "createPlan": "Plan Oluştur",
     "avoidOutdoor": "Kapalı alan önerilir",
     "rainProb": "yağış ihtimali",
-    "minShort": "dk"
+    "minShort": "dk",
+    "fewPlacesNotice": "Bu şehir için yalnızca {{found}} mekan bulundu, {{days}} günlük plan için sınırlı olabilir. Plan bulunan mekanlara göre oluşturuldu."
   },
   "favorites": {
     "title": "Kaydedilen Yerler",
@@ -216,7 +220,18 @@
     "restaurant": "Restoran",
     "attraction": "Gezilecek Yer",
     "openInGoogleMaps": "Google Haritalar'da Aç",
-    "aboutLoading": "Bilgi yükleniyor..."
+    "aboutLoading": "Bilgi yükleniyor...",
+    "unavailable": "Harita şu anda kullanılamıyor.",
+    "tools": "Harita Araçları",
+    "close": "Kapat",
+    "categoryFilter": "Kategori Filtresi",
+    "enable3D": "3D Açık",
+    "disable3D": "3D kapalı",
+    "theme": "Tema: {{style}}",
+    "showRoute": "Rotayı Göster",
+    "hideRoute": "Rotayı Gizle",
+    "favoritesOnly": "Sadece favoriler",
+    "showAll": "Tümünü göster"
   },
   "budget": {
     "low": "Ekonomik",
@@ -225,7 +240,62 @@
     "rangeTooltipTitle": "Örnek Dağılımı",
     "rangeTooltipMedian": "Medyan",
     "rangeTooltipLowest": "En düşük",
-    "rangeTooltipHighest": "En yüksek"
+    "rangeTooltipHighest": "En yüksek",
+    "title": "Tahmini Bütçe",
+    "daily": "Günlük Döküm",
+    "meals": "Yemek (3 öğün)",
+    "transport": "Ulaşım",
+    "activities": "Müze & Aktivite",
+    "accommodation": "Konaklama",
+    "dailyTotal": "Günlük Toplam",
+    "total": "Toplam Tahmini Maliyet",
+    "days": "gün",
+    "note": "Fiyatlar tahminidir ve değişiklik gösterebilir.",
+    "range": "Günlük aralık",
+    "samples": "örnek"
+  },
+  "tips": {
+    "title": "Pratik Bilgiler",
+    "emergency": "Acil Durum",
+    "currency": "Para & Ödeme",
+    "transport": "Ulaşım",
+    "culture": "Kültür & Görgü",
+    "food": "Yeme & İçme",
+    "weather": "Hava Durumu",
+    "tempMax": "En yüksek",
+    "tempMin": "En düşük",
+    "rain": "Yağış"
+  },
+  "featured": {
+    "title": "Popüler Rotalar",
+    "subtitle": "Hazır rotalardan birini seç, hemen keşfet.",
+    "explore": "Keşfet"
+  },
+  "chat": {
+    "title": "Seyahat Asistanı",
+    "welcome": "Planın hakkında soru sor veya önerileri dene:",
+    "suggestion1": "Daha ucuz restoran öner",
+    "suggestion2": "Sahil aktivitesi ekle",
+    "suggestion3": "Bu planı nasıl geliştirebilirim?",
+    "placeholder": "Mesajınızı yazın...",
+    "newChat": "Yeni sohbet",
+    "expand": "Aç",
+    "minimize": "Küçült",
+    "close": "Kapat",
+    "reopen": "Sohbeti aç",
+    "preview": "Önizle",
+    "previewTooltip": "Haritada/planda önizle",
+    "confirm": "Onayla",
+    "confirmTooltip": "Onayla ve kaydet",
+    "cancelPreview": "Önizlemeyi geri al",
+    "applied": "uygulandı",
+    "appliedTooltip": "Plana uygulandı"
+  },
+  "errorBoundary": {
+    "title": "Bir şeyler ters gitti",
+    "message": "Beklenmedik bir hata oluştu. Sayfayı yeniden deneyebilir veya ana sayfaya dönebilirsin.",
+    "retry": "Yeniden Dene",
+    "home": "Ana Sayfa"
   },
   "error": {
     "generic": "Plan oluşturulurken bir hata oluştu. Lütfen tekrar deneyin."

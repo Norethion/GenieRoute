@@ -21,8 +21,8 @@ export default function FeaturedRoutes({ onRouteSelect }) {
   return (
     <div className="featured-routes">
       <div className="featured-header">
-        <h2>{lang === 'tr' ? 'Popüler Rotalar' : 'Popular Routes'}</h2>
-        <p>{lang === 'tr' ? 'Hazır rotalardan birini seç, hemen keşfet.' : 'Pick a ready-made route and start exploring.'}</p>
+        <h2>{t('featured.title')}</h2>
+        <p>{t('featured.subtitle')}</p>
       </div>
       <div className="featured-grid">
         {routes.map((route) => {
@@ -43,7 +43,7 @@ export default function FeaturedRoutes({ onRouteSelect }) {
                 />
                 <div className="featured-card-overlay">
                   <span className="featured-card-cta">
-                    {lang === 'tr' ? 'Keşfet' : 'Explore'} <ArrowRight size={14} />
+                    {t('featured.explore')} <ArrowRight size={14} />
                   </span>
                 </div>
               </div>

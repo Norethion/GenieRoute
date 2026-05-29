@@ -58,6 +58,15 @@ app.use(errorHandler);
 // Chat WebSocket
 setupChatSocket(io);
 
+// Zorunlu ortam değişkenleri — eksikse erken ve net hata ver (aksi halde hata
+// çalışma-zamanında her istekte 401/REQUEST_DENIED olarak çıkar, teşhisi zor).
+const REQUIRED_ENV = ['DATABASE_URL', 'GOOGLE_PLACES_API_KEY', 'OPENAI_API_KEY'];
+const missingEnv = REQUIRED_ENV.filter((k) => !process.env[k]);
+if (missingEnv.length) {
+  console.error(`Eksik ortam değişkenleri: ${missingEnv.join(', ')}. backend/.env dosyasını kontrol edin.`);
+  process.exit(1);
+}
+
 // DB migration'larını çalıştır, sonra sunucuyu başlat
 runMigrations()
   .then(() => {

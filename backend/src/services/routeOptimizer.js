@@ -138,21 +138,28 @@ function clusterByDay(places, days, maxDiameterKm) {
 
   // Kalanları (remaining + outliers) en yakın gün centroid'ine zorla yerleştir.
   // Burada çap sınırı bilinçli olarak gevşetilir, hiçbir yer düşürülmesin diye.
+  // Denge: en yakın güne %25 mesafe toleransı içindeki günler arasında EN AZ dolu
+  // olanı seç — böylece tek güne yığılıp 6/2 gibi dengesiz dağılım oluşmaz.
   const leftover = [...remaining, ...outliers];
+  const BALANCE_TOL = 1.25;
   while (leftover.length > 0) {
     const p = leftover.shift();
+    // Boş gün varsa önce onu doldur (mesafe kıyaslamasını atla)
+    const emptyIdx = clusters.findIndex((c) => c.length === 0);
+    if (emptyIdx !== -1) {
+      clusters[emptyIdx].push(p);
+      continue;
+    }
+    const dists = clusters.map((c) => {
+      const center = centroid(c);
+      return haversine(center.lat, center.lng, p.lat, p.lng);
+    });
+    const minDist = Math.min(...dists);
     let bestCluster = 0;
-    let bestDist = Infinity;
+    let bestLen = Infinity;
     for (let c = 0; c < clusters.length; c++) {
-      if (clusters[c].length === 0) {
-        // Boş gün varsa bu yer onun başlangıç noktası olur — distance kıyaslamasını atla
-        bestCluster = c;
-        break;
-      }
-      const center = centroid(clusters[c]);
-      const dist = haversine(center.lat, center.lng, p.lat, p.lng);
-      if (dist < bestDist) {
-        bestDist = dist;
+      if (dists[c] <= minDist * BALANCE_TOL && clusters[c].length < bestLen) {
+        bestLen = clusters[c].length;
         bestCluster = c;
       }
     }
@@ -398,8 +405,10 @@ function computeSchedule(activities, transportMode = 'mixed', dayStartMin = 570)
  * }}
  */
 function optimizeRoute(places, restaurants, days, cityRadiusKm = null, transportMode = 'mixed', restPerDay = 2) {
-  const validPlaces = places.filter((p) => p.lat && p.lng);
-  const validRestaurants = restaurants.filter((r) => r.lat && r.lng);
+  // Number.isFinite: lat/lng=0 (ekvator / Greenwich meridyeni) geçerli koordinattır;
+  // truthy kontrol bunları yanlışlıkla elerdi (filterService ile tutarlı).
+  const validPlaces = places.filter((p) => Number.isFinite(p.lat) && Number.isFinite(p.lng));
+  const validRestaurants = restaurants.filter((r) => Number.isFinite(r.lat) && Number.isFinite(r.lng));
   const maxDailyDiameterKm = resolveMaxDailyDiameter(cityRadiusKm, transportMode);
 
   if (validPlaces.length === 0) {

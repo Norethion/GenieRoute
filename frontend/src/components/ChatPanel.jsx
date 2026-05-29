@@ -4,19 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { connectSocket, disconnectSocket, getClientUuid } from '../services/chatSocket';
 import { buildFollowupSuggestions } from '../data/followups';
 
-const SUGGESTIONS = {
-  tr: [
-    'Daha ucuz restoran öner',
-    'Sahil aktivitesi ekle',
-    'Bu planı nasıl geliştirebilirim?',
-  ],
-  en: [
-    'Suggest cheaper restaurants',
-    'Add a beach activity',
-    'How can I improve this plan?',
-  ],
-};
-
 function parsePlanUpdate(text) {
   const match = text.match(/\[PLAN_UPDATE\]\s*([\s\S]*?)\s*\[\/PLAN_UPDATE\]/);
   if (!match) return null;
@@ -35,7 +22,7 @@ function stripPlanUpdate(text) {
 }
 
 export default function ChatPanel({ planData, onPlanUpdate, onPreviewUpdate, onCancelPreview, tripId, floating = false }) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const lang = i18n.language === 'tr' ? 'tr' : 'en';
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -220,7 +207,7 @@ export default function ChatPanel({ planData, onPlanUpdate, onPreviewUpdate, onC
     <>
       <div className="chat-header">
         <MessageCircle size={16} />
-        <span className="chat-title-text">{lang === 'tr' ? 'Seyahat Asistanı' : 'Travel Assistant'}</span>
+        <span className="chat-title-text">{t('chat.title')}</span>
         <div className={`chat-status ${isConnected ? 'connected' : ''}`} title={isConnected ? 'connected' : 'connecting'} />
         {floating && (
           <div className="chat-header-actions">
@@ -228,7 +215,7 @@ export default function ChatPanel({ planData, onPlanUpdate, onPreviewUpdate, onC
               type="button"
               className="chat-header-icon-btn"
               onClick={startNewChat}
-              title={lang === 'tr' ? 'Yeni sohbet' : 'New chat'}
+              title={t('chat.newChat')}
               aria-label="new chat"
             >
               <Plus size={14} />
@@ -237,7 +224,7 @@ export default function ChatPanel({ planData, onPlanUpdate, onPreviewUpdate, onC
               type="button"
               className="chat-header-icon-btn"
               onClick={() => setIsMinimized((v) => !v)}
-              title={isMinimized ? (lang === 'tr' ? 'Aç' : 'Expand') : (lang === 'tr' ? 'Küçült' : 'Minimize')}
+              title={isMinimized ? t('chat.expand') : t('chat.minimize')}
               aria-label="minimize"
             >
               <Minus size={14} />
@@ -246,7 +233,7 @@ export default function ChatPanel({ planData, onPlanUpdate, onPreviewUpdate, onC
               type="button"
               className="chat-header-icon-btn"
               onClick={() => setIsOpen(false)}
-              title={lang === 'tr' ? 'Kapat' : 'Close'}
+              title={t('chat.close')}
               aria-label="close"
             >
               <X size={14} />
@@ -261,12 +248,12 @@ export default function ChatPanel({ planData, onPlanUpdate, onPreviewUpdate, onC
             {messages.length === 0 && (
               <div className="chat-welcome">
                 <Sparkles size={20} />
-                <p>{lang === 'tr' ? 'Planın hakkında soru sor veya önerileri dene:' : 'Ask about your plan or try suggestions:'}</p>
+                <p>{t('chat.welcome')}</p>
                 <div className="chat-suggestions">
                   {/* Plan varsa bağlam duyarlı chip'ler; yoksa genel öneriler */}
                   {(followups.length > 0
                     ? followups.map((f) => ({ key: f.id, label: f.label, msg: f.message }))
-                    : SUGGESTIONS[lang].map((s, i) => ({ key: `s-${i}`, label: s, msg: s }))
+                    : [t('chat.suggestion1'), t('chat.suggestion2'), t('chat.suggestion3')].map((s, i) => ({ key: `s-${i}`, label: s, msg: s }))
                   ).map((s) => (
                     <button key={s.key} className="chat-suggestion-btn" onClick={() => sendMessage(s.msg)}>
                       {s.label}
@@ -286,10 +273,10 @@ export default function ChatPanel({ planData, onPlanUpdate, onPreviewUpdate, onC
                   <button
                     className="chat-apply-btn chat-apply-btn--preview"
                     onClick={() => previewPlanUpdate(i)}
-                    title={lang === 'tr' ? 'Haritada/planda önizle' : 'Preview in plan'}
+                    title={t('chat.previewTooltip')}
                   >
                     <Eye size={11} />
-                    {lang === 'tr' ? 'Önizle' : 'Preview'}
+                    {t('chat.preview')}
                   </button>
                 )}
                 {msg.planUpdate && !msg.streaming && !msg.planApplied && previewIdx === i && (
@@ -297,15 +284,15 @@ export default function ChatPanel({ planData, onPlanUpdate, onPreviewUpdate, onC
                     <button
                       className="chat-apply-btn chat-apply-btn--confirm"
                       onClick={() => confirmPlanUpdate(i)}
-                      title={lang === 'tr' ? 'Onayla ve kaydet' : 'Confirm & save'}
+                      title={t('chat.confirmTooltip')}
                     >
                       <Check size={11} />
-                      {lang === 'tr' ? 'Onayla' : 'Confirm'}
+                      {t('chat.confirm')}
                     </button>
                     <button
                       className="chat-apply-btn chat-apply-btn--cancel"
                       onClick={cancelPreview}
-                      title={lang === 'tr' ? 'Önizlemeyi geri al' : 'Cancel preview'}
+                      title={t('chat.cancelPreview')}
                       aria-label="cancel"
                     >
                       <X size={11} />
@@ -313,9 +300,9 @@ export default function ChatPanel({ planData, onPlanUpdate, onPreviewUpdate, onC
                   </span>
                 )}
                 {msg.planUpdate && !msg.streaming && msg.planApplied && (
-                  <span className="chat-applied-tag" title={lang === 'tr' ? 'Plana uygulandı' : 'Applied'}>
+                  <span className="chat-applied-tag" title={t('chat.appliedTooltip')}>
                     <Check size={11} />
-                    {lang === 'tr' ? 'uygulandı' : 'applied'}
+                    {t('chat.applied')}
                   </span>
                 )}
               </div>
@@ -345,7 +332,7 @@ export default function ChatPanel({ planData, onPlanUpdate, onPreviewUpdate, onC
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={lang === 'tr' ? 'Mesajınızı yazın...' : 'Type your message...'}
+              placeholder={t('chat.placeholder')}
               disabled={isStreaming}
             />
             <button
@@ -371,8 +358,8 @@ export default function ChatPanel({ planData, onPlanUpdate, onPreviewUpdate, onC
         type="button"
         className="chat-reopen-fab"
         onClick={() => setIsOpen(true)}
-        aria-label={lang === 'tr' ? 'Sohbeti aç' : 'Open chat'}
-        title={lang === 'tr' ? 'Sohbeti aç' : 'Open chat'}
+        aria-label={t('chat.reopen')}
+        title={t('chat.reopen')}
       >
         <MessageCircle size={20} />
       </button>

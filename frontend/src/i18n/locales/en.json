@@ -22,7 +22,8 @@
     "city": {
       "title": "Where do you want to explore?",
       "desc": "Type your dream destination, we'll handle the rest.",
-      "placeholder": "Istanbul, Paris, Tokyo, Bangkok..."
+      "placeholder": "Istanbul, Paris, Tokyo, Bangkok...",
+      "popular": "Popular Destinations"
     },
     "days": {
       "title": "When are you going?",
@@ -30,7 +31,9 @@
       "unit": "days",
       "startDate": "Start Date",
       "endDate": "End Date",
-      "duration": "{{count}} days"
+      "duration": "{{count}} days",
+      "selectStartDate": "Select start date",
+      "selectEndDate": "Select end date"
     },
     "budget": {
       "title": "What's your budget?",
@@ -113,7 +116,8 @@
     "createPlan": "Create Plan",
     "avoidOutdoor": "Indoor recommended",
     "rainProb": "rain chance",
-    "minShort": "min"
+    "minShort": "min",
+    "fewPlacesNotice": "Only {{found}} places were found for this city, which may be limited for a {{days}}-day plan. The plan was built from the places found."
   },
   "favorites": {
     "title": "Saved Places",
@@ -216,7 +220,18 @@
     "restaurant": "Restaurant",
     "attraction": "Attraction",
     "openInGoogleMaps": "Open in Google Maps",
-    "aboutLoading": "Loading info..."
+    "aboutLoading": "Loading info...",
+    "unavailable": "The map is currently unavailable.",
+    "tools": "Map Tools",
+    "close": "Close",
+    "categoryFilter": "Category Filter",
+    "enable3D": "Enable 3D",
+    "disable3D": "Disable 3D",
+    "theme": "Theme: {{style}}",
+    "showRoute": "Show Route",
+    "hideRoute": "Hide Route",
+    "favoritesOnly": "Favorites only",
+    "showAll": "Show all"
   },
   "budget": {
     "low": "Budget",
@@ -225,7 +240,62 @@
     "rangeTooltipTitle": "Sample Distribution",
     "rangeTooltipMedian": "Median",
     "rangeTooltipLowest": "Lowest",
-    "rangeTooltipHighest": "Highest"
+    "rangeTooltipHighest": "Highest",
+    "title": "Budget Estimate",
+    "daily": "Daily Breakdown",
+    "meals": "Meals (3 per day)",
+    "transport": "Transportation",
+    "activities": "Museums & Activities",
+    "accommodation": "Accommodation",
+    "dailyTotal": "Daily Total",
+    "total": "Total Estimated Cost",
+    "days": "days",
+    "note": "Prices are estimates and may vary.",
+    "range": "Daily range",
+    "samples": "samples"
+  },
+  "tips": {
+    "title": "Practical Info",
+    "emergency": "Emergency",
+    "currency": "Money & Payment",
+    "transport": "Transportation",
+    "culture": "Culture & Etiquette",
+    "food": "Food & Drink",
+    "weather": "Weather Forecast",
+    "tempMax": "High",
+    "tempMin": "Low",
+    "rain": "Rain"
+  },
+  "featured": {
+    "title": "Popular Routes",
+    "subtitle": "Pick a ready-made route and start exploring.",
+    "explore": "Explore"
+  },
+  "chat": {
+    "title": "Travel Assistant",
+    "welcome": "Ask about your plan or try suggestions:",
+    "suggestion1": "Suggest cheaper restaurants",
+    "suggestion2": "Add a beach activity",
+    "suggestion3": "How can I improve this plan?",
+    "placeholder": "Type your message...",
+    "newChat": "New chat",
+    "expand": "Expand",
+    "minimize": "Minimize",
+    "close": "Close",
+    "reopen": "Open chat",
+    "preview": "Preview",
+    "previewTooltip": "Preview in plan",
+    "confirm": "Confirm",
+    "confirmTooltip": "Confirm & save",
+    "cancelPreview": "Cancel preview",
+    "applied": "applied",
+    "appliedTooltip": "Applied"
+  },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "message": "An unexpected error occurred. You can try the page again or go back home.",
+    "retry": "Try Again",
+    "home": "Home"
   },
   "error": {
     "generic": "Something went wrong while creating the plan. Please try again."

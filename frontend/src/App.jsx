@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
+import ErrorBoundary from './components/ErrorBoundary';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import ResultPage from './pages/ResultPage';
@@ -14,8 +15,9 @@ import './index.css';
 
 function App() {
   return (
-    <ThemeProvider>
-      <BrowserRouter>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <BrowserRouter>
         <Routes>
           <Route path="/result" element={<ResultPage />} />
           <Route path="*" element={
@@ -35,8 +37,9 @@ function App() {
             </>
           } />
         </Routes>
-      </BrowserRouter>
-    </ThemeProvider>
+        </BrowserRouter>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 

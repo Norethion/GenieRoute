@@ -85,6 +85,7 @@ export async function generatePlanWithProgress(formData, onStep) {
     cityInfo: prep.cityInfo,
     weather: prep.weather,
     weatherDayParts: prep.weatherDayParts,
+    notice: prep.notice,
   };
 }
 

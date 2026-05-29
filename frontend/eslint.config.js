@@ -23,7 +23,9 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      // Uppercase = JSX bileşeni/sabit (jsx-uses-vars eklentisi yok; bileşen
+      // param/değişkenleri JSX'te kullanılsa da core no-unused-vars görmez).
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]', argsIgnorePattern: '^[A-Z_]' }],
     },
   },
 ])

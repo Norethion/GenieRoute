@@ -7,38 +7,20 @@ export default function BudgetSummary({ budget }) {
 
   if (!budget) return null;
 
-  const labels = {
-    tr: {
-      title: 'Tahmini Bütçe',
-      daily: 'Günlük Döküm',
-      meals: 'Yemek (3 öğün)',
-      transport: 'Ulaşım',
-      activities: 'Müze & Aktivite',
-      accommodation: 'Konaklama',
-      dailyTotal: 'Günlük Toplam',
-      total: 'Toplam Tahmini Maliyet',
-      days: 'gün',
-      note: 'Fiyatlar tahminidir ve değişiklik gösterebilir.',
-      range: 'Günlük aralık',
-      samples: 'örnek',
-    },
-    en: {
-      title: 'Budget Estimate',
-      daily: 'Daily Breakdown',
-      meals: 'Meals (3 per day)',
-      transport: 'Transportation',
-      activities: 'Museums & Activities',
-      accommodation: 'Accommodation',
-      dailyTotal: 'Daily Total',
-      total: 'Total Estimated Cost',
-      days: 'days',
-      note: 'Prices are estimates and may vary.',
-      range: 'Daily range',
-      samples: 'samples',
-    },
+  const t = {
+    title: tt('budget.title'),
+    daily: tt('budget.daily'),
+    meals: tt('budget.meals'),
+    transport: tt('budget.transport'),
+    activities: tt('budget.activities'),
+    accommodation: tt('budget.accommodation'),
+    dailyTotal: tt('budget.dailyTotal'),
+    total: tt('budget.total'),
+    days: tt('budget.days'),
+    note: tt('budget.note'),
+    range: tt('budget.range'),
+    samples: tt('budget.samples'),
   };
-
-  const t = labels[lang];
   const locale = lang === 'tr' ? 'tr-TR' : 'en-US';
   const localCurrency = budget.currency || 'TRY';
 

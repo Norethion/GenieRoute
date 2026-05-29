@@ -29,7 +29,7 @@ export default function DayCard({ day, onActivityClick, dayWeather }) {
         <span className="day-title">{dayTitle}</span>
       </div>
       <div className="activities">
-        {day.activities.map((activity, index) => {
+        {(day.activities || []).map((activity, index) => {
           // type='snack' önceliği — atıştırmalığın sandviç ikonu olur, time'a bakılmaz
           const Icon = TYPE_ICONS[activity.type] || TIME_ICONS[activity.time] || Sun;
           const desc = activity[`description_${lang}`] || activity.description_en || activity.description || '';

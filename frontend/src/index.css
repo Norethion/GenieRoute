@@ -1686,6 +1686,23 @@ body {
 .no-result h3 { font-family: var(--font-display); font-size: 22px; color: var(--text-primary); margin-bottom: 6px; }
 .no-result p { margin-bottom: 24px; font-size: 15px; }
 
+/* ===== Error Boundary ===== */
+.error-boundary {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 64px 20px;
+  color: var(--text-muted);
+}
+.error-boundary svg { margin-bottom: 12px; }
+.error-boundary h2 { font-family: var(--font-display); font-size: 24px; color: var(--text-primary); margin-bottom: 6px; }
+.error-boundary p { margin-bottom: 24px; font-size: 15px; max-width: 420px; }
+.error-boundary-actions { display: flex; gap: 12px; align-items: center; }
+.error-boundary-actions .btn-back { text-decoration: none; }
+
 /* ===== City Tips ===== */
 .city-tips {
   margin-top: 16px;
@@ -1989,6 +2006,22 @@ body {
   color: var(--text-muted);
   font-style: italic;
 }
+
+/* ===== Few Places Notice ===== */
+.few-places-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+  color: var(--text-primary);
+  font-size: 13px;
+  line-height: 1.4;
+}
+.few-places-notice svg { flex-shrink: 0; margin-top: 1px; color: var(--accent); }
 
 /* ===== Featured Routes ===== */
 .featured-routes {
