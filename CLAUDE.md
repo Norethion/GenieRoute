@@ -1,6 +1,6 @@
 # GenieRoute AI
 
-Kullanıcının şehir, gün, bütçe ve ilgi alanı girdisiyle Google Places API'den mekan verileri çekip, OpenAI ile günlük rota üreten ve haritada gösteren web uygulaması. Dünya çapında çalışır: tüm şehirler (Türkiye dahil) için bütçe ve ipuçları LLM ensemble + DB-cache yoluyla üretilir; her `(şehir, bütçe seviyesi)` için en fazla 100 örnek toplanır, sayısal alanlarda median ile birleştirilir. Çoklu para birimi (yerel + USD + EUR), ülke kodu Geocoding'den otomatik tespit edilir.
+Kullanıcının şehir, gün, bütçe ve ilgi alanı girdisiyle Google Places API'den mekan verileri çekip, OpenAI ile günlük rota üreten ve haritada gösteren web uygulaması. Dünya çapında çalışır: tüm şehirler (Türkiye dahil) için bütçe ve ipuçları LLM ensemble + DB-cache yoluyla üretilir; her `(şehir, bütçe seviyesi)` için en fazla 200 örnek toplanır (her 10 istekte `web_search` aracıyla tazelenir), sayısal alanlarda median ile birleştirilir. Çoklu para birimi (yerel + USD + EUR), ülke kodu Geocoding'den otomatik tespit edilir.
 
 ## Teknoloji Yığını
 
@@ -9,7 +9,7 @@ Kullanıcının şehir, gün, bütçe ve ilgi alanı girdisiyle Google Places AP
 - **Veritabanı:** PostgreSQL 16 (Docker, port 5432) — kalkışta otomatik migration
 - **Dış servisler:**
   - Google Places API (Text Search + Geocoding + Photo proxy)
-  - OpenAI API (gpt-4o-mini, JSON mode plan üretimi + streaming chat)
+  - OpenAI API (gpt-5.4-mini plan üretimi + streaming chat; gpt-5.4-nano iç yardımcı çağrılar; JSON mode; bütçe/ipucu için `web_search` araç-kullanımı)
   - Open-Meteo (hava durumu, anahtarsız)
   - open.er-api.com (çoklu base para birimi döviz kurları, 1 saat in-memory cache)
 - **Harita:** Mapbox GL JS + react-map-gl (görselleştirme, rota polyline, 3D pitch); mekan verisi ve fotoğraflar Google Places API ile gelmeye devam eder (hibrit mimari)
@@ -36,7 +36,7 @@ backend/
       llmService.js           # OpenAI plan üretimi (JSON mode)
       chatService.js          # Socket.io chat handler + plan update protokolü
       budgetService.js        # Bütçe yönlendirici: TR şehri → curated; diğer → cityDataService
-      cityDataService.js      # TR dışı şehirler için LLM-üretim + cache + 3-örnek ensemble (median)
+      cityDataService.js      # Tüm şehirler için LLM-üretim + cache + 200-örnek ensemble (median) + web_search
       exchangeRateCache.js    # Çoklu base para birimi döviz kurları (1 saat in-memory cache)
       weatherService.js       # Open-Meteo günlük hava tahmini
     models/
@@ -184,8 +184,8 @@ Migration dosyaları `database/migrations/` altında, isimleri sıralıdır (`00
 - **chat_sessions** — `(id, trip_id FK, client_uuid, language, created_at, last_activity)`
 - **chat_messages** — `(id BIGSERIAL, session_id FK ON DELETE CASCADE, role 'user'|'assistant', content, tokens_used, created_at)`
 - **plan_updates** — `(id BIGSERIAL, session_id FK, message_id FK→chat_messages ON DELETE SET NULL, trip_id FK, action, day_number, time_slot, changes_json JSONB, applied_at)`
-- **city_prices_cache** — `(id, city_key, budget_level, city_display, country_code, currency_code, samples JSONB, merged JSONB, sample_count, created_at, updated_at)` — TR dışı şehirler için LLM-üretimli fiyat tablosu. UNIQUE `(city_key, budget_level)` — her budget tipi (low/medium/high) bağımsız sample havuzu; 100-örnek ensemble + median
-- **city_tips_cache** — `(id, city_key UNIQUE, city_display, country_code, samples JSONB, merged JSONB, sample_count, created_at, updated_at)` — TR dışı şehirler için LLM-üretimli ipuçları (budget'a bağlı değil), 100-örnek geçmişi tutar; "merged" en son örnek
+- **city_prices_cache** — `(id, city_key, budget_level, city_display, country_code, currency_code, samples JSONB, merged JSONB, sample_count, created_at, updated_at)` — Tüm şehirler için LLM-üretimli fiyat tablosu. UNIQUE `(city_key, budget_level)` — her budget tipi (low/medium/high) bağımsız sample havuzu; 200-örnek ensemble (rolling FIFO) + median; her 10 istekte `web_search` ile taze örnek eklenir
+- **city_tips_cache** — `(id, city_key UNIQUE, city_display, country_code, samples JSONB, merged JSONB, sample_count, created_at, updated_at)` — Tüm şehirler için LLM-üretimli ipuçları (budget'a bağlı değil), 200-örnek geçmişi tutar (rolling FIFO); "merged" en son örnek
 
 ## Kodlama Kuralları
 
@@ -218,7 +218,7 @@ Migration dosyaları `database/migrations/` altında, isimleri sıralıdır (`00
 - **Kullanıcı hesabı yok** — tripler anonim. Chat session'ları `localStorage`'daki `genieroute-client-uuid` ile aynı tarayıcıya bağlanır.
 - Google Places API faturalama gerektirir (aylık 200$ ücretsiz kredi vardır).
 - OpenAI plan üretimi `response_format: { type: 'json_object' }` ile yapılandırılmış çıktı kullanır; chat ise streaming çalışır.
-- `budgetService` şehir adını normalize eder (diakritik temizleme + lowercase + parantez içlerini kaldırma). Tüm şehirler — Türkiye dahil — `cityDataService.getPricesForCity({ ..., budgetLevel })` çağrısıyla LLM yolundan geçer: OpenAI gpt-4o-mini JSON mode ile fiyat tablosu üretir, PostgreSQL `city_prices_cache`'e `(city_key, budget_level)` anahtarıyla kaydedilir, ülkenin yerel para biriminde döner. Aynı `(şehir, budget_level)` için 100 farklı isteğe kadar yeni LLM örneği üretir; `merged` her sayısal yaprak için median alınarak hesaplanır (halüsinasyon outlier'larına karşı dayanıklı). `dailyRange = { min, max }` 2+ sample varsa frontend'de "± aralık" rozeti olarak görünür. LLM tamamen başarısız olursa `defaultPrices.json` (USD bazlı generic) kullanılır.
+- `budgetService` şehir adını normalize eder (diakritik temizleme + lowercase + parantez içlerini kaldırma). Tüm şehirler — Türkiye dahil — `cityDataService.getPricesForCity({ ..., budgetLevel })` çağrısıyla LLM yolundan geçer: OpenAI gpt-5.4-nano JSON mode ile fiyat tablosu üretir, PostgreSQL `city_prices_cache`'e `(city_key, budget_level)` anahtarıyla kaydedilir, ülkenin yerel para biriminde döner. Aynı `(şehir, budget_level)` için 200 farklı isteğe kadar yeni LLM örneği üretir (rolling FIFO); ayrıca her 10 istekte arka planda `web_search` aracıyla güncel web kaynaklı bir örnek eklenir; `merged` her sayısal yaprak için median alınarak hesaplanır (halüsinasyon outlier'larına karşı dayanıklı). `dailyRange = { min, max }` 2+ sample varsa frontend'de "± aralık" rozeti olarak görünür. LLM tamamen başarısız olursa `defaultPrices.json` (USD bazlı generic) kullanılır.
 - Tips için aynı mimari: tüm şehirler `cityDataService.getTipsForCity` → `city_tips_cache` (text alanlarda median anlamsız olduğu için en son örnek `merged` olur). LLM hata verirse `defaultTips.json` döner.
 - Currency conversion: `exchangeRateCache.getExchangeRates(baseCurrency)` herhangi bir base'i destekler (TR→TRY, FR→EUR, JP→JPY, vb.). `countryInfo.json` ISO 3166-1 → para birimi haritası içerir; ülke kodu `placesService.geocodeCity` response'undaki `address_components.country.short_name`'den çıkarılır.
 - `frontend/src/data/worldCities.json` GeoNames cities15000'den (CC-BY 4.0) türetilmiştir; `npm run build:cities` ile yeniden üretilebilir. Ek atıf: `attribution.cities` i18n key'iyle anasayfa altında görünür.
