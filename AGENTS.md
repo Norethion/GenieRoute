@@ -5,7 +5,7 @@ Google Places mekanları sağlar, OpenAI rotayı oluşturur, kullanıcı planı 
 
 ## Teknoloji ve konumlar
 
-- Backend: Node.js, Express, Socket.io ve PostgreSQL 16; HTTP girişleri `backend/src/routes/`, iş mantığı `backend/src/services/`, SQL erişimi `backend/src/models/` içindedir.
+- Backend: Node.js 22, Express, Socket.io ve PostgreSQL 18; HTTP girişleri `backend/src/routes/`, iş mantığı `backend/src/services/`, SQL erişimi `backend/src/models/` içindedir.
 - Frontend: React 19, Vite, react-i18next ve Mapbox GL JS; sayfalar `frontend/src/pages/`, bileşenler `frontend/src/components/`, API ve socket istemcileri `frontend/src/services/` içindedir.
 - Veritabanı: `database/migrations/*.sql`; `backend/src/config/migrate.js` dosyaları backend açılışında ada göre uygular.
 - Kurulum ve ortam değişkenleri: [README.md](README.md), `backend/.env.example` ve `frontend/.env.example`.
@@ -28,7 +28,7 @@ Windows menüsü için `helper.bat` kullanılabilir.
 | Tarayıcı testleri | `cd frontend && npm run test:e2e` |
 
 Backend için build veya test script'i, iki paket için de typecheck script'i yoktur.
-`.github/workflows/` bulunmadığından PR için tanımlı CI kontrolü yoktur; ilgili paketin lint, frontend build ve gerekiyorsa E2E testlerini yerelde çalıştır.
+PR'larda [CI](.github/workflows/ci.yml) içindeki `Kod kalitesi` (backend ve frontend lint ve biçim kontrolü) ve `Önyüz derlemesi` (frontend build) zorunlu kontrollerdir; E2E testleri CI'da çalışmaz, gerekiyorsa yerelde çalıştır.
 E2E için PostgreSQL ve backend açık olmalı; frontend'i `cd frontend && npm run dev -- --port 5174` ile ayrı terminalde aç, sonra [E2E rehberindeki](frontend/tests/e2e/README.md) anahtar ve test koşullarını izle.
 Playwright sunucuları kendi başlatmaz ve `frontend/playwright.config.js` içindeki base URL `localhost:5174` değeridir.
 
