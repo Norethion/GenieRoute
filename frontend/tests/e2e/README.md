@@ -1,15 +1,17 @@
 # E2E Testleri
 
-Playwright tabanlı uçtan-uca testler. Tüm etkileşimler **click + type** ile yapılır, `page.evaluate` yok.
+Playwright tabanlı uçtan-uca testler.
+Tüm etkileşimler **click + type** ile yapılır, `page.evaluate` yok.
 
 ## Ön Şartlar
 
 1. **Backend açık:** `cd backend && npm run dev` → http://localhost:3001
 2. **Postgres açık:** `docker-compose up -d postgres`
-3. **Frontend dev:** `cd frontend && npm run dev` → http://localhost:5174
+3. **Frontend dev:** `cd frontend && npm run dev -- --port 5174` → http://localhost:5174
 4. **.env tamam:** `VITE_MAPBOX_TOKEN` set + `OPENAI_API_KEY` backend'de
 
 Mapbox/Google API anahtarları olmadan testler harita render kontrollerinde başarısız olur.
+Playwright `frontend/playwright.config.js` içindeki `baseURL` olarak 5174 kullanır ve dev sunucusunu kendisi başlatmaz; normal `npm run dev` ise Vite varsayılanı olan 5173 portunu kullanır.
 
 ## Çalıştırma
 
