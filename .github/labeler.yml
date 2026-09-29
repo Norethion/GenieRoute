@@ -1,0 +1,23 @@
+# PR'lar değişen dosyalara göre etiketlenir; etiket adları Dependabot ile aynıdır.
+
+documentation:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/*.md'
+      - 'docs/**'
+
+ci:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '.github/**'
+
+database:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'database/**'
+
+dependencies:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/package.json'
+      - '**/package-lock.json'
