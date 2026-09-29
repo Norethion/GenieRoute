@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:16
+    image: postgres:18
     container_name: genieroute-db
     environment:
       POSTGRES_DB: genieroute
@@ -9,8 +9,9 @@ services:
     ports:
       - "5435:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata18:/var/lib/postgresql
     restart: unless-stopped
 
 volumes:
   pgdata:
+  pgdata18:

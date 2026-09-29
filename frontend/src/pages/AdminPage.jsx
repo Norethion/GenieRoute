@@ -64,7 +64,10 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    load();
+    getAdminCities()
+      .then(setData)
+      .catch((err) => setError(err.response?.data?.error || err.message || 'Failed to load'))
+      .finally(() => setLoading(false));
   }, []);
 
   return (

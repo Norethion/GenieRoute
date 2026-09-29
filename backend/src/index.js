@@ -36,6 +36,10 @@ app.use(cors());
 // rawPlaces + photos + optimizedItinerary kombine edilince /planner/llm
 // payload'ı büyüyebilir; default 100kb limit aşılmasın.
 app.use(express.json({ limit: '5mb' }));
+app.use((req, _res, next) => {
+  req.body ??= {};
+  next();
+});
 
 // Health check
 app.get('/api/health', (req, res) => {

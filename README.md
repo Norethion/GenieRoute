@@ -18,7 +18,7 @@ LLM destekli seyahat planlayıcı. Kullanıcı şehir, gün, bütçe ve ilgi ala
 
 ### Gereksinimler
 
-- **Node.js 20+**
+- **Node.js 22**
 - **Docker Desktop** (PostgreSQL container'ı için)
 - **Google Cloud** hesabı (Places API + Geocoding API etkin, faturalandırma açık)
 - **Mapbox** public access token'ı (harita görselleştirmesi için)
@@ -49,6 +49,12 @@ helper.bat
 - Admin paneli: <http://localhost:5173/admin>
 
 Migration'lar backend kalkışında otomatik uygulanır (`database/migrations/`).
+
+### PostgreSQL 18'e geçiş
+
+PostgreSQL 16 verileri eski `pgdata` biriminde kalır; PostgreSQL 18 yeni `pgdata18` birimini kullanır.
+Verileri taşımak için eski `pgdata` birimini geçici bir `postgres:16` konteynerine `/var/lib/postgresql/data` yolunda bağlayıp `pg_dumpall` ile SQL dökümü alın, ardından dökümü yeni PostgreSQL 18 konteynerinde `psql` ile geri yükleyin.
+Temiz başlamak isterseniz yeni birimi olduğu gibi kullanın; backend açıldığında migration'lar otomatik uygulanır.
 
 ## Ortam Değişkenleri
 
