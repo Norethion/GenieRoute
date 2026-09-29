@@ -4,7 +4,7 @@ LLM destekli seyahat planlayıcı. Kullanıcı şehir, gün, bütçe ve ilgi ala
 
 ## Özellikler
 
-- LLM destekli günlük plan üretimi (OpenAI gpt-4o-mini)
+- LLM destekli günlük plan üretimi (varsayılan OpenAI gpt-5.4-mini)
 - Google Places + Geocoding ile gerçek mekan/koordinat
 - Coğrafi kümeleme + nearest-neighbor TSP ile gün-içi rota optimizasyonu
 - Çoklu para birimi (yerel + USD + EUR) + 1 saat döviz kuru cache
@@ -20,7 +20,8 @@ LLM destekli seyahat planlayıcı. Kullanıcı şehir, gün, bütçe ve ilgi ala
 
 - **Node.js 20+**
 - **Docker Desktop** (PostgreSQL container'ı için)
-- **Google Cloud** hesabı (Places API + Geocoding API + Maps JS API etkin, faturalandırma açık)
+- **Google Cloud** hesabı (Places API + Geocoding API etkin, faturalandırma açık)
+- **Mapbox** public access token'ı (harita görselleştirmesi için)
 - **OpenAI API** hesabı (kredi yüklü)
 
 ### Kurulum
@@ -59,7 +60,7 @@ Backend port'u. Varsayılan `3001`.
 #### `DATABASE_URL`
 PostgreSQL bağlantı stringi. Docker compose ile gelen varsayılanı kullan:
 ```
-DATABASE_URL=postgresql://genieroute:genieroute123@localhost:5432/genieroute
+DATABASE_URL=postgresql://genieroute:genieroute123@localhost:5435/genieroute
 ```
 
 #### `GOOGLE_PLACES_API_KEY` (zorunlu)
@@ -72,7 +73,6 @@ Backend'in Places + Geocoding + Photo proxy çağrıları için kullandığı AP
 4. Şu API'leri etkinleştir (her biri için "Enable" tıkla):
    - **Places API**
    - **Geocoding API**
-   - **Maps JavaScript API** (frontend için)
 5. **APIs & Services → Credentials → Create Credentials → API Key**
 6. Anahtarı kopyala → `backend/.env`'e yapıştır
 
@@ -130,16 +130,9 @@ Backend URL'i. Varsayılanı bırak:
 VITE_API_URL=http://localhost:3001/api
 ```
 
-#### `VITE_GOOGLE_MAPS_KEY`
-Frontend'in haritayı çizmesi için Maps JavaScript API key'i. **Aynı `GOOGLE_PLACES_API_KEY`'i** burada da kullanabilirsin, **ama bu key tarayıcıya gömülü olduğundan kısıtlamalısın:**
-
-1. Cloud Console → **APIs & Services → Credentials** → ilgili API Key satırı
-2. **Application restrictions → HTTP referrers**
-3. İzinli referrer'lar:
-   - `http://localhost:5173/*`
-   - `https://<production-domain>/*` (varsa)
-
-Üretim için ayrı bir key tanımlamak ve sadece Maps JS API'sine kısıtlamak daha güvenlidir.
+#### `VITE_MAPBOX_TOKEN` (zorunlu)
+Harita `frontend/src/components/MapView.jsx` içinde Mapbox ile çizilir; public access token'ını <https://account.mapbox.com/access-tokens/> adresinden alıp `frontend/.env` dosyasına ekle.
+Google Places anahtarını frontend'e ekleme; mekan ve fotoğraf çağrıları backend üzerinden yapılır.
 
 ## /usage Paneli
 
@@ -155,7 +148,7 @@ Tarih aralığı: 24 saat / 7 gün / 30 gün / Tüm Zamanlar.
 
 ## Klasör Yapısı
 
-Detaylı yapı için `CLAUDE.md`'ye bak. Özet:
+Kod haritası için [CLAUDE.md](CLAUDE.md) dosyasına, davranış açıklamaları için [mimari notlarına](docs/MIMARI_NOTLARI.md) bak.
 
 ```
 backend/    Express + Socket.io API, PostgreSQL, services/models/routes

@@ -1,12 +1,14 @@
 # GenieRoute AI - API Anahtarları Kurulum Rehberi
 
-Bu projede 2 harici API kullanılmaktadır. Aşağıdaki adımları takip ederek API anahtarlarını alabilirsiniz.
+Bu projede 3 harici servis kullanılır: Google Cloud (mekan ve konum), OpenAI (plan ve sohbet) ve Mapbox (harita).
+Aşağıdaki adımları takip ederek anahtarları alabilirsiniz.
 
 ---
 
-## 1. Google Cloud — Places API + Maps JavaScript API
+## 1. Google Cloud — Places API + Geocoding API
 
-Google Cloud üzerinden hem mekan verilerini çekmek (Places API) hem de haritayı göstermek (Maps JavaScript API) için **tek bir API key** yeterlidir.
+Backend, mekan verileri ve fotoğraflar için Places API'yi, konum bulmak için Geocoding API'yi **tek bir API key** ile çağırır.
+Harita Mapbox ile çizildiği için Maps JavaScript API gerekmez.
 
 ### Adım 1: Google Cloud Console'a giriş
 - https://console.cloud.google.com adresine gidin
@@ -30,7 +32,7 @@ Google Cloud üzerinden hem mekan verilerini çekmek (Places API) hem de haritay
 Sol menüden **APIs & Services > Library** (API Kitaplığı) yolunu izleyin ve aşağıdaki 2 API'yi arayıp etkinleştirin:
 
 1. **Places API** — Arama kutusuna "Places API" yazın → Seçin → **Enable** (Etkinleştir)
-2. **Maps JavaScript API** — Arama kutusuna "Maps JavaScript API" yazın → Seçin → **Enable** (Etkinleştir)
+2. **Geocoding API** — Arama kutusuna "Geocoding API" yazın → Seçin → **Enable** (Etkinleştir)
 
 ### Adım 5: API Key oluşturun
 - Sol menüden **APIs & Services > Credentials** (Kimlik Bilgileri) seçin
@@ -42,36 +44,32 @@ Sol menüden **APIs & Services > Library** (API Kitaplığı) yolunu izleyin ve 
 Oluşturulan key'e tıklayarak düzenleme sayfasına gidin:
 
 **Application restrictions (Uygulama kısıtlaması):**
-- Geliştirme aşamasında: "None" bırakabilirsiniz
-- Yayınlama aşamasında: "HTTP referrers" seçip `localhost:*` ekleyin
+- Key yalnız backend'den çağrıldığı için "HTTP referrers" kısıtlaması kullanmayın; bu kısıtlama sunucu isteklerini reddettirir
+- Geliştirme aşamasında "None" bırakabilir, yayınlama aşamasında "IP addresses" seçip sunucunun IP adresini ekleyebilirsiniz
 
 **API restrictions (API kısıtlaması):**
 - "Restrict key" seçin
 - Listeden şunları işaretleyin:
   - Places API
-  - Maps JavaScript API
+  - Geocoding API
 - "Save" tıklayın
 
 ### Adım 7: Key'i projeye ekleyin
-Kopyaladığınız API key'i 2 yere yazın:
+Kopyaladığınız API key'i yalnız backend'e yazın:
 
 **backend/.env:**
 ```
 GOOGLE_PLACES_API_KEY=AIzaSy...........buraya_yapiştirin
 ```
 
-**frontend/.env:**
-```
-VITE_GOOGLE_MAPS_KEY=AIzaSy...........ayni_key
-```
-
-> Her iki dosyada da aynı key kullanılabilir. Backend Places API için, frontend Maps görüntülemesi için kullanır.
+> Google key'ini frontend'e eklemeyin; mekan ve fotoğraf istekleri backend üzerinden geçer.
 
 ---
 
-## 2. OpenAI API — GPT-4o-mini
+## 2. OpenAI API
 
-OpenAI API üzerinden LLM ile günlük seyahat rotası üretilecektir.
+OpenAI API günlük seyahat planını ve sohbet yanıtlarını üretir.
+Varsayılan modeller `backend/src/config/models.js` içindedir; `backend/.env` içinde `OPENAI_PLAN_MODEL`, `OPENAI_CHAT_MODEL` ve `OPENAI_HELPER_MODEL` ile değiştirilebilir.
 
 ### Adım 1: OpenAI hesabı oluşturun
 - https://platform.openai.com adresine gidin
@@ -82,10 +80,7 @@ OpenAI API üzerinden LLM ile günlük seyahat rotası üretilecektir.
 - Sol menüden **Settings > Billing** seçin
 - "Add payment method" ile kredi kartı ekleyin
 - $5-10 arası kredi yükleyin (proje için fazlasıyla yeterli)
-- **Maliyet tahmini:** gpt-4o-mini modeli çok ucuzdur
-  - 1 plan üretimi yaklaşık ~2000 token kullanır
-  - 1 milyon token = ~$0.15 (input) + ~$0.60 (output)
-  - Yani 1000 plan üretseniz bile ~$1-2 arası tutar
+- **Maliyet:** Kullanılan modellerin güncel fiyatları için https://openai.com/api/pricing sayfasına bakın
 
 ### Adım 3: API Key oluşturun
 - Sol menüden **API keys** seçin (veya https://platform.openai.com/api-keys adresine gidin)
@@ -106,6 +101,21 @@ OPENAI_API_KEY=sk-proj-...........buraya_yapiştirin
 
 ---
 
+## 3. Mapbox — Harita
+
+Frontend haritayı Mapbox GL JS ile çizer ve bir public access token ister.
+
+- https://account.mapbox.com/access-tokens/ adresinde hesap açın ve varsayılan public token'ı kopyalayın
+- Token'ı `frontend/.env` dosyasına yazın:
+
+```
+VITE_MAPBOX_TOKEN=pk.eyJ1...........buraya_yapiştirin
+```
+
+> Bu token tarayıcıya gönderilir; Mapbox hesabında URL kısıtlamasıyla yalnız kendi adreslerinize açabilirsiniz.
+
+---
+
 ## Özet: .env Dosyaları
 
 Tüm key'leri aldıktan sonra dosyalarınız şöyle görünmeli:
@@ -113,7 +123,7 @@ Tüm key'leri aldıktan sonra dosyalarınız şöyle görünmeli:
 ### backend/.env
 ```
 PORT=3001
-DATABASE_URL=postgresql://genieroute:genieroute123@localhost:5432/genieroute
+DATABASE_URL=postgresql://genieroute:genieroute123@localhost:5435/genieroute
 GOOGLE_PLACES_API_KEY=AIzaSyBxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 OPENAI_API_KEY=sk-proj-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
@@ -121,7 +131,7 @@ OPENAI_API_KEY=sk-proj-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ### frontend/.env
 ```
 VITE_API_URL=http://localhost:3001/api
-VITE_GOOGLE_MAPS_KEY=AIzaSyBxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+VITE_MAPBOX_TOKEN=pk.eyJ1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 ---

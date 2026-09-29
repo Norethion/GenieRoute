@@ -109,8 +109,8 @@ echo   Sonraki adimlar:
 echo   1. backend\.env dosyasina API key'leri girin:
 echo      - GOOGLE_PLACES_API_KEY
 echo      - OPENAI_API_KEY
-echo   2. frontend\.env dosyasina Google Maps key girin:
-echo      - VITE_GOOGLE_MAPS_KEY
+echo   2. frontend\.env dosyasina Mapbox token girin:
+echo      - VITE_MAPBOX_TOKEN
 echo   3. Menuden [1] ile tumunu baslatin
 echo ==============================================================
 echo.
@@ -153,7 +153,7 @@ echo.
 echo   Frontend:   http://localhost:5173
 echo   Backend:    http://localhost:3001
 echo   API Health: http://localhost:3001/api/health
-echo   PostgreSQL: localhost:5432
+echo   PostgreSQL: localhost:5435
 echo ==============================================================
 echo.
 pause
@@ -171,7 +171,7 @@ if errorlevel 1 (
     pause
     goto MENU
 )
-echo [OK] PostgreSQL calisiyor (port 5432).
+echo [OK] PostgreSQL calisiyor (port 5435).
 pause
 goto MENU
 
@@ -241,8 +241,8 @@ echo ==============================================================
 echo                     PORT KONTROL
 echo ==============================================================
 echo.
-echo PostgreSQL (5432):
-netstat -an | findstr ":5432" | findstr "LISTENING"
+echo PostgreSQL (5435):
+netstat -an | findstr ":5435" | findstr "LISTENING"
 if errorlevel 1 echo   [X] Calismiyor
 echo.
 echo Backend (3001):
