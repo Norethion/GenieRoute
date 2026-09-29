@@ -1,0 +1,105 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Kod kalitesi
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 2
+      - name: Kod değişikliklerini belirle
+        id: changes
+        shell: bash
+        run: |
+          git rev-parse -q --verify HEAD^1 >/dev/null || { echo "code=true" >> "$GITHUB_OUTPUT"; exit 0; }  # no base commit: run everything
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "code=true" >> "$GITHUB_OUTPUT"
+          else
+            files=$(git diff --name-only HEAD^1 HEAD)
+            if [[ -n "$files" ]] && printf '%s\n' "$files" | grep -Ev '(^docs/|\.md$)' > /dev/null; then
+              echo "code=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "code=false" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+      - uses: actions/setup-node@v7
+        if: steps.changes.outputs.code == 'true'
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+      - name: Backend bağımlılıkları
+        if: steps.changes.outputs.code == 'true'
+        working-directory: backend
+        run: npm ci
+      - name: Backend lint ve biçim kontrolü
+        if: steps.changes.outputs.code == 'true'
+        working-directory: backend
+        run: |
+          npm run lint
+          npm run --if-present format:check
+      - name: Frontend bağımlılıkları
+        if: steps.changes.outputs.code == 'true'
+        working-directory: frontend
+        run: npm ci
+      - name: Frontend lint ve biçim kontrolü
+        if: steps.changes.outputs.code == 'true'
+        working-directory: frontend
+        run: |
+          npm run lint
+          npm run --if-present format:check
+
+  build:
+    name: Önyüz derlemesi
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 2
+      - name: Kod değişikliklerini belirle
+        id: changes
+        shell: bash
+        run: |
+          git rev-parse -q --verify HEAD^1 >/dev/null || { echo "code=true" >> "$GITHUB_OUTPUT"; exit 0; }  # no base commit: run everything
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "code=true" >> "$GITHUB_OUTPUT"
+          else
+            files=$(git diff --name-only HEAD^1 HEAD)
+            if [[ -n "$files" ]] && printf '%s\n' "$files" | grep -Ev '(^docs/|\.md$)' > /dev/null; then
+              echo "code=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "code=false" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+      - uses: actions/setup-node@v7
+        if: steps.changes.outputs.code == 'true'
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Frontend bağımlılıkları
+        if: steps.changes.outputs.code == 'true'
+        working-directory: frontend
+        run: npm ci
+      - name: Frontend build
+        if: steps.changes.outputs.code == 'true'
+        working-directory: frontend
+        run: npm run build
