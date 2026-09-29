@@ -9,9 +9,10 @@ import { getCategoryColor, getCategoryLabel, getMarkerCategory, CATEGORY_COLORS 
 import { getPhotoSrc, buildMapsUrl } from '../data/photoUrl';
 import { getPlaceContent } from '../services/api';
 import { useFavorites } from '../hooks/useFavorites';
-import MapFabGroup, { STYLE_CYCLE } from './MapFabGroup';
+import MapFabGroup from './MapFabGroup';
 import PhotoWithFallback from './PhotoWithFallback';
 
+const STYLE_CYCLE = ['light', 'dark', 'streets', 'satellite'];
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || '';
 const defaultCenter = { latitude: 39.9208, longitude: 32.8541 };
 
@@ -317,7 +318,6 @@ export default function MapView({ markers = [], center, highlightedPlace, dailyP
       essential: true,
     });
     // İmperatif harita uçuşuyla birlikte popup'ı kapat (efekt zaten harita sync için).
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedMarker(null);
   }, [highlightedMarker]);
 

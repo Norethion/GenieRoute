@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Save } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePreferences } from '../hooks/usePreferences';
@@ -26,13 +26,15 @@ export default function PreferencesPage() {
   const { t } = useTranslation();
   const { prefs, save, loading } = usePreferences();
   const [draft, setDraft] = useState({});
+  const [previousPrefs, setPreviousPrefs] = useState(prefs);
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState(null);
 
-  useEffect(() => {
+  if (prefs !== previousPrefs) {
+    setPreviousPrefs(prefs);
     if (prefs) setDraft(prefs);
-  }, [prefs]);
+  }
 
   const toggleMulti = (key, value) => {
     setDraft((d) => {

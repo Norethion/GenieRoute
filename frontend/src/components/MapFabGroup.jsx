@@ -3,8 +3,6 @@ import { Compass, Filter, Box, Layers, Route, X, Heart } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { CATEGORY_COLORS, CATEGORY_LABELS } from '../data/markerCategories';
 
-const STYLE_CYCLE = ['light', 'dark', 'streets', 'satellite'];
-
 export default function MapFabGroup({
   is3D, onToggle3D,
   styleKey, onCycleStyle,
@@ -124,5 +122,3 @@ export default function MapFabGroup({
     </>
   );
 }
-
-export { STYLE_CYCLE };
