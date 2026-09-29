@@ -44,4 +44,5 @@ Playwright sunucuları kendi başlatmaz ve `frontend/playwright.config.js` için
 
 `main` üzerinden kısa ömürlü dal aç ve değişikliği `main` hedefine PR ile gönder.
 PR'ye kimseyi atama; normal merge commit ile birleştirmeyi proje sahibi yapar.
+Commit mesajları, PR metinleri (başlık, açıklama, yorumlar) ve dokümanlar Türkçe yazılır.
 Bu proje paylaşılan sunucuda dağıtılmıyor; dağıtım altyapısı bağlantısı yoktur.
