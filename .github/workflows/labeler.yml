@@ -1,0 +1,20 @@
+name: PR etiketleri
+
+# Etiketleri taban daldaki .github/labeler.yml'ye göre basar; PR kodunu çalıştırmaz.
+# Dependabot kendi PR'larını zaten etiketlediği için onlarda çalışmaz.
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  etiketle:
+    name: Etiketle
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/labeler@v7
