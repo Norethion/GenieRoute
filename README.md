@@ -1,5 +1,7 @@
 # GenieRoute AI
 
+[English](README.en.md) · **Türkçe**
+
 LLM destekli seyahat planlayıcı. Kullanıcı şehir, gün, bütçe ve ilgi alanı girer; uygulama Google Places API'den gerçek mekan verilerini çeker ve OpenAI ile günlük rotayı haritada gösterir. Dünya çapında çalışır (Türkiye dahil tüm şehirler için bütçe ve ipuçları LLM ensemble + DB-cache yoluyla üretilir).
 
 ## Özellikler
