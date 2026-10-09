@@ -16,7 +16,7 @@ concurrency:
 jobs:
   lint:
     name: Kod kalitesi
-    runs-on: ubuntu-latest
+    runs-on: ${{ (github.event.pull_request.user.login == 'dependabot[bot]' || github.actor == 'dependabot[bot]') && 'ubuntu-latest' || vars.CI_RUNNER || 'ubuntu-latest' }}
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
@@ -68,7 +68,7 @@ jobs:
 
   build:
     name: Önyüz derlemesi
-    runs-on: ubuntu-latest
+    runs-on: ${{ (github.event.pull_request.user.login == 'dependabot[bot]' || github.actor == 'dependabot[bot]') && 'ubuntu-latest' || vars.CI_RUNNER || 'ubuntu-latest' }}
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
