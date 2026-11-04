@@ -181,9 +181,11 @@ helper.bat  Windows başlatıcı (Türkçe menü)
 
 ## License and Attributions
 
+- Code: all rights reserved, see [LICENSE](LICENSE).
 - City data: [GeoNames](https://www.geonames.org/) (CC BY 4.0)
 - Weather data: [Open-Meteo](https://open-meteo.com/) (no key required)
 - Exchange rates: [open.er-api.com](https://www.exchangerate-api.com/) (free tier, no key required)
+- `frontend/public/images/routes/antalya.jpg`: [Marmaris harbor (aerial view)](https://commons.wikimedia.org/wiki/File:Marmaris_harbor_(aerial_view),_Mu%C4%9Fla_Province,_southwest_Turkey,_Mediterranean.jpg), Mstyslav Chernov, [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)
 
 ## Troubleshooting
 
