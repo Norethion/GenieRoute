@@ -167,6 +167,7 @@ helper.bat  Windows başlatıcı (Türkçe menü)
 
 ## Lisans ve Atıflar
 
+- Kod: tüm hakları saklıdır, bkz. [LICENSE](LICENSE).
 - Şehir verileri: [GeoNames](https://www.geonames.org/) (CC BY 4.0)
 - Hava verisi: [Open-Meteo](https://open-meteo.com/) (anahtarsız)
 - Döviz kurları: [open.er-api.com](https://www.exchangerate-api.com/) (anahtarsız ücretsiz tier)

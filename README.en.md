@@ -181,6 +181,7 @@ helper.bat  Windows başlatıcı (Türkçe menü)
 
 ## License and Attributions
 
+- Code: all rights reserved, see [LICENSE](LICENSE).
 - City data: [GeoNames](https://www.geonames.org/) (CC BY 4.0)
 - Weather data: [Open-Meteo](https://open-meteo.com/) (no key required)
 - Exchange rates: [open.er-api.com](https://www.exchangerate-api.com/) (free tier, no key required)
