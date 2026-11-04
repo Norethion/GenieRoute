@@ -1,4 +1,4 @@
-# PR'lar değişen dosyalara göre etiketlenir; etiket adları Dependabot ile aynıdır.
+# PR'lar değişen dosyalara göre etiketlenir.
 
 documentation:
   - changed-files:
