@@ -4,6 +4,14 @@
 
 LLM destekli seyahat planlayıcı. Kullanıcı şehir, gün, bütçe ve ilgi alanı girer; uygulama Google Places API'den gerçek mekan verilerini çeker ve OpenAI ile günlük rotayı haritada gösterir. Dünya çapında çalışır (Türkiye dahil tüm şehirler için bütçe ve ipuçları LLM ensemble + DB-cache yoluyla üretilir).
 
+## Ekran Görüntüleri
+
+| Şehir ve tercih formu | Tüm günler haritada |
+|---|---|
+| ![Şehir ve tercih formu](docs/screenshots/home.png) | ![Tüm günler haritada](docs/screenshots/overview.png) |
+| **Günlük plan ve rota** | **Sohbetle değişiklik önerisi ve önizleme** |
+| ![Günlük plan ve rota](docs/screenshots/day-plan.png) | ![Sohbetle değişiklik önerisi ve önizleme](docs/screenshots/chat.png) |
+
 ## Özellikler
 
 - LLM destekli günlük plan üretimi (varsayılan OpenAI gpt-5.4-mini)

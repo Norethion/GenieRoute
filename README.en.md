@@ -6,6 +6,16 @@ An LLM-powered travel planner.
 The user enters a city, number of days, budget, and interests; the app fetches real place data from the Google Places API and uses OpenAI to show a daily route on the map.
 It works worldwide (budgets and tips for all cities, including those in Turkey, are generated through an LLM ensemble + DB cache).
 
+## Screenshots
+
+The screenshots show the Turkish interface; the app also has an English interface.
+
+| City and preferences form | All days on the map |
+|---|---|
+| ![City and preferences form](docs/screenshots/home.png) | ![All days on the map](docs/screenshots/overview.png) |
+| **Daily plan and route** | **Chat-based change suggestion with preview** |
+| ![Daily plan and route](docs/screenshots/day-plan.png) | ![Chat-based change suggestion with preview](docs/screenshots/chat.png) |
+
 ## Features
 
 - LLM-powered daily plan generation (default: OpenAI gpt-5.4-mini)
