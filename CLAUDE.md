@@ -37,7 +37,7 @@ Run commands in the specified directory; there is no npm workspace at the root.
 | Browser tests | `cd frontend && npm run test:e2e` |
 
 There is no build or test script for the backend, and neither package has a typecheck script.
-The required PR checks in [CI](.github/workflows/ci.yml) are `Kod kalitesi` (backend and frontend lint and formatting checks) and `Önyüz derlemesi` (frontend build); E2E tests do not run in CI, so run them locally when needed.
+The required PR checks in [CI](.github/workflows/ci.yml) are `Lint` (backend and frontend lint and formatting checks) and `Build` (frontend build); E2E tests do not run in CI, so run them locally when needed.
 For E2E, PostgreSQL and the backend must be running; start the frontend in a separate terminal with `cd frontend && npm run dev -- --port 5174`, then follow the key and test requirements in the [E2E guide](frontend/tests/e2e/README.md).
 Playwright does not start the servers itself, and the base URL in `frontend/playwright.config.js` is `localhost:5174`.
 

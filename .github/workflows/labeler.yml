@@ -1,6 +1,6 @@
-name: PR etiketleri
+name: Label
 
-# Etiketleri taban daldaki .github/labeler.yml'ye göre basar; PR kodunu çalıştırmaz.
+# Apply labels using .github/labeler.yml from the base branch; do not run PR code.
 on:
   pull_request_target:
     types: [opened, synchronize, reopened]
@@ -10,8 +10,8 @@ permissions:
   pull-requests: write
 
 jobs:
-  etiketle:
-    name: Etiketle
+  label:
+    name: Label
     runs-on: ${{ vars.CI_RUNNER || 'ubuntu-latest' }}
     timeout-minutes: 5
     steps:
