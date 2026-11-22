@@ -1,0 +1,4 @@
+# Shared line endings for every workspace repository (infra INFRA.md)
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
